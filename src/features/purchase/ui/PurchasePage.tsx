@@ -17,6 +17,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTranslation } from '@/i18n/useTranslation';
 import { parseExcel, type PurchaseRow } from '@/features/purchase/services/excel';
 import { parseDateSafe } from '@/features/purchase/lib/date';
+import { savePurchaseData, loadPurchaseData } from '@/features/purchase/services/purchaseService';
 import { X } from 'lucide-react';
 import type { TabKey, ToastMessage } from '@/features/purchase/model/purchase';
 
@@ -147,6 +148,18 @@ export function PurchasePage() {
                         'success',
                     );
                 }
+
+                // Save to Supabase to prevent data loss
+                if (result.filtered.length > 0 && user?.user) {
+                    try {
+                        await savePurchaseData(user.user, result.filtered, file.name);
+                    } catch (saveErr) {
+                        const msg = saveErr instanceof Error ? saveErr.message : 'Lỗi kết nối';
+                        showToast(`Không thể tự động lưu lên Supabase: ${msg}`, 'warning', 5000);
+                        // eslint-disable-next-line no-console
+                        console.error('[Supabase Save]', saveErr);
+                    }
+                }
             } catch (err) {
                 const msg = err instanceof Error ? err.message : 'Lỗi không xác định';
                 showToast(t('import.error', { msg }), 'error', 5000);
@@ -157,7 +170,7 @@ export function PurchasePage() {
                 if (fileInputRef.current) fileInputRef.current.value = '';
             }
         },
-        [showToast, t],
+        [showToast, t, user?.user],
     );
 
     const handleImportClick = useCallback(() => {
@@ -171,6 +184,35 @@ export function PurchasePage() {
         },
         [handleFile],
     );
+
+    // Load purchase data from Supabase on mount
+    useEffect(() => {
+        if (!user?.user) return;
+        let isMounted = true;
+
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const savedRows = await loadPurchaseData(user.user);
+                if (isMounted && savedRows.length > 0) {
+                    setRows(savedRows);
+                    showToast(t('import.success', { count: savedRows.length }), 'success');
+                }
+            } catch (err) {
+                // eslint-disable-next-line no-console
+                console.error('[Supabase Load]', err);
+                showToast('Không thể tải dữ liệu đã lưu từ Supabase', 'error', 4000);
+            } finally {
+                if (isMounted) setIsLoading(false);
+            }
+        };
+
+        void loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [user?.user, showToast, t]);
 
     useEffect(() => {
         const onDragOver = (e: DragEvent) => {
