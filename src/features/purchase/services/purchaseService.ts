@@ -3,14 +3,12 @@ import type { PurchaseRow } from './excel';
 
 export async function savePurchaseData(userId: string, rows: PurchaseRow[], fileName: string) {
   const { error } = await supabase
-    .from('purchase_data')
-    .upsert({
+    .from('purchase_records')
+    .insert({
       user_id: userId,
       data: rows as any,
       file_name: fileName,
-      updated_at: new Date().toISOString()
-    }, {
-      onConflict: 'user_id'
+      total_rows: rows.length
     });
   
   if (error) throw error;
@@ -18,11 +16,12 @@ export async function savePurchaseData(userId: string, rows: PurchaseRow[], file
 
 export async function loadPurchaseData(userId: string): Promise<PurchaseRow[]> {
   const { data, error } = await supabase
-    .from('purchase_data')
+    .from('purchase_records')
     .select('data')
     .eq('user_id', userId)
-    .single();
+    .order('imported_at', { ascending: false })
+    .limit(1);
   
-  if (error && error.code !== 'PGRST116') throw error;
-  return (data?.data as PurchaseRow[]) || [];
+  if (error) throw error;
+  return (data?.[0]?.data as PurchaseRow[]) || [];
 }
