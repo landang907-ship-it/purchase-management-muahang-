@@ -1,0 +1,192 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   Combined theme tokens (SAP login + purchase management)
+   ============================================================ */
+@theme {
+    /* Purchase palette (primary deep-blue system) */
+    --color-blue-dark: #1a3a6b;
+    --color-blue-mid: #2255a4;
+    --color-blue-light: #3a7bd5;
+    --color-blue-tab: #2a5298;
+    --color-red: #d32f2f;
+    --color-red-hover: #b71c1c;
+    --color-row-even: #e8f0fe;
+    --color-border: #c5d5f0;
+    --color-text-dark: #0d1f3c;
+    --color-text-mid: #2c4a7c;
+    --color-status-bg: #f0f4ff;
+
+    /* SAP palette (SAP Fiori orange theme) */
+    --color-sap-primary: #E17055;
+    --color-sap-primary-dark: #D35400;
+    --color-sap-primary-darker: #A04000;
+    --color-sap-primary-light: #FADBD8;
+    --color-sap-primary-lighter: #FDEBD0;
+
+    /* Neutrals (SAP defaults) */
+    --color-bg: #ffffff;
+    --color-text: #1f2937;
+    --color-text-muted: #6b7280;
+    --color-text-on-primary: #ffffff;
+    --color-border-input: rgba(31, 41, 55, 0.12);
+    --color-border-input-primary: rgba(255, 255, 255, 0.35);
+    --color-error: #dc2626;
+    --color-error-bg: #fee2e2;
+    --color-success: #16a34a;
+    --color-success-bg: #dcfce7;
+
+    /* Effects */
+    --color-shadow-btn: rgba(225, 112, 85, 0.55);
+    --color-shadow-btn-soft: rgba(225, 112, 85, 0.35);
+    --color-shadow-toast: rgba(0, 0, 0, 0.25);
+
+    /* Animations */
+    --animate-spin-slow: spin 0.7s linear infinite;
+    --animate-fade-up: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    --animate-fade-up-100: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+    --animate-fade-up-200: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    --animate-fade-up-300: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+}
+
+/* ============================================================
+   Base layer: reset + iOS-friendly defaults
+   ============================================================ */
+@layer base {
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body,
+    #root {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family:
+            -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+            'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif,
+            'Apple Color Emoji', 'Segoe UI Emoji';
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: var(--color-bg);
+        color: var(--color-text);
+        overflow-x: hidden;
+    }
+
+    button {
+        -webkit-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    input {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+}
+
+/* ============================================================
+   Entrance animation: fade-up
+   ============================================================ */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@layer utilities {
+    .anim-fade-up {
+        opacity: 0;
+        animation: var(--animate-fade-up);
+    }
+
+    .anim-fade-up-100 {
+        opacity: 0;
+        animation: var(--animate-fade-up-100);
+    }
+
+    .anim-fade-up-200 {
+        opacity: 0;
+        animation: var(--animate-fade-up-200);
+    }
+
+    .anim-fade-up-300 {
+        opacity: 0;
+        animation: var(--animate-fade-up-300);
+    }
+
+    /* Purchase thin scrollbar (desktop) */
+    .scrollbar-thin {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-blue-mid) var(--color-row-even);
+    }
+
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: var(--color-row-even);
+    }
+
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: var(--color-blue-mid);
+        border-radius: 2px;
+    }
+}
+
+/* ============================================================
+   Dark mode (only affects the login page which uses the
+   light neutrals; the purchase page overrides body bg to
+   the deep-blue palette via inline class so dark mode is
+   effectively neutralized there).
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-bg: #0b1220;
+        --color-text: #e5e7eb;
+        --color-text-muted: #9ca3af;
+        --color-sap-primary-light: #1c2a44;
+        --color-sap-primary-lighter: #16213a;
+        --color-border-input: rgba(229, 231, 235, 0.18);
+    }
+}
+
+/* ============================================================
+   Respect reduced-motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+
+    .anim-fade-up,
+    .anim-fade-up-100,
+    .anim-fade-up-200,
+    .anim-fade-up-300 {
+        opacity: 1;
+    }
+}
