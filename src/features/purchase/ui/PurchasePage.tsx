@@ -1,6 +1,6 @@
 /**
-* PurchasePage – quản lý mua hàng (Excel import, tab filtering, table).
-*/
+ * PurchasePage – quản lý mua hàng (Excel import, tab filtering, table).
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DataTable } from '@/features/purchase/ui/DataTable';
 import { EmptyState } from '@/features/purchase/ui/EmptyState';
@@ -13,6 +13,7 @@ import { StatusFilter } from '@/features/purchase/ui/StatusFilter';
 import { DateRangeFilter } from '@/features/purchase/ui/DateRangeFilter';
 import { TabNav } from '@/features/purchase/ui/TabNav';
 import { Toast } from '@/shared/ui/Toast';
+import { TaskBar } from '@/features/layout/ui/TaskBar';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTranslation } from '@/i18n/useTranslation';
 import { parseExcel, type PurchaseRow } from '@/features/purchase/services/excel';
@@ -257,71 +258,82 @@ export function PurchasePage() {
             <Header onImport={handleImportClick} onLogout={handleLogout} userLabel={user?.user} />
             <TabNav active={activeTab} onChange={setActiveTab} counts={counts} />
 
-            <main
-                className="absolute inset-x-0 bottom-0 flex flex-col overflow-hidden bg-[#f4f7ff]"
-                style={{
-                    top: 'calc(env(safe-area-inset-top, 0px) + 64px + 48px)',
-                    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-                }}
-            >
-                {!showEmpty && (
-                    <div className="flex flex-col bg-white overflow-x-auto">
-                        <QuickSearch
-                            value={quickSearch}
-                            onChange={setQuickSearch}
-                        />
-                        <RequesterFilter
-                            options={requesterOptions}
-                            value={selectedRequesters}
-                            onChange={setSelectedRequesters}
-                        />
-                        <StatusFilter
-                            options={statusOptions}
-                            value={selectedStatus}
-                            onChange={setSelectedStatus}
-                        />
-                        <DateRangeFilter
-                            dateFrom={dateFrom}
-                            dateTo={dateTo}
-                            onDateFromChange={setDateFrom}
-                            onDateToChange={setDateTo}
-                        />
-                        {hasAnyFilter && (
-                            <div className="flex items-center gap-3 px-4 py-2 border-b border-gray-200">
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-[12px] font-semibold text-white bg-red rounded-md hover:brightness-110 transition-[filter] shadow-sm"
-                                >
-                                    <X size={13} strokeWidth={2.5} />
-                                    {t('filter.clearAll')}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-                {showEmpty && <EmptyState onImport={handleImportClick} />}
-                {showNoResults && (
-                    <NoResults
-                        message={
-                            selectedRequesters.length > 0
-                                ? t('noresults.filtered', { count: selectedRequesters.length })
-                                : t('noresults.tab')
-                        }
-                    />
-                )}
-                {!showEmpty && !showNoResults && <DataTable rows={visibleRows} />}
-                {isLoading && <LoadingOverlay />}
-            </main>
+            {/* Layout: TaskBar (left) + Main content (right) */}
+            <div className="absolute inset-x-0 bottom-0 flex" style={{
+                top: 'calc(env(safe-area-inset-top, 0px) + 64px + 48px)',
+            }}>
+                {/* Left TaskBar */}
+                <TaskBar
+                    onAccountClick={() => showToast(t('taskbar.accountClick'), 'info')}
+                    userLabel={user?.user}
+                />
 
-            <input
-                ref={fileInputRef}
-                type="file"
-                accept=".xlsx,.xls,.csv"
-                onChange={handleFileChange}
-                className="hidden"
-                aria-hidden
-            />
-            <Toast toasts={toasts} />
+                {/* Main content area */}
+                <main
+                    className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
+                    style={{
+                        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+                    }}
+                >
+                    {!showEmpty && (
+                        <div className="flex flex-col bg-white overflow-x-auto">
+                            <QuickSearch
+                                value={quickSearch}
+                                onChange={setQuickSearch}
+                            />
+                            <RequesterFilter
+                                options={requesterOptions}
+                                value={selectedRequesters}
+                                onChange={setSelectedRequesters}
+                            />
+                            <StatusFilter
+                                options={statusOptions}
+                                value={selectedStatus}
+                                onChange={setSelectedStatus}
+                            />
+                            <DateRangeFilter
+                                dateFrom={dateFrom}
+                                dateTo={dateTo}
+                                onDateFromChange={setDateFrom}
+                                onDateToChange={setDateTo}
+                            />
+                            {hasAnyFilter && (
+                                <div className="flex items-center gap-3 px-4 py-2 border-b border-gray-200">
+                                    <button
+                                        onClick={clearAllFilters}
+                                        className="flex items-center gap-1 px-3 py-1.5 text-[12px] font-semibold text-white bg-red rounded-md hover:brightness-110 transition-[filter] shadow-sm"
+                                    >
+                                        <X size={13} strokeWidth={2.5} />
+                                        {t('filter.clearAll')}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {showEmpty && <EmptyState onImport={handleImportClick} />}
+                    {showNoResults && (
+                        <NoResults
+                            message={
+                                selectedRequesters.length > 0
+                                    ? t('noresults.filtered', { count: selectedRequesters.length })
+                                    : t('noresults.tab')
+                            }
+                        />
+                    )}
+                    {!showEmpty && !showNoResults && <DataTable rows={visibleRows} />}
+                    {isLoading && <LoadingOverlay />}
+                </main>
+
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".xlsx,.xls,.csv"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    aria-hidden
+                />
+                <Toast toasts={toasts} />
+            </div>
         </div>
     );
 }

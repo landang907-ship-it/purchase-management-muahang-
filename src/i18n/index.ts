@@ -77,20 +77,40 @@ const VI: LangMap = {
     'empty.title': 'Chưa có dữ liệu',
     'empty.hint': 'Nhấn nút NHẬP FILE hoặc kéo thả file Excel (.xlsx, .xls, .csv) vào vùng này.',
     'empty.button': 'Chọn file Excel',
-    'empty.note': '💡 Hệ thống sẽ tự động lọc các dòng có TAG-NAME = VN005922.',
+    'empty.note': '💡 Hệ thống sẽ tự động lọc các dòng có TAG-NAME = Đã tạo.',
     'noresults.filtered': 'Không có dòng nào khớp bộ lọc Ng.yêu cầu ({{count}} người) trong tab này',
     'noresults.tab': 'Không có dữ liệu cho tab này',
 
     // File import
     'import.extError': 'Chỉ hỗ trợ file .xlsx, .xls, .csv',
     'import.tagMissing': 'Không tìm thấy cột TAG-NAME',
-    'import.noRows': 'Không có dòng nào có TAG-NAME = VN005922',
-    'import.success': '✓ Đã tải {{count}} dòng (TAG-NAME = VN005922)',
+    'import.noRows': 'Không có dòng nào có TAG-NAME = Đã tạo',
+    'import.success': '✓ Đã tải {{count}} dòng (TAG-NAME = Đã tạo)',
     'import.error': 'Lỗi đọc file: {{msg}}',
 
     // Misc
     'app.loading': 'Đang tải…',
     'app.logoutSuccess': 'Đã đăng xuất',
+
+    // TaskBar
+    'taskbar.accountClick': 'Đã chọn Quản lý tài khoản',
+
+    // Registration
+    'register.title': 'Đăng ký tài khoản mới',
+    'register.show': 'Đăng ký',
+    'register.hide': 'Ẩn',
+    'register.newUser': 'USER MỚI :',
+    'register.newUserSub': '新用户',
+    'register.password': 'MẬT KHẨU :',
+    'register.confirmPassword': 'XÁC NHẬN MẬT KHẨU :',
+    'register.confirmPasswordSub': '确认密码',
+    'register.submit': 'ĐĂNG KÝ',
+    'register.userRequired': 'Vui lòng nhập USER',
+    'register.passwordRequired': 'Vui lòng nhập mật khẩu',
+    'register.passwordMismatch': 'Mật khẩu không khớp',
+    'register.success': 'Đăng ký thành công! Vui lòng đăng nhập.',
+    'register.successDetail': 'Vui lòng sử dụng thông tin đã đăng ký để đăng nhập.',
+    'register.close': 'Đóng',
 };
 
 const ZH: LangMap = {
@@ -162,20 +182,40 @@ const ZH: LangMap = {
     'empty.title': '暂无数据',
     'empty.hint': '点击"导入文件"按钮或拖放Excel文件（.xlsx、.xls、.csv）到此处。',
     'empty.button': '选择Excel文件',
-    'empty.note': '💡 系统将自动筛选TAG-NAME = VN005922的数据行。',
+    'empty.note': '💡 系统将自动筛选TAG-NAME = 已创建的数据行。',
     'noresults.filtered': '此标签页中无符合申请人筛选条件的行（{{count}}人）',
     'noresults.tab': '此标签页无数据',
 
     // File import
     'import.extError': '仅支持.xlsx、.xls、.csv文件',
     'import.tagMissing': '未找到TAG-NAME列',
-    'import.noRows': '无TAG-NAME = VN005922的数据行',
-    'import.success': '✓ 已加载{{count}}行（TAG-NAME = VN005922）',
+    'import.noRows': '无TAG-NAME = 已创建的数据行',
+    'import.success': '✓ 已加载{{count}}行（TAG-NAME = 已创建）',
     'import.error': '文件读取错误：{{msg}}',
 
     // Misc
     'app.loading': '加载中…',
     'app.logoutSuccess': '已退出登录',
+
+    // TaskBar
+    'taskbar.accountClick': '已选择账户管理',
+
+    // Registration
+    'register.title': '注册新账户',
+    'register.show': '注册',
+    'register.hide': '隐藏',
+    'register.newUser': '新用户 :',
+    'register.newUserSub': '新用户',
+    'register.password': '密码 :',
+    'register.confirmPassword': '确认密码 :',
+    'register.confirmPasswordSub': '确认密码',
+    'register.submit': '注册',
+    'register.userRequired': '请输入用户',
+    'register.passwordRequired': '请输入密码',
+    'register.passwordMismatch': '密码不匹配',
+    'register.success': '注册成功！请登录。',
+    'register.successDetail': '请使用注册的账户信息登录。',
+    'register.close': '关闭',
 };
 
 // ─── Translation function ──────────────────────────────────────────────────

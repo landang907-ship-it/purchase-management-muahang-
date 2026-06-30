@@ -159,6 +159,12 @@ export const TAG_NAME_KEYS = [
     'tag',
     'tên thẻ',
     'ten the',
+    'đã tạo',
+    'da tao',
+    'created by',
+    'creator',
+    'người tạo',
+    'nguoi tao',
     'plant',
     'nhà máy',
     'nha may',
@@ -169,15 +175,9 @@ export const TAG_NAME_KEYS = [
     'company code',
     'werks',
     'bukrs',
-    'đã tạo',
-    'da tao',
-    'created by',
-    'creator',
-    'người tạo',
-    'nguoi tao',
 ];
 
-export const TAG_VALUE = 'VN005922';
+export const TAG_VALUE = 'Đã tạo';
 
 export interface PurchaseRow {
     'Yc.m.hàng': string;
