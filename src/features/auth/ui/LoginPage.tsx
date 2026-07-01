@@ -194,11 +194,11 @@ export function LoginPage() {
                 paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
             }}
         >
-            {/* Background image */}
+            {/* Background image (Highly optimized local WebP, ~131KB) */}
             <div
                 className="fixed inset-0 -z-10"
                 style={{
-                    backgroundImage: 'url(https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/ccv2%2F2026-07-01%2FMiniMax-M2.7%2F2045431618054664525%2Fccce7e24238f8420b7c53ded21d1b29cd8088a5ddc17063f79b43abb132ca6e7..png?Expires=1782965892&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=2NfeM7nQeAr83wOWh%2BDTNAdP8zQ%3D)',
+                    backgroundImage: 'url(/login-bg.webp)',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
