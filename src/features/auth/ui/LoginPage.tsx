@@ -194,33 +194,19 @@ export function LoginPage() {
                 paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
             }}
         >
-            {/* Background: soft gradient matching brand colors */}
+            {/* Background image */}
             <div
                 className="fixed inset-0 -z-10"
                 style={{
-                    background: 'linear-gradient(135deg, #1e3a5f 0%, #2563eb 40%, #1e40af 70%, #1e3a8a 100%)',
+                    backgroundImage: 'url(https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/ccv2%2F2026-07-01%2FMiniMax-M2.7%2F2045431618054664525%2Fccce7e24238f8420b7c53ded21d1b29cd8088a5ddc17063f79b43abb132ca6e7..png?Expires=1782965892&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=2NfeM7nQeAr83wOWh%2BDTNAdP8zQ%3D)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
                 }}
             />
-            {/* Decorative circles */}
+            {/* Dark overlay for better text readability */}
             <div
-                className="fixed -z-10 opacity-20 rounded-full"
-                style={{
-                    width: '600px',
-                    height: '600px',
-                    top: '-200px',
-                    right: '-200px',
-                    background: 'radial-gradient(circle, #60a5fa 0%, transparent 70%)',
-                }}
-            />
-            <div
-                className="fixed -z-10 opacity-15 rounded-full"
-                style={{
-                    width: '400px',
-                    height: '400px',
-                    bottom: '-100px',
-                    left: '-100px',
-                    background: 'radial-gradient(circle, #93c5fd 0%, transparent 70%)',
-                }}
+                className="fixed inset-0 -z-10 bg-black/50"
             />
             <SiteHeader />
 
