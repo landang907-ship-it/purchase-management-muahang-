@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.4] — 2026-07-02
+
+### Changed
+- **Khôi phục TAG-NAME filter** về `VN005922` (VN) / `VN005922` (ZH).
+- Cập nhật tất cả messages liên quan đến TAG-NAME trong i18n.
+
+### Files Changed
+- `src/features/purchase/services/excel.ts` (modified)
+- `src/i18n/vi.ts` (modified)
+- `src/i18n/zh.ts` (modified)
+
+---
+
+
 ## [1.1.3] — 2026-06-30
 
 ### Added

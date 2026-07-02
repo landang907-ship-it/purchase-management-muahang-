@@ -177,7 +177,7 @@ export const TAG_NAME_KEYS = [
     'bukrs',
 ];
 
-export const TAG_VALUE = 'Đã tạo';
+export const TAG_VALUE = 'VN005922';
 
 export interface PurchaseRow {
     'Yc.m.hàng': string;

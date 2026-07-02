@@ -13,7 +13,6 @@ import { StatusFilter } from '@/features/purchase/ui/StatusFilter';
 import { DateRangeFilter } from '@/features/purchase/ui/DateRangeFilter';
 import { TabNav } from '@/features/purchase/ui/TabNav';
 import { Toast } from '@/shared/ui/Toast';
-import { TaskBar } from '@/features/layout/ui/TaskBar';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTranslation } from '@/i18n/useTranslation';
 import { parseExcel, type PurchaseRow } from '@/features/purchase/services/excel';
@@ -262,12 +261,6 @@ export function PurchasePage() {
             <div className="absolute inset-x-0 bottom-0 flex" style={{
                 top: 'calc(env(safe-area-inset-top, 0px) + 64px + 48px)',
             }}>
-                {/* Left TaskBar */}
-                <TaskBar
-                    onAccountClick={() => showToast(t('taskbar.accountClick'), 'info')}
-                    userLabel={user?.user}
-                />
-
                 {/* Main content area */}
                 <main
                     className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
