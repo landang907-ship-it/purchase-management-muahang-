@@ -156,6 +156,8 @@ export const TAG_NAME_KEYS = [
     'tag-name',
     'tag name',
     'tagname',
+    'tag-n',
+    'tag n',
     'tag',
     'tên thẻ',
     'ten the',
