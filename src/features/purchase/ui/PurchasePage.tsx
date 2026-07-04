@@ -1,16 +1,15 @@
 /**
- * PurchasePage – quản lý mua hàng (Excel import, tab filtering, table).
+ * PurchasePage – quản lý mua hàng (Excel import, filter, table).
  * Đã được refactor: tách logic sang các custom hooks (useExcelUpload, usePurchaseData,
  * usePurchaseFilters) + FilterBar. Component này chỉ chịu trách nhiệm layout + kết nối.
  */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { DataTable } from '@/features/purchase/ui/DataTable';
 import { EmptyState } from '@/features/purchase/ui/EmptyState';
 import { Header } from '@/features/purchase/ui/Header';
 import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
 import { NoResults } from '@/features/purchase/ui/NoResults';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
-import { TabNav } from '@/features/purchase/ui/TabNav';
 import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -18,7 +17,6 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { usePurchaseData } from '@/features/purchase/hooks/usePurchaseData';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
-import type { TabKey } from '@/features/purchase/model/purchase';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
@@ -31,7 +29,6 @@ export function PurchasePage() {
     // Purchase data: rows + Supabase sync
     const {
         rows,
-        fileName: _fileName,
         isLoading: dataLoading,
         setRows,
         setFileName,
@@ -58,9 +55,6 @@ export function PurchasePage() {
         resetForNewImport,
     } = usePurchaseFilters({ rows });
 
-    // Tab state
-    const [activeTab, setActiveTab] = useState<TabKey>('system');
-
     // Excel upload: file ref + drag-drop + handleFile
     const {
         isLoading: uploadLoading,
@@ -80,7 +74,6 @@ export function PurchasePage() {
     });
 
     const isLoading = dataLoading || uploadLoading;
-    const counts = useMemo(() => ({ system: rows.length }) satisfies Record<TabKey, number>, [rows]);
 
     const handleLogout = useCallback(() => {
         logout();
@@ -93,12 +86,11 @@ export function PurchasePage() {
     return (
         <div className="relative h-full w-full overflow-hidden bg-blue-dark">
             <Header onImport={openFilePicker} onLogout={handleLogout} userLabel={userId} />
-            <TabNav active={activeTab} onChange={setActiveTab} counts={counts} />
 
             {/* Layout: Main content (TaskBar from layout/ overlays the left side) */}
             <div
                 className="absolute inset-x-0 bottom-0 flex"
-                style={{ top: 'calc(env(safe-area-inset-top, 0px) + 64px + 48px)' }}
+                style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
                 <main
                     className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
