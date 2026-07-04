@@ -145,7 +145,7 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder={t('filter.search')}
-                    aria-label="Tìm nhanh Ng.yêu cầu"
+                    aria-label={t('filter.searchAria')}
                     className={cn(
                         'flex-1 min-w-0',
                         'bg-transparent border-0 outline-none',
@@ -157,7 +157,7 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
                     <button
                         type="button"
                         onClick={() => setSearch('')}
-                        aria-label="Xóa tìm kiếm"
+                        aria-label={t('filter.clearSearch')}
                         className="shrink-0 text-neutral-400 hover:text-text-dark"
                     >
                         <X size={13} strokeWidth={2.5} />

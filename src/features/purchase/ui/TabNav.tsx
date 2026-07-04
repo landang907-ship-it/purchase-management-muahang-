@@ -21,7 +21,7 @@ export function TabNav({ active, onChange, counts }: TabNavProps) {
     return (
         <nav
             role="tablist"
-            aria-label="Bộ lọc dữ liệu"
+            aria-label={t('tab.ariaLabel')}
             className={cn(
                 'fixed inset-x-0 z-40',
                 'top-[calc(env(safe-area-inset-top,0px)+64px)] sm:top-[calc(env(safe-area-inset-top,0px)+72px)]',
