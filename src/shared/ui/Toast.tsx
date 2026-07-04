@@ -53,10 +53,3 @@ export function Toast({ toasts }: ToastProps) {
         </div>
     );
 }
-
-/** Hook helper to manage toast queue. */
-export function useToastQueue() {
-    return {
-        defaultDuration: 3000,
-    };
-}

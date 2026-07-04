@@ -36,4 +36,3 @@ export const t = (
 };
 
 export default i18n;
-﻿

@@ -7,7 +7,7 @@
  * App re-renders to PurchasePage automatically.
  */
 import { useContext } from 'react';
-import { AuthContext, type AuthUser } from '@/features/auth/contexts/AuthContext';
+import { AuthContext, type AuthUser } from '@/features/auth/contexts/authContextValue';
 
 export type { AuthUser };
 

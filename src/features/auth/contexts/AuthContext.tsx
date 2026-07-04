@@ -1,33 +1,9 @@
 /**
- * AuthContext – React Context providing global auth state for the entire app.
- * Uses useContext + useState instead of useReducer (per PROJECT_STACK.md §6).
- *
- * State is shared between App.tsx, LoginPage.tsx, PurchasePage.tsx via the Provider
- * in main.tsx → fixes the "login success but still redirected to LoginPage" bug.
+ * AuthProvider – React Provider cho auth state. Tách context sang file riêng
+ * để tránh react-refresh warning.
  */
-import {
-    createContext,
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-    type ReactNode,
-} from 'react';
-
-export interface AuthUser {
-    user: string;
-    language: string;
-    loggedInAt: number;
-}
-
-export interface AuthContextValue {
-    user: AuthUser | null;
-    isAuthenticated: boolean;
-    login: (next: { user: string; language: string }) => void;
-    logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { AuthContext, type AuthContextValue, type AuthUser } from './authContextValue';
 
 const STORAGE_KEY = 'sap_auth_user';
 

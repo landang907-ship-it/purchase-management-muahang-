@@ -127,7 +127,7 @@ export async function deletePurchaseRecord(
         }
 
         return { success: true };
-    } catch (err) {
+    } catch {
         return { success: false, error: 'Lỗi xóa dữ liệu' };
     }
 }

@@ -1,0 +1,31 @@
+# Hướng dẫn Deploy cho Cline Extensions (Dự án Mua Hàng)
+
+Khi thực hiện deploy hoặc chuẩn bị deploy dự án này (React 19 + Vite 6 + TypeScript + Tailwind v4), Cline cần tuân thủ nghiêm ngặt các bước và quy tắc sau để đảm bảo quá trình build và deploy thành công (đặc biệt là trên nền tảng Vercel):
+
+## 1. Kiểm tra Lỗi TypeScript (Cực kỳ quan trọng)
+Quá trình build của dự án được cấu hình chạy `tsc -b --noEmit` trước khi build Vite. Bất kỳ lỗi Type nào cũng sẽ khiến toàn bộ quá trình deploy thất bại.
+- **Hành động bắt buộc:** Trước khi cho rằng task đã hoàn thành hoặc trước khi deploy, luôn chạy lệnh `npm run type-check` ở terminal local.
+- **Xử lý:** Không được bỏ qua lỗi TypeScript. Cần phải sửa triệt để tất cả các lỗi hiển thị (Missing props, type mismatch, implicitly has an 'any' type...).
+
+## 2. Cấu hình Vercel và Build
+Dự án đã có sẵn file `vercel.json` và cấu hình trong `package.json`.
+- **Install Command:** Cần sử dụng `npm install --registry https://registry.npmjs.org` để tránh lỗi timeout/registry.
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+- **Routing:** Đã được cấu hình rewrite tất cả route về `/index.html` trong `vercel.json` để hỗ trợ React Router SPA. Không xóa hoặc làm hỏng cấu hình này.
+
+## 3. Biến Môi Trường (Environment Variables)
+- Nếu có tính năng mới yêu cầu thêm biến môi trường (như API key, Supabase url...), bắt buộc phải cập nhật biến đó vào file `.env.example`.
+- Khi hướng dẫn người dùng deploy, hãy nhắc họ phải thêm các biến môi trường này vào cài đặt của Vercel (Project Settings -> Environment Variables).
+
+## 4. Các Lỗi Phổ Biến Cần Tránh
+- **Đường dẫn phân biệt hoa/thường:** Windows (local) không phân biệt hoa/thường, nhưng Vercel (Linux) thì có. Phải chắc chắn đường dẫn `import` trùng khớp 100% với tên file và thư mục thực tế (VD: `import { ... } từ './components/Header'` phải tương ứng với thư mục `components` và file `Header.tsx`).
+- **Tailwind CSS v4:** Dự án đang sử dụng Tailwind v4 qua `@tailwindcss/vite`. Không cài đặt lại hay thêm các file cấu hình `tailwind.config.js` cũ của v3 vì nó có thể gây xung đột.
+- **Cảnh báo Eslint (Warnings):** Dù có thể không làm hỏng build, hãy chạy `npm run lint` để kiểm tra và dọn clean up.
+
+## 5. Quy trình Đề xuất cho Cline
+Mỗi khi người dùng yêu cầu "Chuẩn bị deploy" hoặc "Fix lỗi deploy", hãy làm theo các bước:
+1. `npm run type-check` -> Sửa toàn bộ lỗi (nếu có).
+2. `npm run lint` -> Tối ưu code (nếu cần).
+3. `npm run build` -> Đảm bảo Vite build thành công file tĩnh vào thư mục `/dist`.
+4. Báo cáo cho người dùng mọi thứ đã sẵn sàng và nhắc họ push code lên Github để Vercel tự động deploy.
