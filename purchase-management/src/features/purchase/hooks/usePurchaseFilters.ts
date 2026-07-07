@@ -78,24 +78,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         saveSelectedWorkshops(selectedWorkshops);
     }, [selectedWorkshops]);
 
-    const requesterOptions = useMemo(() => {
-        const set = new Set<string>();
-        for (const r of rows) {
-            const v = (r['Ng.yêu cầu'] ?? '').trim();
-            if (v) set.add(v);
-        }
-        return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
-    }, [rows]);
-
-    const statusOptions = useMemo(() => {
-        const set = new Set<string>();
-        for (const r of rows) {
-            const v = (r['T.trg xử lý'] ?? '').trim();
-            if (v) set.add(v);
-        }
-        return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
-    }, [rows]);
-
     // Workshop options: Workshop NAMES (not TAG-NAME values)
     const workshopOptions = useMemo(() => {
         return workshops.map((w) => w.name);
@@ -109,6 +91,43 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         }
         return map;
     }, [workshops]);
+
+    // Requester options: phu thuoc vao workshop da chon
+    const requesterOptions = useMemo(() => {
+        // Neu chua chon workshop nao thi khong co requester
+        if (selectedWorkshops.length === 0) {
+            return [];
+        }
+
+        // Lay tag set tu cac workshop da chon
+        const tagSet = new Set<string>();
+        for (const wsName of selectedWorkshops) {
+            const tags = workshopToTagsMap[wsName] || [];
+            for (const tag of tags) {
+                tagSet.add(tag);
+            }
+        }
+
+        // Chi lay requesters thuoc cac tag da chon
+        const set = new Set<string>();
+        for (const r of rows) {
+            const tag = (r['TAG-NAME'] ?? '').trim();
+            if (tagSet.has(tag)) {
+                const v = (r['Ng.yêu cầu'] ?? '').trim();
+                if (v) set.add(v);
+            }
+        }
+        return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+    }, [rows, selectedWorkshops, workshopToTagsMap]);
+
+    const statusOptions = useMemo(() => {
+        const set = new Set<string>();
+        for (const r of rows) {
+            const v = (r['T.trg xử lý'] ?? '').trim();
+            if (v) set.add(v);
+        }
+        return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+    }, [rows]);
 
     // Unique tags from all rows
     const uniqueTags = useMemo(() => {
