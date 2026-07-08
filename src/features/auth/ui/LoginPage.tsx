@@ -30,10 +30,10 @@ function tryVibrate(pattern: number | number[] = 10): void {
 
 function validate(form: SapFormState): SapFormErrors {
     const errors: SapFormErrors = {};
-    if (!form.user.trim()) errors.user = 'Vui lòng nhập USER';
-    if (!form.password) errors.password = 'Vui lòng nhập mật khẩu';
+    if (!form.user.trim()) errors.user = 'Vui lòng nhập USER (请输入账号)';
+    if (!form.password) errors.password = 'Vui lòng nhập mật khẩu (请输入密码)';
     if (!form.language || form.language.trim().length < 2) {
-        errors.language = 'Ngôn ngữ không hợp lệ';
+        errors.language = 'Ngôn ngữ không hợp lệ (无效语言)';
     }
     return errors;
 }
@@ -83,7 +83,7 @@ export function LoginPage() {
             const nextErrors = validate(form);
             if (Object.values(nextErrors).some(Boolean)) {
                 setErrors(nextErrors);
-                showToast('Vui lòng điền đầy đủ thông tin', 'error');
+                showToast('Vui lòng điền đầy đủ thông tin (请填写完整信息)', 'error');
                 tryVibrate([10, 30, 20]);
                 return;
             }
@@ -99,7 +99,7 @@ export function LoginPage() {
                 if (credentialsCheck.ok) {
                     const trimmedUser = form.user.trim();
                     login({ user: trimmedUser, language: form.language.trim().toUpperCase() });
-                    showToast(`Đăng nhập thành công (${trimmedUser})`, 'success');
+                    showToast(`Đăng nhập thành công / 登录成功 (${trimmedUser})`, 'success');
                     return;
                 }
 
@@ -111,21 +111,21 @@ export function LoginPage() {
                         user: dbResult.user.user,
                         language: dbResult.user.language || form.language.trim().toUpperCase(),
                     });
-                    showToast(`Đăng nhập thành công (${dbResult.user.user})`, 'success');
+                    showToast(`Đăng nhập thành công / 登录成功 (${dbResult.user.user})`, 'success');
                     return;
                 }
 
                 // Both failed
                 const errorMsg = dbResult.error || credentialsCheck.error;
                 const isUserError =
-                    errorMsg.includes('Tài khoản') || errorMsg.includes('không tồn tại');
+                    errorMsg.includes('Tài khoản') || errorMsg.includes('không tồn tại') || errorMsg.includes('账号');
                 setErrors(isUserError ? { user: errorMsg } : { password: errorMsg });
                 showToast(errorMsg, 'error');
                 tryVibrate([10, 30, 20]);
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error('[SAP] Login error:', err);
-                showToast('Đăng nhập thất bại. Vui lòng thử lại.', 'error');
+                showToast('Đăng nhập thất bại. Vui lòng thử lại. (登录失败，请重试)', 'error');
             } finally {
                 setIsLoading(false);
             }
@@ -154,7 +154,7 @@ export function LoginPage() {
             const credentialsCheck = validateCredentials(form.user, form.password);
             if (credentialsCheck.ok) {
                 login({ user: form.user.trim(), language: form.language.trim().toUpperCase() });
-                showToast(`Đăng nhập thành công (${form.user.trim()})`, 'success');
+                showToast(`Đăng nhập thành công / 登录成功 (${form.user.trim()})`, 'success');
                 return;
             }
 
@@ -165,7 +165,7 @@ export function LoginPage() {
                     user: dbResult.user.user,
                     language: dbResult.user.language || form.language.trim().toUpperCase(),
                 });
-                showToast(`Đăng nhập thành công (${dbResult.user.user})`, 'success');
+                showToast(`Đăng nhập thành công / 登录成功 (${dbResult.user.user})`, 'success');
                 return;
             }
         };

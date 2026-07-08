@@ -72,21 +72,21 @@ export async function registerUser(
         const trimmedUser = userName.trim();
 
         if (!trimmedUser) {
-            return { success: false, error: 'Vui lòng nhập USER' };
+            return { success: false, error: 'Vui lòng nhập USER (请输入账号)' };
         }
 
         if (trimmedUser.length < 3) {
-            return { success: false, error: 'USER phải có ít nhất 3 ký tự' };
+            return { success: false, error: 'USER phải có ít nhất 3 ký tự (账号必须至少3个字符)' };
         }
 
         if (!password || password.length < 4) {
-            return { success: false, error: 'Mật khẩu phải có ít nhất 4 ký tự' };
+            return { success: false, error: 'Mật khẩu phải có ít nhất 4 ký tự (密码必须至少4个字符)' };
         }
 
         // Check if user already exists
         const exists = await checkUserExists(trimmedUser);
         if (exists) {
-            return { success: false, error: 'Tài khoản đã tồn tại' };
+            return { success: false, error: 'Tài khoản đã tồn tại (账号已存在)' };
         }
 
         // Hash password before storing
@@ -106,16 +106,16 @@ export async function registerUser(
 
             // Check for unique constraint violation
             if (error.code === '23505') {
-                return { success: false, error: 'Tài khoản đã tồn tại' };
+                return { success: false, error: 'Tài khoản đã tồn tại (账号已存在)' };
             }
 
-            return { success: false, error: 'Đăng ký thất bại. Vui lòng thử lại.' };
+            return { success: false, error: 'Đăng ký thất bại. Vui lòng thử lại. (注册失败，请重试)' };
         }
 
         return { success: true };
     } catch (err) {
         console.error('[authService] registerUser error:', err);
-        return { success: false, error: 'Lỗi kết nối. Vui lòng thử lại.' };
+        return { success: false, error: 'Lỗi kết nối. Vui lòng thử lại. (连接错误，请重试)' };
     }
 }
 
@@ -130,7 +130,7 @@ export async function verifyCredentialsFromDB(
         const trimmedUser = userName.trim();
 
         if (!trimmedUser || !password) {
-            return { success: false, error: 'Vui lòng nhập đầy đủ thông tin' };
+            return { success: false, error: 'Vui lòng nhập đầy đủ thông tin (请填写完整信息)' };
         }
 
         // Query user from database
@@ -142,16 +142,16 @@ export async function verifyCredentialsFromDB(
 
         if (error) {
             if (error.code === 'PGRST116') {
-                return { success: false, error: 'Tài khoản không tồn tại' };
+                return { success: false, error: 'Tài khoản không tồn tại (账号不存在)' };
             }
             console.error('[authService] verifyCredentialsFromDB error:', error);
-            return { success: false, error: 'Lỗi xác thực' };
+            return { success: false, error: 'Lỗi xác thực (认证错误)' };
         }
 
         // Verify password
         const hashedPassword = await hashPassword(password);
         if (data.password !== hashedPassword) {
-            return { success: false, error: 'Mật khẩu không đúng' };
+            return { success: false, error: 'Mật khẩu không đúng (密码错误)' };
         }
 
         return {
@@ -163,6 +163,6 @@ export async function verifyCredentialsFromDB(
         };
     } catch (err) {
         console.error('[authService] verifyCredentialsFromDB error:', err);
-        return { success: false, error: 'Lỗi kết nối' };
+        return { success: false, error: 'Lỗi kết nối (连接错误)' };
     }
 }

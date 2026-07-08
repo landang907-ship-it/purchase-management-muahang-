@@ -32,14 +32,14 @@ export function validateCredentials(
 ): CredentialsCheckResult {
     const trimmed = user.trim();
     if (!trimmed) {
-        return { ok: false, error: 'Vui lòng nhập USER' };
+        return { ok: false, error: 'Vui lòng nhập USER (请输入账号)' };
     }
     const expectedPassword = config.validUsers[trimmed];
     if (expectedPassword === undefined) {
-        return { ok: false, error: 'Tài khoản không tồn tại' };
+        return { ok: false, error: 'Tài khoản không tồn tại (账号不存在)' };
     }
     if (expectedPassword !== password) {
-        return { ok: false, error: 'Mật khẩu không đúng' };
+        return { ok: false, error: 'Mật khẩu không đúng (密码错误)' };
     }
     return { ok: true };
 }
