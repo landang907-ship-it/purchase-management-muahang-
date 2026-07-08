@@ -1,13 +1,17 @@
 /**
- * FilterBar – gom 4 filter (QuickSearch, Requester, Status, DateRange) + nút "Xóa lọc"
+ * FilterBar – gom các filter (QuickSearch, Requester, Status, DateRange, Workshop)
  * Tách ra từ PurchasePage để giảm kích thước component.
+ * Thu gọn thành nút "Sử dụng bộ lọc" và mở rộng khi cần.
  */
-import { X } from 'lucide-react';
-import { useTranslation } from '@/i18n/useTranslation';
+import { useState } from 'react';
+import { ChevronDown, Filter } from 'lucide-react';
 import { QuickSearch } from './QuickSearch';
 import { RequesterFilter } from './RequesterFilter';
 import { StatusFilter } from './StatusFilter';
 import { DateRangeFilter } from './DateRangeFilter';
+import { WorkshopFilter } from './WorkshopFilter';
+import { cn } from '@/shared/lib/cn';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface FilterBarProps {
     quickSearch: string;
@@ -17,18 +21,20 @@ interface FilterBarProps {
     dateTo: string;
     requesterOptions: string[];
     statusOptions: string[];
-    hasAnyFilter: boolean;
+    selectedWorkshops: string[];
+    workshopOptions: string[];
     onQuickSearchChange: (value: string) => void;
     onRequestersChange: (value: string[]) => void;
     onStatusChange: (value: string) => void;
     onDateFromChange: (value: string) => void;
     onDateToChange: (value: string) => void;
-    onClearAll: () => void;
+    onWorkshopsChange: (value: string[]) => void;
 }
 
 /**
- * Horizontal stack of 4 filter components + "clear all" button.
+ * Horizontal stack of filter components.
  * Rendered above DataTable when there is data.
+ * Collapsible - shows "Sử dụng bộ lọc" button by default.
  */
 export function FilterBar({
     quickSearch,
@@ -38,46 +44,64 @@ export function FilterBar({
     dateTo,
     requesterOptions,
     statusOptions,
-    hasAnyFilter,
+    selectedWorkshops,
+    workshopOptions,
     onQuickSearchChange,
     onRequestersChange,
     onStatusChange,
     onDateFromChange,
     onDateToChange,
-    onClearAll,
+    onWorkshopsChange,
 }: FilterBarProps) {
+    const [expanded, setExpanded] = useState(false);
     const { t } = useTranslation();
 
     return (
-        <div className="flex flex-col bg-white overflow-x-auto">
-            <QuickSearch value={quickSearch} onChange={onQuickSearchChange} />
-            <RequesterFilter
-                options={requesterOptions}
-                value={selectedRequesters}
-                onChange={onRequestersChange}
+        <div className="bg-white px-2 py-2 space-y-2">
+            <WorkshopFilter
+                options={workshopOptions}
+                value={selectedWorkshops}
+                onChange={onWorkshopsChange}
             />
-            <StatusFilter
-                options={statusOptions}
-                value={selectedStatus}
-                onChange={onStatusChange}
-            />
-            <DateRangeFilter
-                dateFrom={dateFrom}
-                dateTo={dateTo}
-                onDateFromChange={onDateFromChange}
-                onDateToChange={onDateToChange}
-            />
-            {hasAnyFilter && (
-                <div className="flex items-center gap-3 px-4 py-2 border-b border-gray-200">
-                    <button
-                        type="button"
-                        onClick={onClearAll}
-                        className="flex items-center gap-1 px-3 py-1.5 text-[12px] font-semibold text-white bg-red rounded-md hover:brightness-110 transition-[filter] shadow-sm"
-                    >
-                        <X size={13} strokeWidth={2.5} />
-                        {t('filter.clearAll')}
-                    </button>
-                </div>
+
+            <button
+                type="button"
+                onClick={() => setExpanded(!expanded)}
+                className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded',
+                    'bg-blue-mid text-white text-[11px] font-semibold',
+                    'hover:brightness-110 transition-[filter]',
+                )}
+            >
+                <Filter size={12} strokeWidth={2.5} />
+                <span>{t('filter.use')}</span>
+                <ChevronDown
+                    size={12}
+                    strokeWidth={2.5}
+                    className={cn('transition-transform', expanded && 'rotate-180')}
+                />
+            </button>
+
+            {expanded && (
+                <>
+                    <QuickSearch value={quickSearch} onChange={onQuickSearchChange} />
+                    <RequesterFilter
+                        options={requesterOptions}
+                        value={selectedRequesters}
+                        onChange={onRequestersChange}
+                    />
+                    <StatusFilter
+                        options={statusOptions}
+                        value={selectedStatus}
+                        onChange={onStatusChange}
+                    />
+                    <DateRangeFilter
+                        dateFrom={dateFrom}
+                        dateTo={dateTo}
+                        onDateFromChange={onDateFromChange}
+                        onDateToChange={onDateToChange}
+                    />
+                </>
             )}
         </div>
     );

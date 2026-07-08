@@ -1,9 +1,34 @@
 /**
- * usePurchaseFilters – quản lý 4 filter state (requester, status, date, search)
+ * usePurchaseFilters – quản lý 4 filter state (requester, status, date, search, workshop)
  * + computed `requesterOptions`, `statusOptions`, `visibleRows`, `hasAnyFilter`.
  * Tách ra từ PurchasePage để giảm kích thước component.
  */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+const SELECTED_WORKSHOPS_KEY = 'purchase_selected_workshops';
+
+function loadSelectedWorkshops(): string[] {
+    try {
+        const raw = localStorage.getItem(SELECTED_WORKSHOPS_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw) as string[];
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+        }
+    } catch {
+        // ignore
+    }
+    return [];
+}
+
+function saveSelectedWorkshops(workshops: string[]) {
+    try {
+        localStorage.setItem(SELECTED_WORKSHOPS_KEY, JSON.stringify(workshops));
+    } catch {
+        // ignore
+    }
+}
 import { parseDateSafe } from '@/features/purchase/lib/date';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 
@@ -15,6 +40,10 @@ export interface UsePurchaseFiltersResult {
     quickSearch: string;
     requesterOptions: string[];
     statusOptions: string[];
+    workshopOptions: string[];
+    selectedWorkshops: string[];
+    uniqueTags: string[];
+    tagRowCounts: Record<string, number>;
     visibleRows: PurchaseRow[];
     hasAnyFilter: boolean;
     setSelectedRequesters: (v: string[]) => void;
@@ -22,33 +51,74 @@ export interface UsePurchaseFiltersResult {
     setDateFrom: (v: string) => void;
     setDateTo: (v: string) => void;
     setQuickSearch: (v: string) => void;
+    setSelectedWorkshops: (v: string[]) => void;
     clearAll: () => void;
     resetForNewImport: () => void;
 }
 
 interface UsePurchaseFiltersOptions {
     rows: PurchaseRow[];
+    workshops?: Array<{ name: string; tagValues: string[] }>;
 }
 
 /**
  * Manages filter state + computes filtered rows.
  * Pure logic – no side effects, no Supabase, no DOM.
  */
-export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
+export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
     const [selectedRequesters, setSelectedRequesters] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
     const [quickSearch, setQuickSearch] = useState<string>('');
+    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(loadSelectedWorkshops);
 
+    // Lưu selectedWorkshops vào localStorage khi thay đổi
+    useEffect(() => {
+        saveSelectedWorkshops(selectedWorkshops);
+    }, [selectedWorkshops]);
+
+    // Workshop options: Workshop NAMES (not TAG-NAME values)
+    const workshopOptions = useMemo(() => {
+        return workshops.map((w) => w.name);
+    }, [workshops]);
+
+    // Build mapping: workshop name → TAG-NAME values
+    const workshopToTagsMap = useMemo(() => {
+        const map: Record<string, string[]> = {};
+        for (const w of workshops) {
+            map[w.name] = w.tagValues;
+        }
+        return map;
+    }, [workshops]);
+
+    // Requester options: phu thuoc vao workshop da chon
     const requesterOptions = useMemo(() => {
+        // Neu chua chon workshop nao thi khong co requester
+        if (selectedWorkshops.length === 0) {
+            return [];
+        }
+
+        // Lay tag set tu cac workshop da chon
+        const tagSet = new Set<string>();
+        for (const wsName of selectedWorkshops) {
+            const tags = workshopToTagsMap[wsName] || [];
+            for (const tag of tags) {
+                tagSet.add(tag);
+            }
+        }
+
+        // Chi lay requesters thuoc cac tag da chon
         const set = new Set<string>();
         for (const r of rows) {
-            const v = (r['Ng.yêu cầu'] ?? '').trim();
-            if (v) set.add(v);
+            const tag = (r['TAG-NAME'] ?? '').trim();
+            if (tagSet.has(tag)) {
+                const v = (r['Ng.yêu cầu'] ?? '').trim();
+                if (v) set.add(v);
+            }
         }
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
-    }, [rows]);
+    }, [rows, selectedWorkshops, workshopToTagsMap]);
 
     const statusOptions = useMemo(() => {
         const set = new Set<string>();
@@ -59,8 +129,45 @@ export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurc
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
     }, [rows]);
 
+    // Unique tags from all rows
+    const uniqueTags = useMemo(() => {
+        const set = new Set<string>();
+        for (const r of rows) {
+            const v = (r['TAG-NAME'] ?? '').trim();
+            if (v) set.add(v);
+        }
+        return Array.from(set).sort();
+    }, [rows]);
+
+    // Row counts per tag
+    const tagRowCounts = useMemo(() => {
+        const counts: Record<string, number> = {};
+        for (const r of rows) {
+            const v = (r['TAG-NAME'] ?? '').trim();
+            if (v) counts[v] = (counts[v] || 0) + 1;
+        }
+        return counts;
+    }, [rows]);
+
     const visibleRows = useMemo(() => {
+        // Nếu chưa chọn workshop nào thì không hiển thị gì
+        if (selectedWorkshops.length === 0) {
+            return [];
+        }
+
+        // Translate workshop names → TAG-NAME values
+        const tagSet = new Set<string>();
+        for (const wsName of selectedWorkshops) {
+            const tags = workshopToTagsMap[wsName] || [];
+            for (const tag of tags) {
+                tagSet.add(tag);
+            }
+        }
+
         let result = rows;
+        if (tagSet.size > 0) {
+            result = result.filter((r) => tagSet.has((r['TAG-NAME'] ?? '').trim()));
+        }
 
         if (selectedRequesters.length > 0) {
             const selectedSet = new Set(selectedRequesters);
@@ -92,14 +199,15 @@ export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurc
         }
 
         return result;
-    }, [rows, selectedRequesters, selectedStatus, dateFrom, dateTo, quickSearch]);
+    }, [rows, selectedRequesters, selectedStatus, dateFrom, dateTo, quickSearch, selectedWorkshops]);
 
     const hasAnyFilter =
         selectedRequesters.length > 0 ||
         selectedStatus !== '' ||
         dateFrom !== '' ||
         dateTo !== '' ||
-        quickSearch !== '';
+        quickSearch !== '' ||
+        selectedWorkshops.length > 0;
 
     const clearAll = useCallback(() => {
         setSelectedRequesters([]);
@@ -107,12 +215,14 @@ export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurc
         setDateFrom('');
         setDateTo('');
         setQuickSearch('');
+        setSelectedWorkshops([]);
     }, []);
 
     // Reset search + requester when user imports a new file
     const resetForNewImport = useCallback(() => {
         setSelectedRequesters([]);
         setQuickSearch('');
+        setSelectedWorkshops([]);
     }, []);
 
     return {
@@ -123,6 +233,10 @@ export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurc
         quickSearch,
         requesterOptions,
         statusOptions,
+        workshopOptions,
+        selectedWorkshops,
+        uniqueTags,
+        tagRowCounts,
         visibleRows,
         hasAnyFilter,
         setSelectedRequesters,
@@ -130,6 +244,7 @@ export function usePurchaseFilters({ rows }: UsePurchaseFiltersOptions): UsePurc
         setDateFrom,
         setDateTo,
         setQuickSearch,
+        setSelectedWorkshops,
         clearAll,
         resetForNewImport,
     };

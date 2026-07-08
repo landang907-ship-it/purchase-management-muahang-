@@ -3,11 +3,11 @@ export default {
   'empty.title': '暂无数据',
   'empty.hint': '请导入 Excel 文件以开始',
   'empty.button': '导入文件',
-  'empty.note': '💡 系统将自动筛选TAG-NAME = VN005922的数据行。',
+  'empty.note': '💡 导入文件以查看各车间数据。',
 
   // Import
-  'import.noRows': '无TAG-NAME = VN005922的数据行',
-  'import.success': '✓ 已加载{{count}}行（TAG-NAME = VN005922）',
+  'import.noRows': '文件中无数据行',
+  'import.success': '✓ 已加载{{count}}行',
   'import.extError': '不支持的文件格式（仅 .xlsx、.xls、.csv）',
   'import.tagMissing': '未找到 TAG-NAME 列',
   'import.error': '读取文件错误：{{msg}}',
@@ -56,4 +56,31 @@ export default {
 
   // App
   'app.logoutSuccess': '已登出',
+
+  // FilterBar
+  'filter.use': '使用筛选',
+
+  // Columns
+  'col.Yc.m.hàng': '采购申请',
+  'col.Vật tư': '物料',
+  'col.Văn bản ngắn': '短文本',
+  'col.Ng.yêu cầu': '申请人',
+  'col.Số lượng': '数量',
+  'col.Ngày YC': '申请日期',
+  'col.T.trg xử lý': '处理状态',
+
+  // Workshop Filter
+  'filter.workshop': '车间',
+  'filter.workshops': '{{count}} 车间',
+
+  // Workshop Panel
+  'workshop.panelTitle': '车间设置',
+  'workshop.listTitle': '车间列表',
+  'workshop.addNew': '新增车间',
+  'workshop.namePlaceholder': '车间名称...',
+  'workshop.tagsPlaceholder': 'TAG-NAME（逗号分隔）...',
+  'workshop.noTags': '暂无 TAG-NAME',
+  'workshop.orphanedTitle': '未分配 TAG-NAME',
+  'workshop.selectWorkshop': '选择车间',
+  'workshop.assign': '分配',
 };

@@ -13,7 +13,7 @@ export interface UseExcelUploadResult {
     isLoading: boolean;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     openFilePicker: () => void;
-    handleFile: (file: File) => Promise<{ rows: PurchaseRow[]; fileName: string } | null>;
+    handleFile: (file: File) => Promise<{ rows: PurchaseRow[]; fileName: string; uniqueTags: string[]; tagRowCounts: Record<string, number> } | null>;
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -21,7 +21,7 @@ interface UseExcelUploadOptions {
     onMessage: (text: string, variant: ToastVariant, duration?: number) => void;
     t: (key: string, params?: Record<string, string | number>) => string;
     userId: string | undefined;
-    onAfterParse: (rows: PurchaseRow[], fileName: string) => void;
+    onAfterParse: (rows: PurchaseRow[], fileName: string, uniqueTags: string[], tagRowCounts: Record<string, number>) => void;
     onSave: (userId: string, rows: PurchaseRow[], fileName: string) => void;
 }
 
@@ -50,7 +50,6 @@ export function useExcelUpload({
             setIsLoading(true);
             try {
                 const result = await parseExcel(file);
-                onAfterParse(result.filtered, file.name);
 
                 if (result.tagColIdx === -1) {
                     const headerList = result.headers.filter(Boolean).slice(0, 15).join(' | ');
@@ -59,21 +58,29 @@ export function useExcelUpload({
                         'warning',
                         6000,
                     );
-                } else if (result.filtered.length === 0) {
+                } else if (result.allRows.length === 0) {
                     onMessage(t('import.noRows'), 'warning', 4000);
                 } else {
                     onMessage(
-                        t('import.success', { count: result.filtered.length }),
+                        t('import.success', { count: result.allRows.length }),
                         'success',
                     );
                 }
 
+                // Pass all data to parent
+                onAfterParse(result.allRows, file.name, result.uniqueTags, result.tagRowCounts);
+
                 // Persist to Supabase (errors already handled inside onSave)
-                if (result.filtered.length > 0 && userId) {
-                    onSave(userId, result.filtered, file.name);
+                if (result.allRows.length > 0 && userId) {
+                    onSave(userId, result.allRows, file.name);
                 }
 
-                return { rows: result.filtered, fileName: file.name };
+                return {
+                    rows: result.allRows,
+                    fileName: file.name,
+                    uniqueTags: result.uniqueTags,
+                    tagRowCounts: result.tagRowCounts,
+                };
             } catch (err) {
                 const msg = err instanceof Error ? err.message : 'Lỗi không xác định';
                 onMessage(t('import.error', { msg }), 'error', 5000);

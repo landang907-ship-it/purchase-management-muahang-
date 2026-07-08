@@ -1,7 +1,7 @@
 /**
  * Header – fixed top bar with title, import button, and logout.
  */
-import { LogOut, Upload } from 'lucide-react';
+import { LogOut, Upload, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -9,10 +9,11 @@ import { useTranslation } from '@/i18n/useTranslation';
 interface HeaderProps {
     onImport: () => void;
     onLogout: () => void;
+    onSettings?: () => void;
     userLabel?: string;
 }
 
-export function Header({ onImport, onLogout, userLabel }: HeaderProps) {
+export function Header({ onImport, onLogout, onSettings, userLabel }: HeaderProps) {
     const { t } = useTranslation();
     return (
         <header
@@ -34,26 +35,50 @@ export function Header({ onImport, onLogout, userLabel }: HeaderProps) {
                         ) : null}
                     </p>
                 </div>
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="flex shrink-0 items-center gap-1.5">
                     <motion.button
                         type="button"
                         onClick={onImport}
-                        whileTap={{ scale: 0.95 }}
-                        whileHover={{ y: -1, scale: 1.02 }}
+                        aria-label={t('empty.button')}
+                        title={t('empty.button')}
+                        whileTap={{ scale: 0.92 }}
+                        whileHover={{ y: -1, scale: 1.03 }}
                         transition={{ type: 'spring', stiffness: 360, damping: 22 }}
                         className={cn(
-                            'flex items-center gap-1',
-                            'bg-red text-white border-0 rounded',
-                            'px-1.5 py-1 sm:px-2 sm:py-1.5',
-                            'text-[9px] sm:text-[10px] font-bold tracking-wide',
-                            'shadow-[0_2px_8px_rgba(211,47,47,0.4)]',
-                            'hover:shadow-[0_4px_12px_rgba(211,47,47,0.5)]',
-                            'transition-shadow',
+                            'flex items-center gap-1.5',
+                            'bg-red text-white border border-red/50 rounded',
+                            'px-2.5 sm:px-3',
+                            'h-7 sm:h-8',
+                            'text-[11px] sm:text-[12px] font-semibold',
+                            'shadow-[0_1px_6px_rgba(239,68,68,0.4)]',
+                            'hover:brightness-110',
+                            'transition-[filter]',
                         )}
                     >
                         <Upload size={12} strokeWidth={2.5} />
-                        <span className="hidden xs:inline sm:inline">{t('header.import')}</span>
+                        <span className="hidden sm:inline">{t('empty.button')}</span>
                     </motion.button>
+                    {onSettings && (
+                        <motion.button
+                            type="button"
+                            onClick={onSettings}
+                            aria-label={t('workshop.panelTitle')}
+                            title={t('workshop.panelTitle')}
+                            whileTap={{ scale: 0.92 }}
+                            whileHover={{ y: -1, scale: 1.03 }}
+                            transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+                            className={cn(
+                                'flex items-center justify-center',
+                                'bg-white/15 text-white border border-white/20 rounded',
+                                'w-7 h-7 sm:w-8 sm:h-8',
+                                'shadow-[0_1px_6px_rgba(0,0,0,0.15)]',
+                                'hover:bg-white/25',
+                                'transition-colors',
+                            )}
+                        >
+                            <Settings size={14} strokeWidth={2.5} />
+                        </motion.button>
+                    )}
                     <motion.button
                         type="button"
                         onClick={onLogout}

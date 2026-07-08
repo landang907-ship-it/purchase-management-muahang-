@@ -4,6 +4,7 @@
 import { cn } from '@/shared/lib/cn';
 import { COL_MAP, type PurchaseRow } from '@/features/purchase/services/excel';
 import { BADGE_CLASSES, statusVariant } from '@/features/purchase/services/status';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface DataTableProps {
     rows: PurchaseRow[];
@@ -20,12 +21,22 @@ const COL_WIDTHS = [
 ];
 
 export function DataTable({ rows }: DataTableProps) {
+    const { t } = useTranslation();
+
     return (
         <div
             className={cn(
                 'scrollbar-thin flex-1 overflow-auto',
                 '-webkit-overflow-scrolling-touch',
+                'relative',
             )}
+            style={{
+                backgroundImage: 'linear-gradient(rgba(240, 240, 240, 0.75), rgba(240, 240, 240, 0.75)), url(/login-bg.webp)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundAttachment: 'fixed',
+            }}
         >
             <table className="w-full border-collapse text-[12px] sm:text-[13px] min-w-[560px]">
                 <thead className="sticky top-0 z-10">
@@ -40,7 +51,7 @@ export function DataTable({ rows }: DataTableProps) {
                                     'whitespace-nowrap tracking-wide',
                                 )}
                             >
-                                {col.label}
+                                {t(`col.${col.label}`)}
                             </th>
                         ))}
                     </tr>
@@ -50,8 +61,8 @@ export function DataTable({ rows }: DataTableProps) {
                         <tr
                             key={`${row['Yc.m.hàng']}-${idx}`}
                             className={cn(
-                                'active:bg-[#c5d5f0] transition-colors',
-                                idx % 2 === 0 ? 'bg-white' : 'bg-row-even',
+                                'active:bg-[#c5d5f0]/80 transition-colors',
+                                idx % 2 === 0 ? 'bg-white/60' : 'bg-[#e8f0fe]/60',
                             )}
                         >
                             {COL_MAP.map((col, i) => {

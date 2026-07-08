@@ -41,11 +41,11 @@ export function EmptyState({ onImport }: EmptyStateProps) {
                 transition={{ type: 'spring', stiffness: 360, damping: 22 }}
                 className={cn(
                     'mt-3 flex items-center gap-2',
-                    'bg-blue-mid text-white border-0 rounded-lg',
+                    'bg-red text-white border-0 rounded-lg',
                     'px-5 py-2.5 text-[13px] font-semibold',
-                    'shadow-[0_4px_14px_rgba(34,85,164,0.4)]',
-                    'hover:shadow-[0_10px_24px_rgba(34,85,164,0.55)]',
-                    'transition-shadow',
+                    'shadow-[0_4px_14px_rgba(239,68,68,0.4)]',
+                    'hover:shadow-[0_10px_24px_rgba(239,68,68,0.55)]',
+                    'hover:brightness-110 transition-[filter]',
                 )}
             >
                 <Upload size={16} />

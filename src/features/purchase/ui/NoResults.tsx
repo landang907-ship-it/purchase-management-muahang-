@@ -21,6 +21,12 @@ export function NoResults({ message: _message }: NoResultsProps) {
                 'flex-1 flex flex-col items-center justify-center',
                 'px-8 py-8 text-center gap-2 text-neutral-500',
             )}
+            style={{
+                backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(/login-bg.webp)',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+            }}
         >
             <SearchX size={40} strokeWidth={1.5} className="text-neutral-400" />
             <p className="text-[14px] font-medium">{t('noresults.tab')}</p>

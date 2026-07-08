@@ -1,5 +1,6 @@
 /**
- * Excel parser - reads .xlsx / .xls / .csv file and filters by TAG-NAME column.
+ * Excel parser - reads .xlsx / .xls / .csv file and extracts TAG-NAME column.
+ * No longer filters by TAG-NAME - returns all rows for client-side filtering.
  */
 import * as XLSX from 'xlsx';
 import { excelDateToString } from '@/features/purchase/lib/date';
@@ -177,8 +178,6 @@ export const TAG_NAME_KEYS = [
     'bukrs',
 ];
 
-export const TAG_VALUE = 'VN005922';
-
 export interface PurchaseRow {
     'Yc.m.hàng': string;
     'Vật tư': string;
@@ -187,12 +186,15 @@ export interface PurchaseRow {
     'Số lượng': string;
     'Ngày YC': string;
     'T.trg xử lý': string;
+    'TAG-NAME': string;
     _rawDate: unknown;
     _rawStatus: string;
 }
 
 export interface ParseResult {
-    filtered: PurchaseRow[];
+    allRows: PurchaseRow[]; // Tất cả rows, không lọc
+    uniqueTags: string[]; // Danh sách TAG-NAME duy nhất từ file
+    tagRowCounts: Record<string, number>; // Số rows cho mỗi TAG-NAME
     tagColIdx: number;
     headers: string[];
     sheetName: string;
@@ -202,8 +204,6 @@ export interface ParseResult {
 
 /**
  * Normalize text: strip Vietnamese diacritics + fold đ→d for fuzzy matching.
- *   "Đã tạo"  → "da tao"
- *   "Giá"     → "gia"
  */
 function normalizeText(value: unknown): string {
     return String(value ?? '')
@@ -275,14 +275,21 @@ export async function parseExcel(file: File): Promise<ParseResult> {
     const tagColIdx = findColIndex(headers, TAG_NAME_KEYS);
     const colIndices = COL_MAP.map((col) => findColIndex(headers, col.keys));
 
-    const filtered: PurchaseRow[] = [];
+    // Collect all TAG-NAME values for counting
+    const tagCountMap = new Map<string, number>();
+
+    const allRows: PurchaseRow[] = [];
     for (let i = headerRowIdx + 1; i < raw.length; i++) {
         const row = raw[i];
         if (!row || row.every((cell) => String(cell ?? '').trim() === '')) continue;
 
+        // Get TAG-NAME value
+        let tagValue = '';
         if (tagColIdx !== -1) {
-            const tagVal = String(row[tagColIdx] ?? '').trim().toUpperCase();
-            if (tagVal !== TAG_VALUE) continue;
+            tagValue = String(row[tagColIdx] ?? '').trim().toUpperCase();
+            if (tagValue) {
+                tagCountMap.set(tagValue, (tagCountMap.get(tagValue) ?? 0) + 1);
+            }
         }
 
         const obj: PurchaseRow = {
@@ -293,6 +300,7 @@ export async function parseExcel(file: File): Promise<ParseResult> {
             'Số lượng': '',
             'Ngày YC': '',
             'T.trg xử lý': '',
+            'TAG-NAME': tagValue,
             _rawDate: '',
             _rawStatus: '',
         };
@@ -313,8 +321,24 @@ export async function parseExcel(file: File): Promise<ParseResult> {
         obj._rawDate = dateColIdx !== -1 ? row[dateColIdx] : '';
         obj._rawStatus = obj['T.trg xử lý'];
 
-        filtered.push(obj);
+        allRows.push(obj);
     }
 
-    return { filtered, tagColIdx, headers, sheetName, colIndices, fileName: file.name };
+    // Build unique tags array and row counts
+    const uniqueTags = Array.from(tagCountMap.keys()).sort();
+    const tagRowCounts: Record<string, number> = {};
+    for (const [tag, count] of tagCountMap) {
+        tagRowCounts[tag] = count;
+    }
+
+    return {
+        allRows,
+        uniqueTags,
+        tagRowCounts,
+        tagColIdx,
+        headers,
+        sheetName,
+        colIndices,
+        fileName: file.name,
+    };
 }

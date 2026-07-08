@@ -3,13 +3,14 @@
  * Đã được refactor: tách logic sang các custom hooks (useExcelUpload, usePurchaseData,
  * usePurchaseFilters) + FilterBar. Component này chỉ chịu trách nhiệm layout + kết nối.
  */
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DataTable } from '@/features/purchase/ui/DataTable';
 import { EmptyState } from '@/features/purchase/ui/EmptyState';
 import { Header } from '@/features/purchase/ui/Header';
 import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
 import { NoResults } from '@/features/purchase/ui/NoResults';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
+import { WorkshopPanel } from '@/features/purchase/ui/WorkshopPanel';
 import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -17,6 +18,7 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { usePurchaseData } from '@/features/purchase/hooks/usePurchaseData';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
+import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
@@ -35,6 +37,18 @@ export function PurchasePage() {
         save,
     } = usePurchaseData({ userId, onMessage: showToast, t });
 
+    // Workshop config - shared state between WorkshopPanel and Filter
+    const {
+        workshops,
+        orphanedTags,
+        workshopOptions,
+        addWorkshop,
+        updateWorkshop,
+        deleteWorkshop,
+        assignTagsToWorkshop,
+        registerNewTags,
+    } = useWorkshopConfig();
+
     // Filters: 4 filter state + computed visible rows
     const {
         selectedRequesters,
@@ -44,16 +58,25 @@ export function PurchasePage() {
         quickSearch,
         requesterOptions,
         statusOptions,
+        selectedWorkshops,
+        uniqueTags,
+        tagRowCounts,
         visibleRows,
-        hasAnyFilter,
         setSelectedRequesters,
         setSelectedStatus,
         setDateFrom,
         setDateTo,
         setQuickSearch,
-        clearAll,
+        setSelectedWorkshops,
         resetForNewImport,
-    } = usePurchaseFilters({ rows });
+    } = usePurchaseFilters({ rows, workshops });
+
+    // Register tags when file is imported
+    useEffect(() => {
+        if (uniqueTags.length > 0) {
+            registerNewTags(uniqueTags);
+        }
+    }, [uniqueTags, registerNewTags]);
 
     // Excel upload: file ref + drag-drop + handleFile
     const {
@@ -83,9 +106,17 @@ export function PurchasePage() {
     const showEmpty = rows.length === 0;
     const showNoResults = !showEmpty && visibleRows.length === 0;
 
+    // Workshop panel state
+    const [showWorkshopPanel, setShowWorkshopPanel] = useState(false);
+
     return (
         <div className="relative h-full w-full overflow-hidden bg-blue-dark">
-            <Header onImport={openFilePicker} onLogout={handleLogout} userLabel={userId} />
+            <Header
+                onImport={openFilePicker}
+                onLogout={handleLogout}
+                onSettings={() => setShowWorkshopPanel(true)}
+                userLabel={userId}
+            />
 
             {/* Layout: Main content (TaskBar from layout/ overlays the left side) */}
             <div
@@ -105,13 +136,14 @@ export function PurchasePage() {
                             dateTo={dateTo}
                             requesterOptions={requesterOptions}
                             statusOptions={statusOptions}
-                            hasAnyFilter={hasAnyFilter}
                             onQuickSearchChange={setQuickSearch}
                             onRequestersChange={setSelectedRequesters}
                             onStatusChange={setSelectedStatus}
                             onDateFromChange={setDateFrom}
                             onDateToChange={setDateTo}
-                            onClearAll={clearAll}
+                            onWorkshopsChange={setSelectedWorkshops}
+                            workshopOptions={workshopOptions}
+                            selectedWorkshops={selectedWorkshops}
                         />
                     )}
                     {showEmpty && <EmptyState onImport={openFilePicker} />}
@@ -138,6 +170,20 @@ export function PurchasePage() {
                 />
                 <Toast toasts={toasts} />
             </div>
+
+            <WorkshopPanel
+                open={showWorkshopPanel}
+                onClose={() => setShowWorkshopPanel(false)}
+                allTagsFromFile={uniqueTags}
+                tagRowCounts={tagRowCounts}
+                workshops={workshops}
+                orphanedTags={orphanedTags}
+                onAddWorkshop={addWorkshop}
+                onUpdateWorkshop={updateWorkshop}
+                onDeleteWorkshop={deleteWorkshop}
+                onAssignTags={assignTagsToWorkshop}
+                onRegisterTags={registerNewTags}
+            />
         </div>
     );
 }

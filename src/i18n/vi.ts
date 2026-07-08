@@ -3,18 +3,18 @@ export default {
   'empty.title': 'Chưa có dữ liệu',
   'empty.hint': 'Vui lòng import file Excel để bắt đầu',
   'empty.button': 'NHẬP FILE',
-  'empty.note': '💡 Hệ thống sẽ tự động lọc các dòng có TAG-NAME = VN005922.',
+  'empty.note': '💡 Import file để xem dữ liệu từ các Phân Xưởng.',
 
   // Import
-  'import.noRows': 'Không có dòng nào có TAG-NAME = VN005922',
-  'import.success': '✓ Đã tải {{count}} dòng (TAG-NAME = VN005922)',
+  'import.noRows': 'Không có dòng nào trong file',
+  'import.success': '✓ Đã tải {{count}} dòng',
   'import.extError': 'Định dạng file không hỗ trợ (chỉ .xlsx, .xls, .csv)',
   'import.tagMissing': 'Không tìm thấy cột TAG-NAME',
   'import.error': 'Lỗi đọc file: {{msg}}',
 
   // Header
   'header.title': 'Quản lý mua hàng',
-  'header.subtitle': 'Xưởng Bánh Gạo',
+  'header.subtitle': 'Want-Want Việt Nam',
   'header.import': 'NHẬP FILE',
   'header.logout': 'Đăng xuất',
 
@@ -56,4 +56,31 @@ export default {
 
   // App
   'app.logoutSuccess': 'Đã đăng xuất',
+
+  // FilterBar
+  'filter.use': 'Sử dụng bộ lọc',
+
+  // Columns
+  'col.Yc.m.hàng': 'Yc.m.hàng',
+  'col.Vật tư': 'Vật tư',
+  'col.Văn bản ngắn': 'Văn bản ngắn',
+  'col.Ng.yêu cầu': 'Ng.yêu cầu',
+  'col.Số lượng': 'Số lượng',
+  'col.Ngày YC': 'Ngày YC',
+  'col.T.trg xử lý': 'T.trg xử lý',
+
+  // Workshop Filter
+  'filter.workshop': 'Phân Xưởng',
+  'filter.workshops': '{{count}} phân xưởng',
+
+  // Workshop Panel
+  'workshop.panelTitle': 'Cài đặt Phân Xưởng',
+  'workshop.listTitle': 'Danh sách Phân Xưởng',
+  'workshop.addNew': 'Thêm Phân Xưởng Mới',
+  'workshop.namePlaceholder': 'Tên phân xưởng...',
+  'workshop.tagsPlaceholder': 'TAG-NAME (cách nhau bởi dấu phẩy)...',
+  'workshop.noTags': 'Chưa có TAG-NAME',
+  'workshop.orphanedTitle': 'TAG-NAME chưa gán',
+  'workshop.selectWorkshop': 'Chọn phân xưởng',
+  'workshop.assign': 'Gán',
 };

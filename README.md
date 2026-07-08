@@ -117,6 +117,47 @@ docker run -p 8080:80 purchase-management
 
 ---
 
+---
+
+## ☁️ Deploy lên Vercel
+
+### vercel.json (đã có sẵn)
+```json
+{
+    "framework": "vite",
+    "installCommand": "npm install --registry https://registry.npmjs.org",
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+```
+
+### Cách 1: Qua Vercel CLI
+```bash
+npm i -g vercel
+cd purchase-management
+vercel --prod
+```
+
+### Cách 2: Qua GitHub (Auto-deploy)
+1. Push code lên GitHub
+2. Import trên vercel.com → kết nối repo
+3. Vercel auto-deploy mỗi lần push
+
+### Environment Variables (cài trên Vercel Dashboard → Settings → Environment Variables):
+| Key | Value | Note |
+|-----|-------|------|
+| `VITE_SUPABASE_URL` | https://xxx.supabase.co | URL Supabase project |
+| `VITE_SUPABASE_ANON_KEY` | eyJhbGc... | Supabase anon key |
+| `VITE_APP_TITLE` | Quản Lý Mua Hàng | Tên app |
+| `VITE_APP_FACTORY` | VN005922 | Mã xưởng mặc định |
+| `VITE_DEBUG` | false | Tắt debug mode |
+
+### Live Demo
+🌐 https://purchase-management-muahang.vercel.app
+
+---
+
 ## 📜 License
 
 Internal use only – Want Want Việt Nam.
