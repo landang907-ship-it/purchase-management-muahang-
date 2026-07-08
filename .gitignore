@@ -44,3 +44,4 @@ Thumbs.db
 .vitest-cache/
 .vercel
 .env*
+node_modules

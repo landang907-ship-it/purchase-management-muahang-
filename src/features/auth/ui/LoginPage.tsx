@@ -203,16 +203,16 @@ export function LoginPage() {
             </div>
 
             {/* Login Card & Button Container */}
-            <div className="w-full max-w-[600px] flex flex-col md:flex-row items-center justify-center gap-8 anim-fade-up-100 mt-16 relative">
+            <div className="w-full max-w-[600px] flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 anim-fade-up-100 mt-6 md:mt-16 relative">
                 
                 {/* Login Button (Left on desktop, bottom on mobile) */}
-                <div className="order-2 md:order-1 flex-shrink-0 z-10 mt-4 md:mt-0">
+                <div className="order-2 md:order-1 flex-shrink-0 z-10 mt-2 md:mt-0">
                     <button
                         type="submit"
                         onClick={handleSubmit}
                         disabled={isLoading}
                         className={cn(
-                            "w-28 h-28 md:w-36 md:h-36 rounded-full",
+                            "w-20 h-20 md:w-36 md:h-36 rounded-full",
                             "bg-gradient-to-br from-[#3bcf79] to-[#1e8a4a]",
                             "shadow-[0_0_30px_rgba(59,207,121,0.5)]",
                             "flex flex-col items-center justify-center text-white",
@@ -220,9 +220,9 @@ export function LoginPage() {
                             isLoading && "opacity-70 pointer-events-none"
                         )}
                     >
-                        <span className="font-extrabold text-[15px] md:text-[17px] tracking-wider drop-shadow-sm">{isLoading ? '...' : 'LOGIN'}</span>
-                        <span className="text-[9px] md:text-[11px] font-bold uppercase opacity-90 drop-shadow-sm mt-0.5">(ĐĂNG NHẬP)</span>
-                        <span className="text-[12px] md:text-[14px] mt-1 md:mt-2 drop-shadow-sm font-semibold">登录</span>
+                        <span className="font-extrabold text-[13px] md:text-[17px] tracking-wider drop-shadow-sm">{isLoading ? '...' : 'LOGIN'}</span>
+                        <span className="text-[8px] md:text-[11px] font-bold uppercase opacity-90 drop-shadow-sm mt-0.5">(ĐĂNG NHẬP)</span>
+                        <span className="text-[10px] md:text-[14px] mt-0.5 md:mt-2 drop-shadow-sm font-semibold">登录</span>
                     </button>
                 </div>
 
@@ -243,12 +243,12 @@ export function LoginPage() {
                         className={cn(
                             "bg-white/10 backdrop-blur-md rounded-[32px]",
                             "shadow-[0_8px_32px_0_rgba(31,38,135,0.25)]",
-                            "p-5 md:p-6 flex flex-col gap-4 border border-white/30"
+                            "p-4 md:p-6 flex flex-col gap-3 md:gap-4 border border-white/30"
                         )}
                         aria-label="Thông tin đăng nhập SAP"
                     >
                         {/* Language Toggle */}
-                        <div className="flex flex-col bg-[#d0eefb]/80 backdrop-blur-md rounded-[24px] px-5 py-3 border border-white/50 text-[#0f2c59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)]">
+                        <div className="flex flex-col bg-[#d0eefb]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#0f2c59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)]">
                             <span className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-2 opacity-90">LOGON LANGUAGE : (登录语言)</span>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export function LoginPage() {
                         </div>
 
                         {/* User Input */}
-                        <div className="flex flex-col bg-[#fad5a5]/80 backdrop-blur-md rounded-[24px] px-5 py-3 border border-white/50 text-[#593d0f] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
+                        <div className="flex flex-col bg-[#fad5a5]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#593d0f] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
                             <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
                                 USER : (用户) <span>*</span>
                             </label>
@@ -305,7 +305,7 @@ export function LoginPage() {
                         </div>
 
                         {/* Password Input */}
-                        <div className="flex flex-col bg-[#c1c6ff]/80 backdrop-blur-md rounded-[24px] px-5 py-3 border border-white/50 text-[#211f59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
+                        <div className="flex flex-col bg-[#c1c6ff]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#211f59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
                             <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
                                 PASS WORD : (密码) <span>*</span>
                             </label>

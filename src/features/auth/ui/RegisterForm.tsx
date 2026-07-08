@@ -120,8 +120,8 @@ export function RegisterSection({
     }
 
     return (
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-5 border border-white/20">
-            <div className="flex items-center justify-between mb-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg p-3 md:p-5 border border-white/20">
+            <div className="flex items-center justify-between mb-2 md:mb-4">
                 <h2 className="text-base font-bold text-blue-900">
                     {tRegistration('register.title', lang)}
                 </h2>
