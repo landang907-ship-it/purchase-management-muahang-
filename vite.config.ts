@@ -7,18 +7,10 @@ import path from 'node:path';
 // rather than the realpath of __dirname (which contains Unicode).
 const projectRoot = process.cwd();
 
-// Test config is in `vitest.config.ts` to avoid type clashes between
+// Test config is in \`vitest.config.ts\` to avoid type clashes between
 // vitest's bundled vite and the top-level @vitejs/plugin-react plugin.
-export default defineConfig(({ command }) => {
-    // Vercel automatically sets VERCEL=1.
-    // If we're building outside Vercel (e.g. GitHub Actions or local build for GH Pages),
-    // we set the base path to the repository name. Otherwise, use root '/'.
-    const isVercel = process.env.VERCEL === '1';
-    const basePath = (!isVercel && command === 'build') ? '/purchase-management-muahang-/' : '/';
-
-    return {
-        base: basePath,
-        root: projectRoot,
+export default defineConfig({
+    root: projectRoot,
     plugins: [react(), tailwindcss()],
     resolve: {
         alias: {
@@ -57,5 +49,4 @@ export default defineConfig(({ command }) => {
         },
     },
 
-    };
 });
