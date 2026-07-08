@@ -181,7 +181,7 @@ export function LoginPage() {
         <main
             className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8"
             style={{
-                paddingTop: 'calc(env(safe-area-inset-top, 0px) + 80px)',
+                paddingTop: 'calc(env(safe-area-inset-top, 0px) + 40px)',
                 paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
             }}
         >
@@ -203,7 +203,7 @@ export function LoginPage() {
             </div>
 
             {/* Login Card & Button Container */}
-            <div className="w-full max-w-[600px] flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 anim-fade-up-100 mt-6 md:mt-16 relative">
+            <div className="w-full max-w-[600px] flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 anim-fade-up-100 mt-2 md:mt-8 relative">
                 
                 {/* Login Button (Left on desktop, bottom on mobile) */}
                 <div className="order-2 md:order-1 flex-shrink-0 z-10 mt-2 md:mt-0">
@@ -217,12 +217,14 @@ export function LoginPage() {
                             "shadow-[0_0_30px_rgba(59,207,121,0.5)]",
                             "flex flex-col items-center justify-center text-white",
                             "border-2 border-white/40 backdrop-blur-sm hover:scale-105 active:scale-95 transition-all duration-300",
+                            "relative overflow-hidden",
                             isLoading && "opacity-70 pointer-events-none"
                         )}
                     >
-                        <span className="font-extrabold text-[13px] md:text-[17px] tracking-wider drop-shadow-sm">{isLoading ? '...' : 'LOGIN'}</span>
-                        <span className="text-[8px] md:text-[11px] font-bold uppercase opacity-90 drop-shadow-sm mt-0.5">(ĐĂNG NHẬP)</span>
-                        <span className="text-[10px] md:text-[14px] mt-0.5 md:mt-2 drop-shadow-sm font-semibold">登录</span>
+                        <Fingerprint className="absolute inset-0 m-auto text-black opacity-10 w-16 h-16 md:w-28 md:h-28 pointer-events-none" />
+                        <span className="font-extrabold text-[13px] md:text-[17px] tracking-wider drop-shadow-sm relative z-10">{isLoading ? '...' : 'LOGIN'}</span>
+                        <span className="text-[8px] md:text-[11px] font-bold uppercase opacity-90 drop-shadow-sm mt-0.5 relative z-10">(ĐĂNG NHẬP)</span>
+                        <span className="text-[10px] md:text-[14px] mt-0.5 md:mt-2 drop-shadow-sm font-semibold relative z-10">登录</span>
                     </button>
                 </div>
 
