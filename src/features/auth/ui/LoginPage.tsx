@@ -337,6 +337,7 @@ export function LoginPage() {
                     />
                 </div>
             </div>
+            </div>
 
             <div className="mt-6 anim-fade-up-200">
                 <SiteFooter />
