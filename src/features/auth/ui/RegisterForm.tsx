@@ -120,15 +120,15 @@ export function RegisterSection({
     }
 
     return (
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl md:rounded-2xl shadow-lg p-3 md:p-5 border border-white/20">
-            <div className="flex items-center justify-between mb-2 md:mb-4">
-                <h2 className="text-base font-bold text-blue-900">
+        <div className="w-full">
+            <div className="flex items-center justify-between mb-2 md:mb-4 px-1">
+                <h2 className="text-[13px] md:text-sm font-extrabold text-white drop-shadow-sm tracking-wide uppercase">
                     {tRegistration('register.title', lang)}
                 </h2>
                 <button
                     type="button"
                     onClick={onToggle}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    className="text-[11px] md:text-xs text-blue-200 hover:text-white font-bold transition-colors"
                 >
                     {isOpen
                         ? tRegistration('register.hide', lang)

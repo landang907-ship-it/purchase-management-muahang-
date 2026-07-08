@@ -228,7 +228,6 @@ export function LoginPage() {
 
                 {/* Glass Card & Register Wrapper */}
                 <div className="order-1 md:order-2 w-full max-w-[380px] flex flex-col gap-4 relative">
-                    <form onSubmit={handleSubmit} noValidate className="w-full relative">
                     {/* Floating Icons */}
                     <div className="absolute -top-12 -right-4 md:-right-10 flex flex-col gap-3 z-20 pointer-events-none">
                         <div className="w-12 h-12 rounded-[16px] bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg transform rotate-6">
@@ -243,99 +242,100 @@ export function LoginPage() {
                         className={cn(
                             "bg-white/10 backdrop-blur-md rounded-[32px]",
                             "shadow-[0_8px_32px_0_rgba(31,38,135,0.25)]",
-                            "p-4 md:p-6 flex flex-col gap-3 md:gap-4 border border-white/30"
+                            "p-4 md:p-6 flex flex-col gap-3 md:gap-4 border border-white/30 w-full"
                         )}
                         aria-label="Thông tin đăng nhập SAP"
                     >
-                        {/* Language Toggle */}
-                        <div className="flex flex-col bg-[#d0eefb]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#0f2c59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)]">
-                            <span className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-2 opacity-90">LOGON LANGUAGE : (登录语言)</span>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <span className={cn('text-[12px] md:text-[13px] font-bold transition-colors', form.language === 'VI' ? 'text-[#0f2c59]' : 'text-[#0f2c59]/50')}>
-                                        TIẾNG VIỆT (VI)
-                                    </span>
-                                    
-                                    <button
-                                        type="button"
-                                        onClick={() => updateField('language', form.language === 'VI' ? 'ZH' : 'VI')}
-                                        className={cn(
-                                            "relative w-10 h-6 rounded-full transition-colors focus:outline-none shadow-inner border border-black/10",
-                                            form.language === 'ZH' ? 'bg-[#5eaee5]' : 'bg-gray-300'
-                                        )}
-                                        aria-label="Toggle language"
-                                    >
-                                        <span 
+                        <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3 md:gap-4 relative">
+                            {/* Language Toggle */}
+                            <div className="flex flex-col bg-[#d0eefb]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#0f2c59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)]">
+                                <span className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-2 opacity-90">LOGON LANGUAGE : (登录语言)</span>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className={cn('text-[12px] md:text-[13px] font-bold transition-colors', form.language === 'VI' ? 'text-[#0f2c59]' : 'text-[#0f2c59]/50')}>
+                                            TIẾNG VIỆT (VI)
+                                        </span>
+                                        
+                                        <button
+                                            type="button"
+                                            onClick={() => updateField('language', form.language === 'VI' ? 'ZH' : 'VI')}
                                             className={cn(
-                                                "absolute top-[2px] left-[2px] bg-white w-4 h-4 rounded-full transition-transform shadow-md",
-                                                form.language === 'ZH' ? 'translate-x-5' : 'translate-x-0'
+                                                "relative w-10 h-6 rounded-full transition-colors focus:outline-none shadow-inner border border-black/10",
+                                                form.language === 'ZH' ? 'bg-[#5eaee5]' : 'bg-gray-300'
                                             )}
-                                        />
-                                    </button>
+                                            aria-label="Toggle language"
+                                        >
+                                            <span 
+                                                className={cn(
+                                                    "absolute top-[2px] left-[2px] bg-white w-4 h-4 rounded-full transition-transform shadow-md",
+                                                    form.language === 'ZH' ? 'translate-x-5' : 'translate-x-0'
+                                                )}
+                                            />
+                                        </button>
 
-                                    <span className={cn('text-[12px] md:text-[13px] font-bold transition-colors', form.language === 'ZH' ? 'text-[#0f2c59]' : 'text-[#0f2c59]/50')}>
-                                        中文 (ZH)
-                                    </span>
-                                </div>
-                                
-                                {/* Flag representation */}
-                                <div className="w-8 h-[22px] bg-[#da251d] rounded-sm flex items-center justify-center shadow-md overflow-hidden border border-black/10 relative ml-2">
-                                    {form.language === 'VI' ? (
-                                        <span className="text-[#ffff00] text-[20px] leading-none absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-[-1px]">★</span>
-                                    ) : (
-                                        <span className="text-[#ffff00] text-[14px] leading-none">★</span>
-                                    )}
+                                        <span className={cn('text-[12px] md:text-[13px] font-bold transition-colors', form.language === 'ZH' ? 'text-[#0f2c59]' : 'text-[#0f2c59]/50')}>
+                                            中文 (ZH)
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Flag representation */}
+                                    <div className="w-8 h-[22px] bg-[#da251d] rounded-sm flex items-center justify-center shadow-md overflow-hidden border border-black/10 relative ml-2">
+                                        {form.language === 'VI' ? (
+                                            <span className="text-[#ffff00] text-[20px] leading-none absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-[-1px]">★</span>
+                                        ) : (
+                                            <span className="text-[#ffff00] text-[14px] leading-none">★</span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* User Input */}
-                        <div className="flex flex-col bg-[#fad5a5]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#593d0f] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
-                            <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
-                                USER : (用户) <span>*</span>
-                            </label>
-                            <input
-                                type="text"
-                                value={form.user}
-                                onChange={(e) => updateField('user', e.target.value)}
-                                className="w-full bg-transparent border-0 outline-none text-[15px] md:text-[16px] font-bold placeholder:text-[#593d0f]/40"
-                                required
-                            />
-                            {errors.user && <span className="text-red-600 text-[11px] mt-1 font-bold">{errors.user}</span>}
-                        </div>
+                            {/* User Input */}
+                            <div className="flex flex-col bg-[#fad5a5]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#593d0f] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
+                                <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
+                                    USER : (用户) <span>*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    value={form.user}
+                                    onChange={(e) => updateField('user', e.target.value)}
+                                    className="w-full bg-transparent border-0 outline-none text-[15px] md:text-[16px] font-bold placeholder:text-[#593d0f]/40"
+                                    required
+                                />
+                                {errors.user && <span className="text-red-600 text-[11px] mt-1 font-bold">{errors.user}</span>}
+                            </div>
 
-                        {/* Password Input */}
-                        <div className="flex flex-col bg-[#c1c6ff]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#211f59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
-                            <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
-                                PASS WORD : (密码) <span>*</span>
-                            </label>
-                            <input
-                                type="password"
-                                value={form.password}
-                                onChange={(e) => updateField('password', e.target.value)}
-                                className="w-full bg-transparent border-0 outline-none text-[15px] md:text-[16px] font-bold placeholder:text-[#211f59]/40"
-                                required
+                            {/* Password Input */}
+                            <div className="flex flex-col bg-[#c1c6ff]/80 backdrop-blur-md rounded-[20px] md:rounded-[24px] px-4 md:px-5 py-2 md:py-3 border border-white/50 text-[#211f59] shadow-[inset_0_1px_4px_rgba(255,255,255,0.6)] mt-1">
+                                <label className="text-[11px] md:text-[12px] font-extrabold tracking-wide mb-1 opacity-90">
+                                    PASS WORD : (密码) <span>*</span>
+                                </label>
+                                <input
+                                    type="password"
+                                    value={form.password}
+                                    onChange={(e) => updateField('password', e.target.value)}
+                                    className="w-full bg-transparent border-0 outline-none text-[15px] md:text-[16px] font-bold placeholder:text-[#211f59]/40"
+                                    required
+                                />
+                                {errors.password && <span className="text-red-600 text-[11px] mt-1 font-bold">{errors.password}</span>}
+                            </div>
+                        </form>
+
+                        {/* Registration Section inside the same frame */}
+                        <div className="w-full border-t border-white/30 pt-2 mt-1">
+                            <RegisterSection
+                                isOpen={reg.isRegisterMode}
+                                isSuccess={reg.isSuccess}
+                                lang={regLang}
+                                form={reg.form}
+                                errors={reg.errors}
+                                isSubmitting={reg.isSubmitting}
+                                onToggle={reg.toggleMode}
+                                onChange={reg.setField}
+                                onSubmit={handleRegisterSubmit}
+                                onCloseSuccess={handleCloseRegisterSuccess}
                             />
-                            {errors.password && <span className="text-red-600 text-[11px] mt-1 font-bold">{errors.password}</span>}
                         </div>
                     </section>
-                </form>
-
-                {/* Registration Section */}
-                <div className="w-full mt-2">
-                    <RegisterSection
-                        isOpen={reg.isRegisterMode}
-                        isSuccess={reg.isSuccess}
-                        lang={regLang}
-                        form={reg.form}
-                        errors={reg.errors}
-                        isSubmitting={reg.isSubmitting}
-                        onToggle={reg.toggleMode}
-                        onChange={reg.setField}
-                        onSubmit={handleRegisterSubmit}
-                        onCloseSuccess={handleCloseRegisterSuccess}
-                    />
-                </div>
             </div>
             </div>
 
