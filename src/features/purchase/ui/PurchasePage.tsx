@@ -11,6 +11,7 @@ import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
 import { NoResults } from '@/features/purchase/ui/NoResults';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
 import { WorkshopPanel } from '@/features/purchase/ui/WorkshopPanel';
+import { MobilePurchaseList } from '@/features/purchase/ui/MobilePurchaseList';
 import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -156,7 +157,19 @@ export function PurchasePage() {
                             }
                         />
                     )}
-                    {!showEmpty && !showNoResults && <DataTable rows={visibleRows} />}
+                    {!showEmpty && !showNoResults && (
+                        <>
+                            {/* Desktop/Tablet Table */}
+                            <div className="hidden md:block h-full">
+                                <DataTable rows={visibleRows} />
+                            </div>
+                            
+                            {/* Mobile List (Mock) */}
+                            <div className="block md:hidden h-full">
+                                <MobilePurchaseList />
+                            </div>
+                        </>
+                    )}
                     {isLoading && <LoadingOverlay />}
                 </main>
 
