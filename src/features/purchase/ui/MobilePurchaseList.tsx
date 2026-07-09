@@ -123,6 +123,8 @@ export function MobilePurchaseList({
                                             <img 
                                                 src={materialImage.thumb_url} 
                                                 alt={name}
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (

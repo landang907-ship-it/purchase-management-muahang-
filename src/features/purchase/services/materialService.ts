@@ -38,18 +38,24 @@ export async function fetchMaterialImages(materialCodes: string[]): Promise<Reco
     const map: Record<string, MaterialImageMap> = {};
     
     try {
+        const promises = [];
         for (let i = 0; i < uniqueCodes.length; i += chunkSize) {
             const chunk = uniqueCodes.slice(i, i + chunkSize);
-            const { data, error } = await supabase
-                .from('materials')
-                .select('material_code, thumb_url, orig_url')
-                .in('material_code', chunk);
-                
+            promises.push(
+                supabase
+                    .from('materials')
+                    .select('material_code, thumb_url, orig_url')
+                    .in('material_code', chunk)
+            );
+        }
+        
+        const results = await Promise.all(promises);
+        
+        for (const { data, error } of results) {
             if (error) {
                 console.error('Error fetching material images for chunk:', error);
                 continue;
             }
-            
             if (data) {
                 for (const item of data) {
                     map[item.material_code] = item;
