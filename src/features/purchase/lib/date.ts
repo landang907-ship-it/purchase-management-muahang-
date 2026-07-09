@@ -38,12 +38,20 @@ export function parseDate(val: unknown): Date | null {
         }
     }
     if (typeof val === 'string') {
-        const parts = val.split('/');
-        if (parts.length === 3) {
-            const [d, m, y] = parts.map(Number);
-            if (!isNaN(d) && !isNaN(m) && !isNaN(y)) return new Date(y, m - 1, d);
+        const str = val.trim();
+        
+        // Handle DD/MM/YYYY or DD.MM.YYYY or DD-MM-YYYY
+        const match = str.match(/^(\d{1,2})[\.\/\-](\d{1,2})[\.\/\-](\d{4})$/);
+        if (match) {
+            const d = Number(match[1]);
+            const m = Number(match[2]);
+            const y = Number(match[3]);
+            if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+                return new Date(y, m - 1, d);
+            }
         }
-        const d = new Date(val);
+        
+        const d = new Date(str);
         if (!isNaN(d.getTime())) return d;
     }
     return null;
