@@ -1,7 +1,7 @@
 import { Settings, Disc, Paperclip, Check, Wrench, Zap, Component, Box } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PurchaseDetailModal } from './PurchaseDetailModal';
 
 interface MobilePurchaseListProps {
@@ -30,6 +30,15 @@ export function MobilePurchaseList({
     totalLoaded,
 }: MobilePurchaseListProps) {
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        if (totalLoaded > 0) {
+            setShowToast(true);
+            const timer = setTimeout(() => setShowToast(false), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [totalLoaded]);
 
     return (
         <div className="flex flex-col h-full bg-[#f4f7ff] font-sans overflow-hidden">
@@ -147,8 +156,8 @@ export function MobilePurchaseList({
             </div>
 
             {/* Floating Toast Notification */}
-            {totalLoaded > 0 && (
-                <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none z-10">
+            {showToast && totalLoaded > 0 && (
+                <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none z-10 transition-opacity duration-300">
                     <div className="bg-[#488d61] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium opacity-95">
                         <Check size={16} />
                         <span>Đã tải {totalLoaded} dòng</span>
