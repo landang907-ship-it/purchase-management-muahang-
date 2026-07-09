@@ -18,7 +18,7 @@ export function EmptyState({ onImport }: EmptyStateProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className={cn(
-                'flex-1 flex flex-col items-center justify-center',
+                'h-full w-full flex flex-col items-center justify-center',
                 'px-6 py-8 text-center gap-2.5',
             )}
         >
