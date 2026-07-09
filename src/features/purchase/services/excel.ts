@@ -338,11 +338,13 @@ export async function parseExcel(file: File): Promise<ParseResult> {
         obj._rawDate = dateColIdx !== -1 ? row[dateColIdx] : '';
         obj._rawStatus = obj['T.trg xử lý'];
 
-        // Lọc bỏ thời gian mua hàng từ 2023 đến hết 2024
+        // Chỉ lấy dữ liệu của năm nay và 1 năm trước đó
+        // Ví dụ: Năm nay 2026 -> Lấy từ 2025 trở đi (Bỏ qua năm <= 2024)
         const reqDate = parseDateSafe(obj['Ngày YC']);
         if (reqDate) {
+            const currentYear = new Date().getFullYear();
             const year = reqDate.getFullYear();
-            if (year === 2023 || year === 2024) {
+            if (year < currentYear - 1) {
                 continue;
             }
         }
