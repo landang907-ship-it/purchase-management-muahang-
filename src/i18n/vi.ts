@@ -57,6 +57,26 @@ export default {
   // App
   'app.logoutSuccess': 'Đã đăng xuất',
 
+  // Details
+  'detail.title': 'Chi tiết yêu cầu',
+  'detail.imageArea': 'Khu vực ảnh vật tư',
+  'detail.noCode': 'Chưa có Mã Vật Tư',
+  'detail.uploading': 'Đang tải...',
+  'detail.changeImage': 'Thay đổi ảnh',
+  'detail.uploadImage': 'Tải ảnh lên',
+  'detail.close': 'Đóng',
+  'detail.button': 'Chi tiết',
+  'detail.id': 'Yêu cầu',
+  'detail.material': 'Vật Tư',
+  'detail.qty': 'Số lượng',
+  'detail.requester': 'Ng.yêu cầu',
+  'detail.date': 'Ngày YC',
+  'detail.workshop': 'P.Xưởng',
+  'detail.unnamed': 'Vật tư không tên',
+  'detail.uploadError': 'Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại.',
+  'detail.errorTitle': 'Lỗi khi tải ảnh:',
+  'detail.noData': 'Không có dữ liệu để hiển thị.',
+
   // FilterBar
   'filter.use': 'Sử dụng bộ lọc',
 

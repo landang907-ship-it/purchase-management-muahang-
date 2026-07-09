@@ -3,6 +3,7 @@ import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 import type { MaterialImageMap } from '@/features/purchase/services/materialService';
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from '@/i18n/useTranslation';
 import { compressAndUploadImage } from '@/features/purchase/services/imageService';
 import { upsertMaterialImage } from '@/features/purchase/services/materialService';
 
@@ -15,6 +16,7 @@ interface PurchaseDetailModalProps {
 }
 
 export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onImageUploaded }: PurchaseDetailModalProps) {
+    const { t } = useTranslation();
     const [isClosing, setIsClosing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,8 +59,8 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
             await upsertMaterialImage(code, thumbUrl, origUrl);
             onImageUploaded(code, thumbUrl, origUrl);
         } catch (error) {
-            console.error('Lỗi khi tải ảnh:', error);
-            alert('Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại.');
+            console.error(t('detail.errorTitle'), error);
+            alert(t('detail.uploadError'));
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -83,7 +85,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
             >
                 {/* Header */}
                 <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 bg-gray-50/50 sm:rounded-t-xl rounded-t-xl shrink-0">
-                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide">Chi tiết yêu cầu</h3>
+                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide">{t('detail.title')}</h3>
                     <button 
                         onClick={handleClose}
                         className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
@@ -106,7 +108,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                         ) : (
                             <>
                                 <ImageIcon size={32} className="mb-2 opacity-40" strokeWidth={1.5} />
-                                <span className="text-[13px] font-medium">Khu vực ảnh vật tư</span>
+                                <span className="text-[13px] font-medium">{t('detail.imageArea')}</span>
                             </>
                         )}
                         
@@ -132,16 +134,16 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                                 {isUploading ? (
                                     <>
                                         <Loader2 size={16} className="animate-spin" />
-                                        Đang tải...
+                                        {t('detail.uploading')}
                                     </>
                                 ) : (
                                     <>
                                         <Upload size={16} />
-                                        {materialImage?.orig_url ? 'Thay đổi ảnh' : 'Tải ảnh lên'}
+                                        {materialImage?.orig_url ? t('detail.changeImage') : t('detail.uploadImage')}
                                     </>
                                 )}
                             </button>
-                            {!code && <span className="text-xs text-white/70 mt-2">Chưa có Mã Vật Tư</span>}
+                            {!code && <span className="text-xs text-white/70 mt-2">{t('detail.noCode')}</span>}
                         </div>
                     </div>
 
@@ -149,7 +151,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                     <div className="w-full sm:w-1/2 flex flex-col flex-1">
                         <div className="mb-3 flex justify-between items-start gap-2">
                             <h4 className="text-[15px] font-bold text-[#2d4373] leading-snug line-clamp-2">
-                                {name || 'Vật tư không tên'}
+                                {name || t('detail.unnamed')}
                             </h4>
                             {status && (
                                 <span
@@ -168,19 +170,19 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                         </div>
 
                         <div className="bg-gray-50/50 rounded-lg p-3 border border-gray-100 mb-4 flex-1">
-                            <DetailRow label="Mã YC" value={id} />
-                            <DetailRow label="Vật Tư" value={code} />
-                            <DetailRow label="SL" value={data['Số lượng']} />
-                            <DetailRow label="Người YC" value={data['Ng.yêu cầu']} />
-                            <DetailRow label="Ngày YC" value={data['Ngày YC']} />
-                            <DetailRow label="P.Xưởng" value={data['TAG-NAME']} />
+                            <DetailRow label={t('detail.id')} value={id} />
+                            <DetailRow label={t('detail.material')} value={code} />
+                            <DetailRow label={t('detail.qty')} value={data['Số lượng']} />
+                            <DetailRow label={t('detail.requester')} value={data['Ng.yêu cầu']} />
+                            <DetailRow label={t('detail.date')} value={data['Ngày YC']} />
+                            <DetailRow label={t('detail.workshop')} value={data['TAG-NAME']} />
                         </div>
                         
                         <button
                             onClick={handleClose}
                             className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors shrink-0 text-sm"
                         >
-                            Đóng
+                            {t('detail.close')}
                         </button>
                     </div>
                 </div>

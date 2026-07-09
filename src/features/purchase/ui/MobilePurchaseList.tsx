@@ -3,6 +3,7 @@ import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 import type { MaterialImageMap } from '@/features/purchase/services/materialService';
 import { useState } from 'react';
+import { useTranslation } from '@/i18n/useTranslation';
 import { PurchaseDetailModal } from './PurchaseDetailModal';
 
 interface MobilePurchaseListProps {
@@ -32,6 +33,7 @@ export function MobilePurchaseList({
     materialImages,
     onImageUploaded,
 }: MobilePurchaseListProps) {
+    const { t } = useTranslation();
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
 
     return (
@@ -59,7 +61,7 @@ export function MobilePurchaseList({
                                     className="bg-white rounded-lg border border-gray-200 shadow-sm p-3 flex items-center"
                                 >
                                     <div className="text-[15px] font-medium text-gray-800 leading-snug truncate">
-                                        {name || 'Vật tư không tên'}
+                                        {name || t('detail.unnamed')}
                                     </div>
                                 </div>
                             );
@@ -74,7 +76,7 @@ export function MobilePurchaseList({
                                 <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 mb-2 items-center">
                                     {/* Row 1 Left: PR ID */}
                                     <div className="text-[14px] font-bold text-[#2d4373]">
-                                        {id ? `Yêu cầu : ${id}` : 'N/A'}
+                                        {id ? `${t('detail.id')} : ${id}` : 'N/A'}
                                     </div>
                                     
                                     {/* Row 1 Right: Date & Status */}
@@ -104,7 +106,7 @@ export function MobilePurchaseList({
 
                                     {/* Row 2 Right: Requester */}
                                     <div className="text-[11.5px] text-gray-500 font-medium truncate">
-                                        {item['Ng.yêu cầu'] ? `Ng.yêu cầu : ${item['Ng.yêu cầu']}` : ''}
+                                        {item['Ng.yêu cầu'] ? `${t('detail.requester')} : ${item['Ng.yêu cầu']}` : ''}
                                     </div>
                                 </div>
                                 
@@ -135,7 +137,7 @@ export function MobilePurchaseList({
                                     {/* Quantity (Center) */}
                                     <div className="flex-1 flex justify-center px-2 overflow-hidden">
                                         <div className="flex items-center justify-center h-[32px] text-[12px] font-bold text-[#2d4373] bg-blue-50/50 border border-blue-100 px-3 rounded-lg shadow-sm whitespace-nowrap truncate max-w-full">
-                                            Số lượng: {item['Số lượng'] || '0'} {item['Đơn vị']?.toLowerCase() || ''}
+                                            {t('detail.qty')}: {item['Số lượng'] || '0'} {item['Đơn vị']?.toLowerCase() || ''}
                                         </div>
                                     </div>
                                     
@@ -144,7 +146,7 @@ export function MobilePurchaseList({
                                         onClick={() => setSelectedItem(item)}
                                         className="flex items-center justify-center h-[32px] px-5 bg-orange-500 border border-orange-500 rounded-lg text-sm font-bold text-white hover:bg-orange-600 transition-colors shadow-sm shrink-0"
                                     >
-                                        Chi tiết
+                                        {t('detail.button')}
                                     </button>
                                 </div>
                             </div>
@@ -154,7 +156,7 @@ export function MobilePurchaseList({
                 
                 {rows.length === 0 && (
                     <div className="text-center py-10 text-gray-500 text-sm">
-                        Không có dữ liệu để hiển thị.
+                        {t('detail.noData')}
                     </div>
                 )}
             </div>

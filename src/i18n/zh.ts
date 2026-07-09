@@ -55,7 +55,27 @@ export default {
   'noresults.filtered': '已筛选 {{count}} 位申请人 — 无结果',
 
   // App
-  'app.logoutSuccess': '已登出',
+  'app.logoutSuccess': '已退出',
+
+  // Details
+  'detail.title': '需求详情',
+  'detail.imageArea': '物资图片区域',
+  'detail.noCode': '暂无物资代码',
+  'detail.uploading': '上传中...',
+  'detail.changeImage': '更改图片',
+  'detail.uploadImage': '上传图片',
+  'detail.close': '关闭',
+  'detail.button': '详情',
+  'detail.id': '需求',
+  'detail.material': '物资',
+  'detail.qty': '数量',
+  'detail.requester': '需求人',
+  'detail.date': '需求日期',
+  'detail.workshop': '车间',
+  'detail.unnamed': '未命名物资',
+  'detail.uploadError': '上传图片时发生错误，请重试。',
+  'detail.errorTitle': '上传图片错误:',
+  'detail.noData': '暂无数据显示。',
 
   // FilterBar
   'filter.use': '使用筛选',
