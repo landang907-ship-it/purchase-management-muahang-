@@ -340,13 +340,29 @@ export async function parseExcel(file: File): Promise<ParseResult> {
 
         // Chỉ lấy dữ liệu của năm nay và 1 năm trước đó
         // Ví dụ: Năm nay 2026 -> Lấy từ 2025 trở đi (Bỏ qua năm <= 2024)
-        const reqDate = parseDateSafe(obj['Ngày YC']);
+        const dateStr = obj['Ngày YC'];
+        const currentYear = new Date().getFullYear();
+        let shouldSkip = false;
+        
+        const reqDate = parseDateSafe(dateStr);
         if (reqDate) {
-            const currentYear = new Date().getFullYear();
             const year = reqDate.getFullYear();
             if (year < currentYear - 1) {
-                continue;
+                shouldSkip = true;
             }
+        } else {
+            // Phương án dự phòng (triệt để): Nếu không hiểu định dạng ngày, tìm trực tiếp số năm trong chuỗi
+            const match = dateStr.match(/\b(20\d{2})\b/);
+            if (match) {
+                const year = parseInt(match[1], 10);
+                if (year < currentYear - 1) {
+                    shouldSkip = true;
+                }
+            }
+        }
+
+        if (shouldSkip) {
+            continue;
         }
 
         allRows.push(obj);
