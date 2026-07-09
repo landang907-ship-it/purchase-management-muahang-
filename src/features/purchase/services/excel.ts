@@ -3,7 +3,7 @@
  * No longer filters by TAG-NAME - returns all rows for client-side filtering.
  */
 import * as XLSX from 'xlsx';
-import { excelDateToString } from '@/features/purchase/lib/date';
+import { excelDateToString, parseDateSafe } from '@/features/purchase/lib/date';
 
 export interface ColumnDef {
     label: string;
@@ -337,6 +337,15 @@ export async function parseExcel(file: File): Promise<ParseResult> {
         const dateColIdx = colIndices[5]; // Ngày YC
         obj._rawDate = dateColIdx !== -1 ? row[dateColIdx] : '';
         obj._rawStatus = obj['T.trg xử lý'];
+
+        // Lọc bỏ thời gian mua hàng từ 2023 đến hết 2024
+        const reqDate = parseDateSafe(obj['Ngày YC']);
+        if (reqDate) {
+            const year = reqDate.getFullYear();
+            if (year === 2023 || year === 2024) {
+                continue;
+            }
+        }
 
         allRows.push(obj);
     }
