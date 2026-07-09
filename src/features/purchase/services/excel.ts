@@ -347,7 +347,7 @@ export async function parseExcel(file: File): Promise<ParseResult> {
         const reqDate = parseDateSafe(dateStr);
         if (reqDate) {
             const year = reqDate.getFullYear();
-            if (year < currentYear - 1) {
+            if (year <= 2024 || year < currentYear - 1) {
                 shouldSkip = true;
             }
         } else {
@@ -355,7 +355,7 @@ export async function parseExcel(file: File): Promise<ParseResult> {
             const match = dateStr.match(/\b(20\d{2})\b/);
             if (match) {
                 const year = parseInt(match[1], 10);
-                if (year < currentYear - 1) {
+                if (year <= 2024 || year < currentYear - 1) {
                     shouldSkip = true;
                 }
             }
