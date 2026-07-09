@@ -3,6 +3,7 @@
  * Lưu vào localStorage để nhớ khi reload trang.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { loadWorkshopConfig, saveWorkshopConfig } from '../services/workshopService';
 
 export interface Workshop {
     id: string;
@@ -10,7 +11,6 @@ export interface Workshop {
     tagValues: string[]; // Các TAG-NAME thuộc phân xưởng này
 }
 
-const STORAGE_KEY = 'purchase_workshop_config';
 
 const DEFAULT_WORKSHOP: Workshop = {
     id: 'default',
@@ -18,28 +18,8 @@ const DEFAULT_WORKSHOP: Workshop = {
     tagValues: ['VN005922'],
 };
 
-function loadFromStorage(): Workshop[] {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-            const parsed = JSON.parse(raw) as Workshop[];
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                return parsed;
-            }
-        }
-    } catch {
-        // ignore
-    }
-    return [DEFAULT_WORKSHOP];
-}
-
-function saveToStorage(workshops: Workshop[]) {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(workshops));
-    } catch {
-        // ignore
-    }
-}
+// We no longer load from localStorage.
+// We keep DEFAULT_WORKSHOP to fallback if Supabase returns nothing.
 
 export interface UseWorkshopConfigResult {
     workshops: Workshop[];
@@ -62,15 +42,38 @@ export interface UseWorkshopConfigResult {
     registerNewTags: (tags: string[]) => void;
 }
 
-export function useWorkshopConfig(): UseWorkshopConfigResult {
-    const [workshops, setWorkshops] = useState<Workshop[]>(loadFromStorage);
+export function useWorkshopConfig(userId?: string): UseWorkshopConfigResult {
+    const [workshops, setWorkshops] = useState<Workshop[]>([DEFAULT_WORKSHOP]);
     const [selectedWorkshopIds, setSelectedWorkshopIds] = useState<string[]>([]);
     const [orphanedTags, setOrphanedTagsState] = useState<string[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    // Lưu vào storage khi thay đổi
+    // Tải cấu hình từ Supabase khi userId thay đổi
     useEffect(() => {
-        saveToStorage(workshops);
-    }, [workshops]);
+        if (!userId) return;
+        
+        loadWorkshopConfig(userId)
+            .then((data) => {
+                if (data && data.length > 0) {
+                    setWorkshops(data);
+                }
+                setIsLoaded(true);
+            })
+            .catch((err) => {
+                console.error('[useWorkshopConfig] Failed to load config', err);
+                setIsLoaded(true);
+            });
+    }, [userId]);
+
+    // Lưu vào Supabase khi thay đổi
+    useEffect(() => {
+        if (!userId || !isLoaded) return;
+        
+        // Chỉ lưu sau khi đã load xong từ DB để tránh đè dữ liệu cũ bằng DEFAULT_WORKSHOP
+        saveWorkshopConfig(userId, workshops).catch(err => 
+            console.error('[useWorkshopConfig] Failed to save config', err)
+        );
+    }, [workshops, userId, isLoaded]);
 
     // Tất cả TAG-NAME từ tất cả phân xưởng
     const tagOptions = useMemo(() => {

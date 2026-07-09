@@ -48,7 +48,7 @@ export function PurchasePage() {
         deleteWorkshop,
         assignTagsToWorkshop,
         registerNewTags,
-    } = useWorkshopConfig();
+    } = useWorkshopConfig(userId);
 
     // Filters: 4 filter state + computed visible rows
     const {
