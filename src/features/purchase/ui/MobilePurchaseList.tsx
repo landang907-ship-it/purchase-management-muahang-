@@ -1,11 +1,14 @@
 import { Settings, Disc, Paperclip, Wrench, Zap, Component, Box } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
+import type { MaterialImageMap } from '@/features/purchase/services/materialService';
 import { useState } from 'react';
 import { PurchaseDetailModal } from './PurchaseDetailModal';
 
 interface MobilePurchaseListProps {
     rows: PurchaseRow[];
+    materialImages: Record<string, MaterialImageMap>;
+    onImageUploaded: (materialCode: string, thumbUrl: string, origUrl: string) => void;
     onFilterClick?: () => void;
     workshopName?: string;
 }
@@ -26,6 +29,8 @@ function getIconForMaterial(name: string) {
 
 export function MobilePurchaseList({
     rows,
+    materialImages,
+    onImageUploaded,
 }: MobilePurchaseListProps) {
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
 
@@ -42,6 +47,7 @@ export function MobilePurchaseList({
                         const isApproved = status?.toUpperCase().includes('ĐÃ DUYỆT');
                         
                         const Icon = getIconForMaterial(name);
+                        const materialImage = code ? materialImages[code] : null;
                         
                         // Determine if this should be a simple card (missing Yc or code)
                         const isSimpleCard = !id && !code;
@@ -111,10 +117,17 @@ export function MobilePurchaseList({
 
                                 {/* Card Footer: Thumbnail, Quantity, and Action Button */}
                                 <div className="flex items-center mt-auto pt-3 border-t border-gray-50 gap-3">
-                                    {/* Thumbnail Placeholder */}
+                                    {/* Thumbnail */}
                                     <div className="w-[46px] h-[46px] bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center shrink-0 overflow-hidden shadow-sm">
-                                        {/* Sẽ thay thế bằng thẻ <img src={...} /> khi có ảnh */}
-                                        <Icon size={22} className="text-gray-400 opacity-70" strokeWidth={1.5} />
+                                        {materialImage?.thumb_url ? (
+                                            <img 
+                                                src={materialImage.thumb_url} 
+                                                alt={name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <Icon size={22} className="text-gray-400 opacity-70" strokeWidth={1.5} />
+                                        )}
                                     </div>
                                     
                                     {/* Quantity (Center) */}
@@ -147,7 +160,9 @@ export function MobilePurchaseList({
             <PurchaseDetailModal 
                 isOpen={!!selectedItem} 
                 onClose={() => setSelectedItem(null)} 
-                data={selectedItem} 
+                data={selectedItem}
+                materialImage={selectedItem?.['Vật tư'] ? materialImages[selectedItem['Vật tư']] : null}
+                onImageUploaded={onImageUploaded}
             />
         </div>
     );

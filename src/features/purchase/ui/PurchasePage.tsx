@@ -19,6 +19,7 @@ import { usePurchaseData } from '@/features/purchase/hooks/usePurchaseData';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
+import { useMaterialImages } from '@/features/purchase/hooks/useMaterialImages';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
@@ -77,6 +78,16 @@ export function PurchasePage() {
             registerNewTags(uniqueTags);
         }
     }, [uniqueTags, registerNewTags]);
+
+    // Material images
+    const { images: materialImages, setImages: setMaterialImages } = useMaterialImages(rows);
+
+    const handleImageUploaded = useCallback((materialCode: string, thumbUrl: string, origUrl: string) => {
+        setMaterialImages(prev => ({
+            ...prev,
+            [materialCode]: { material_code: materialCode, thumb_url: thumbUrl, orig_url: origUrl }
+        }));
+    }, [setMaterialImages]);
 
     // Excel upload: file ref + drag-drop + handleFile
     const {
@@ -167,6 +178,8 @@ export function PurchasePage() {
                             <div className="h-full">
                                 <MobilePurchaseList 
                                     rows={visibleRows}
+                                    materialImages={materialImages}
+                                    onImageUploaded={handleImageUploaded}
                                 />
                             </div>
                         )}

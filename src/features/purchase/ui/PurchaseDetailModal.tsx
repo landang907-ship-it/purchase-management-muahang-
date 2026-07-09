@@ -1,16 +1,23 @@
-import { X, Check, Image as ImageIcon } from 'lucide-react';
+import { X, Check, Image as ImageIcon, Upload, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
-import { useEffect, useState } from 'react';
+import type { MaterialImageMap } from '@/features/purchase/services/materialService';
+import { useEffect, useState, useRef } from 'react';
+import { compressAndUploadImage } from '@/features/purchase/services/imageService';
+import { upsertMaterialImage } from '@/features/purchase/services/materialService';
 
 interface PurchaseDetailModalProps {
     isOpen: boolean;
     onClose: () => void;
     data: PurchaseRow | null;
+    materialImage: MaterialImageMap | null | undefined;
+    onImageUploaded: (materialCode: string, thumbUrl: string, origUrl: string) => void;
 }
 
-export function PurchaseDetailModal({ isOpen, onClose, data }: PurchaseDetailModalProps) {
+export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onImageUploaded }: PurchaseDetailModalProps) {
     const [isClosing, setIsClosing] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -39,6 +46,24 @@ export function PurchaseDetailModal({ isOpen, onClose, data }: PurchaseDetailMod
     const name = data['Văn bản ngắn'];
     const status = data['T.trg xử lý'];
     const isApproved = status?.toUpperCase().includes('ĐÃ DUYỆT');
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !code) return;
+
+        try {
+            setIsUploading(true);
+            const { thumbUrl, origUrl } = await compressAndUploadImage(file, code);
+            await upsertMaterialImage(code, thumbUrl, origUrl);
+            onImageUploaded(code, thumbUrl, origUrl);
+        } catch (error) {
+            console.error('Lỗi khi tải ảnh:', error);
+            alert('Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại.');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
@@ -71,9 +96,53 @@ export function PurchaseDetailModal({ isOpen, onClose, data }: PurchaseDetailMod
                 <div className="flex flex-col sm:flex-row p-4 gap-4">
                     
                     {/* Image Area (Left/Top Half) */}
-                    <div className="w-full sm:w-1/2 h-[160px] sm:h-auto sm:min-h-[250px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 shrink-0">
-                        <ImageIcon size={32} className="mb-2 opacity-40" strokeWidth={1.5} />
-                        <span className="text-[13px] font-medium">Khu vực ảnh vật tư</span>
+                    <div className="w-full sm:w-1/2 h-[200px] sm:h-auto sm:min-h-[250px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 shrink-0 relative overflow-hidden group">
+                        {materialImage?.orig_url ? (
+                            <img 
+                                src={materialImage.orig_url} 
+                                alt={name}
+                                className="w-full h-full object-contain bg-white"
+                            />
+                        ) : (
+                            <>
+                                <ImageIcon size={32} className="mb-2 opacity-40" strokeWidth={1.5} />
+                                <span className="text-[13px] font-medium">Khu vực ảnh vật tư</span>
+                            </>
+                        )}
+                        
+                        {/* Upload Overlay */}
+                        <div className={cn(
+                            "absolute inset-0 bg-black/50 flex flex-col items-center justify-center transition-opacity",
+                            materialImage?.orig_url ? "opacity-0 group-hover:opacity-100" : "opacity-100 hover:bg-black/60",
+                            isUploading && "opacity-100 bg-black/60"
+                        )}>
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                className="hidden" 
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                disabled={isUploading || !code}
+                            />
+                            <button 
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isUploading || !code}
+                                className="px-4 py-2 bg-white text-gray-800 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                            >
+                                {isUploading ? (
+                                    <>
+                                        <Loader2 size={16} className="animate-spin" />
+                                        Đang tải...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload size={16} />
+                                        {materialImage?.orig_url ? 'Thay đổi ảnh' : 'Tải ảnh lên'}
+                                    </>
+                                )}
+                            </button>
+                            {!code && <span className="text-xs text-white/70 mt-2">Chưa có Mã Vật Tư</span>}
+                        </div>
                     </div>
 
                     {/* Details Area (Right/Bottom Half) */}
