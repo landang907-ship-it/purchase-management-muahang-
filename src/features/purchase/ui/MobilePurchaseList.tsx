@@ -63,7 +63,7 @@ export function MobilePurchaseList({
 
                         return (
                             <div
-                                key={`row-${id || index}`}
+                                key={`row-${id}-${code}-${index}`}
                                 className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col p-4 hover:shadow-md transition-shadow"
                             >
                                 {/* Header and Meta Info */}
