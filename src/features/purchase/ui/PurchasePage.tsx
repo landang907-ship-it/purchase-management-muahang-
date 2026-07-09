@@ -161,7 +161,7 @@ export function PurchasePage() {
                         </div>
                     )}
 
-                    <div className="flex-1 overflow-hidden relative">
+                    <div className="flex-1 flex flex-col overflow-hidden relative">
                         {showEmpty && <EmptyState onImport={openFilePicker} />}
                         
                         {showNoResults && (
@@ -175,7 +175,7 @@ export function PurchasePage() {
                         )}
                         
                         {!showEmpty && !showNoResults && (
-                            <div className="h-full">
+                            <div className="flex-1 relative overflow-hidden">
                                 <MobilePurchaseList 
                                     rows={visibleRows}
                                     materialImages={materialImages}

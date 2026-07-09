@@ -18,7 +18,7 @@ export function NoResults({ message: _message }: NoResultsProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
             className={cn(
-                'h-full w-full flex flex-col items-center justify-center',
+                'flex-1 flex flex-col items-center justify-center',
                 'px-8 py-8 text-center gap-2 text-neutral-500',
             )}
             style={{
