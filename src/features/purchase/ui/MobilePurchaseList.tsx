@@ -1,4 +1,4 @@
-import { Settings, Disc, Paperclip, Check, Wrench, Zap, Component, Box } from 'lucide-react';
+import { Settings, Disc, Paperclip, Wrench, Zap, Component, Box } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 import { useState } from 'react';
@@ -6,7 +6,6 @@ import { PurchaseDetailModal } from './PurchaseDetailModal';
 
 interface MobilePurchaseListProps {
     rows: PurchaseRow[];
-    totalLoaded: number;
     onFilterClick?: () => void;
     workshopName?: string;
 }
@@ -27,7 +26,6 @@ function getIconForMaterial(name: string) {
 
 export function MobilePurchaseList({
     rows,
-    totalLoaded,
 }: MobilePurchaseListProps) {
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
 

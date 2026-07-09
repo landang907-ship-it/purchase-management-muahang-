@@ -167,7 +167,6 @@ export function PurchasePage() {
                             <div className="h-full">
                                 <MobilePurchaseList 
                                     rows={visibleRows}
-                                    totalLoaded={rows.length}
                                 />
                             </div>
                         )}
