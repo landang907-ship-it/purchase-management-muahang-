@@ -4,7 +4,6 @@
  * usePurchaseFilters) + FilterBar. Component này chỉ chịu trách nhiệm layout + kết nối.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { DataTable } from '@/features/purchase/ui/DataTable';
 import { EmptyState } from '@/features/purchase/ui/EmptyState';
 import { Header } from '@/features/purchase/ui/Header';
 import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
@@ -165,20 +164,12 @@ export function PurchasePage() {
                         )}
                         
                         {!showEmpty && !showNoResults && (
-                            <>
-                                {/* Desktop Content */}
-                                <div className="hidden md:block h-full">
-                                    <DataTable rows={visibleRows} />
-                                </div>
-
-                                {/* Mobile Content */}
-                                <div className="block md:hidden h-full">
-                                    <MobilePurchaseList 
-                                        rows={visibleRows}
-                                        totalLoaded={rows.length}
-                                    />
-                                </div>
-                            </>
+                            <div className="h-full">
+                                <MobilePurchaseList 
+                                    rows={visibleRows}
+                                    totalLoaded={rows.length}
+                                />
+                            </div>
                         )}
                     </div>
 
