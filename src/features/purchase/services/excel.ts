@@ -151,6 +151,21 @@ export const COL_MAP: ColumnDef[] = [
             't.trg xlý',
         ],
     },
+    {
+        label: 'Đơn vị',
+        keys: [
+            'đv',
+            'đơn vị',
+            'don vi',
+            'unit',
+            'uom',
+            'meins',
+            'đơn vị tính',
+            'don vi tinh',
+            'đvt',
+            'dvt',
+        ],
+    },
 ];
 
 export const TAG_NAME_KEYS = [
@@ -186,6 +201,7 @@ export interface PurchaseRow {
     'Số lượng': string;
     'Ngày YC': string;
     'T.trg xử lý': string;
+    'Đơn vị': string;
     'TAG-NAME': string;
     _rawDate: unknown;
     _rawStatus: string;
@@ -300,6 +316,7 @@ export async function parseExcel(file: File): Promise<ParseResult> {
             'Số lượng': '',
             'Ngày YC': '',
             'T.trg xử lý': '',
+            'Đơn vị': '',
             'TAG-NAME': tagValue,
             _rawDate: '',
             _rawStatus: '',

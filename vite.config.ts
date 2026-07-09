@@ -3,19 +3,24 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
+
+
 // Use process.cwd() so root follows the symlinked working dir (C:\\dev\\pm)
 // rather than the realpath of __dirname (which contains Unicode).
-const projectRoot = process.cwd();
+let projectRoot = process.cwd();
+if (projectRoot.length > 2 && projectRoot[1] === ':') {
+    projectRoot = projectRoot[0].toUpperCase() + projectRoot.slice(1);
+}
 
-// Test config is in \`vitest.config.ts\` to avoid type clashes between
+// Test config is in `vitest.config.ts` to avoid type clashes between
 // vitest's bundled vite and the top-level @vitejs/plugin-react plugin.
 export default defineConfig({
     root: projectRoot,
     plugins: [react(), tailwindcss()],
     resolve: {
-        alias: {
-            '@': path.resolve(projectRoot, './src'),
-        },
+        alias: [
+            { find: '@', replacement: path.resolve(projectRoot, './src') }
+        ],
     },
     server: {
         host: '0.0.0.0',

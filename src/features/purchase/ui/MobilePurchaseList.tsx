@@ -1,130 +1,164 @@
-import { Filter, Lock, Settings, Disc, Paperclip, Check } from 'lucide-react';
+import { Settings, Disc, Paperclip, Check, Wrench, Zap, Component, Box } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+import type { PurchaseRow } from '@/features/purchase/services/excel';
+import { useState } from 'react';
+import { PurchaseDetailModal } from './PurchaseDetailModal';
 
-// Mock data matching the user's screenshot
-const MOCK_DATA = [
-    {
-        id: '10015947',
-        code: '420000000515',
-        name: 'Cắt thép không gỉ 1.2mm',
-        status: 'ĐÃ DUYỆT',
-        icon: Settings,
-    },
-    {
-        id: '10015947',
-        code: '420000001154',
-        name: 'Đĩa chà nhám 100*16*12mm',
-        status: 'ĐANG XỬ LÝ',
-        icon: Disc,
-    },
-    {
-        id: '10015946',
-        code: '420000003075',
-        name: 'Xích đơn RS40-1',
-        status: 'ĐÃ DUYỆT',
-        icon: Paperclip,
-    },
-    {
-        id: '10015946',
-        code: '420000004011',
-        name: 'Bộ lọc khí & điều áp',
-        status: 'ĐÃ DUYỆT',
-        icon: Settings, // generic
-    },
-    {
-        id: '10015946',
-        code: '420000004022',
-        name: 'Rung điện từ GZV3',
-        status: 'ĐANG XỬ LÝ',
-        icon: Settings, // generic
-    },
-    {
-        id: '10015948',
-        code: '420000005011',
-        name: 'Tấm inox 304 1200*2400mm',
-        status: 'ĐÃ DUYỆT',
-        icon: Settings, // generic
-    },
-];
+interface MobilePurchaseListProps {
+    rows: PurchaseRow[];
+    totalLoaded: number;
+    onFilterClick?: () => void;
+    workshopName?: string;
+}
 
-export function MobilePurchaseList() {
+/**
+ * Hàm hỗ trợ tự động chọn icon dựa vào từ khóa trong tên vật tư
+ */
+function getIconForMaterial(name: string) {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('thép') || lowerName.includes('cắt') || lowerName.includes('cơ khí')) return Settings;
+    if (lowerName.includes('đĩa') || lowerName.includes('nhám') || lowerName.includes('đánh bóng')) return Disc;
+    if (lowerName.includes('xích') || lowerName.includes('bulong') || lowerName.includes('ốc')) return Paperclip;
+    if (lowerName.includes('điện') || lowerName.includes('nguồn') || lowerName.includes('biến tần')) return Zap;
+    if (lowerName.includes('lọc') || lowerName.includes('khí') || lowerName.includes('áp')) return Component;
+    if (lowerName.includes('inox') || lowerName.includes('nhôm') || lowerName.includes('nhựa')) return Box;
+    return Wrench; // default icon
+}
+
+export function MobilePurchaseList({
+    rows,
+    totalLoaded,
+}: MobilePurchaseListProps) {
+    const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
+
     return (
         <div className="flex flex-col h-full bg-[#f4f7ff] font-sans overflow-hidden">
-            {/* Header: Phân xưởng & Bộ lọc */}
-            <div className="flex flex-col bg-white border-b border-gray-200 shrink-0">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
-                    <button className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-                        <Lock size={16} className="text-gray-500" />
-                        <span>Phân xưởng</span>
-                    </button>
-                    <div className="text-sm font-semibold text-gray-800">
-                        element-muahang...
-                    </div>
-                    <div className="w-4" /> {/* Spacer for centering */}
-                </div>
-                <div className="px-4 py-2">
-                    <button className="flex items-center gap-2 bg-[#3b5998] hover:bg-[#2d4373] text-white text-sm font-medium px-4 py-2 rounded-md shadow-sm transition-colors">
-                        <Filter size={16} />
-                        Sử dụng bộ lọc
-                    </button>
-                </div>
-            </div>
-
             {/* List of Cards */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 relative pb-20">
-                {MOCK_DATA.map((item, index) => {
-                    const isApproved = item.status === 'ĐÃ DUYỆT';
-                    const Icon = item.icon;
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 relative pb-20">
+                {rows.map((item, index) => {
+                    const id = item['Yc.m.hàng'];
+                    const code = item['Vật tư'];
+                    const name = item['Văn bản ngắn'];
+                    const status = item['T.trg xử lý'];
+                    const isApproved = status?.toUpperCase().includes('ĐÃ DUYỆT');
+                    
+                    const Icon = getIconForMaterial(name);
+                    
+                    // Determine if this should be a simple card (missing Yc or code)
+                    const isSimpleCard = !id && !code;
+
+                    if (isSimpleCard) {
+                        return (
+                            <div
+                                key={`row-${index}`}
+                                className="bg-white rounded-lg border border-gray-200 shadow-sm p-3 flex items-center"
+                            >
+                                <div className="text-[15px] font-medium text-gray-800 leading-snug truncate">
+                                    {name || 'Vật tư không tên'}
+                                </div>
+                            </div>
+                        );
+                    }
+
                     return (
                         <div
-                            key={`${item.id}-${index}`}
+                            key={`row-${id || index}`}
                             className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col p-4"
                         >
-                            {/* Card Header: Yc# and Status */}
-                            <div className="flex justify-between items-start mb-1">
-                                <div className="text-sm font-bold text-[#2d4373]">
-                                    Yc# {item.id}
+                            {/* Header and Meta Info */}
+                            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 mb-2 items-center">
+                                {/* Row 1 Left: PR ID */}
+                                <div className="text-[14px] font-bold text-[#2d4373]">
+                                    {id ? `Yêu cầu : ${id}` : 'N/A'}
                                 </div>
-                                <span
-                                    className={cn(
-                                        "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white",
-                                        isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
+                                
+                                {/* Row 1 Right: Date & Status */}
+                                <div className="flex justify-between items-center w-full min-w-0 gap-2">
+                                    <div className="text-[14px] text-emerald-500 font-medium truncate">
+                                        {item['Ngày YC'] || ''}
+                                    </div>
+                                    {status && (
+                                        <span
+                                            className={cn(
+                                                "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shrink-0 shadow-sm",
+                                                (status.trim() === '3' || status.trim() === '03') ? "bg-yellow-500" :
+                                                (status.trim() === '5' || status.trim() === '05') ? "bg-green-500" :
+                                                (status.trim() === '8' || status.trim() === '08') ? "bg-red-500" :
+                                                isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
+                                            )}
+                                        >
+                                            {status.toUpperCase()}
+                                        </span>
                                     )}
-                                >
-                                    {item.status}
-                                </span>
-                            </div>
+                                </div>
 
-                            {/* Card Content: Code and Name */}
-                            <div className="text-xs text-gray-400 mb-2 font-mono">
-                                {item.code}
+                                {/* Row 2 Left: Material Code */}
+                                <div className="text-xs text-gray-400 font-mono truncate max-w-[140px]">
+                                    {code || ''}
+                                </div>
+
+                                {/* Row 2 Right: Requester */}
+                                <div className="text-[11.5px] text-gray-500 font-medium truncate">
+                                    {item['Ng.yêu cầu'] ? `Ng.yêu cầu : ${item['Ng.yêu cầu']}` : ''}
+                                </div>
                             </div>
                             
-                            <div className="flex items-start gap-2 mb-3">
-                                <Icon size={20} className="text-gray-500 mt-0.5 shrink-0" />
-                                <div className="text-[15px] font-medium text-gray-800 leading-snug">
-                                    {item.name}
+                            {/* Item Name */}
+                            <div className="mb-3">
+                                <div className="text-[15px] font-medium text-gray-800 leading-snug line-clamp-2">
+                                    {name}
                                 </div>
                             </div>
 
-                            {/* Card Footer: Action Button */}
-                            <div className="flex justify-end mt-auto pt-2 border-t border-gray-50">
-                                <button className="px-4 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                            {/* Card Footer: Thumbnail, Quantity, and Action Button */}
+                            <div className="flex items-center mt-auto pt-3 border-t border-gray-50 gap-3">
+                                {/* Thumbnail Placeholder */}
+                                <div className="w-[46px] h-[46px] bg-gray-50 rounded-lg border border-gray-200 flex flex-col items-center justify-center shrink-0 overflow-hidden shadow-sm">
+                                    {/* Sẽ thay thế bằng thẻ <img src={...} /> khi có ảnh */}
+                                    <Icon size={22} className="text-gray-400 opacity-70" strokeWidth={1.5} />
+                                </div>
+                                
+                                {/* Quantity (Center) */}
+                                <div className="flex-1 flex justify-center px-2 overflow-hidden">
+                                    <div className="flex items-center justify-center h-[32px] text-[12px] font-bold text-[#2d4373] bg-blue-50/50 border border-blue-100 px-3 rounded-lg shadow-sm whitespace-nowrap truncate max-w-full">
+                                        Số lượng: {item['Số lượng'] || '0'} {item['Đơn vị']?.toLowerCase() || ''}
+                                    </div>
+                                </div>
+                                
+                                {/* Action Button */}
+                                <button 
+                                    onClick={() => setSelectedItem(item)}
+                                    className="flex items-center justify-center h-[32px] px-5 bg-orange-500 border border-orange-500 rounded-lg text-sm font-bold text-white hover:bg-orange-600 transition-colors shadow-sm shrink-0"
+                                >
                                     Chi tiết
                                 </button>
                             </div>
                         </div>
                     );
                 })}
+                
+                {rows.length === 0 && (
+                    <div className="text-center py-10 text-gray-500 text-sm">
+                        Không có dữ liệu để hiển thị.
+                    </div>
+                )}
             </div>
 
             {/* Floating Toast Notification */}
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none">
-                <div className="bg-[#488d61] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium opacity-95">
-                    <Check size={16} />
-                    <span>Đã tải 2390 dòng</span>
+            {totalLoaded > 0 && (
+                <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none z-10">
+                    <div className="bg-[#488d61] text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium opacity-95">
+                        <Check size={16} />
+                        <span>Đã tải {totalLoaded} dòng</span>
+                    </div>
                 </div>
-            </div>
+            )}
+            
+            <PurchaseDetailModal 
+                isOpen={!!selectedItem} 
+                onClose={() => setSelectedItem(null)} 
+                data={selectedItem} 
+            />
         </div>
     );
 }

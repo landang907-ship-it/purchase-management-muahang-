@@ -194,7 +194,16 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
             const searchLower = quickSearch.toLowerCase().trim();
             result = result.filter((r) => {
                 const text = (r['Văn bản ngắn'] ?? '').toLowerCase();
-                return text.includes(searchLower);
+                const prNo = (r['Yc.m.hàng'] ?? '').toLowerCase();
+                const matNo = (r['Vật tư'] ?? '').toLowerCase();
+                const reqName = (r['Ng.yêu cầu'] ?? '').toLowerCase();
+                
+                return (
+                    text.includes(searchLower) ||
+                    prNo.includes(searchLower) ||
+                    matNo.includes(searchLower) ||
+                    reqName.includes(searchLower)
+                );
             });
         }
 

@@ -128,48 +128,60 @@ export function PurchasePage() {
                     className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                 >
+                    {/* Shared FilterBar */}
                     {!showEmpty && (
-                        <FilterBar
-                            quickSearch={quickSearch}
-                            selectedRequesters={selectedRequesters}
-                            selectedStatus={selectedStatus}
-                            dateFrom={dateFrom}
-                            dateTo={dateTo}
-                            requesterOptions={requesterOptions}
-                            statusOptions={statusOptions}
-                            onQuickSearchChange={setQuickSearch}
-                            onRequestersChange={setSelectedRequesters}
-                            onStatusChange={setSelectedStatus}
-                            onDateFromChange={setDateFrom}
-                            onDateToChange={setDateTo}
-                            onWorkshopsChange={setSelectedWorkshops}
-                            workshopOptions={workshopOptions}
-                            selectedWorkshops={selectedWorkshops}
-                        />
+                        <div className="shrink-0 z-10 relative">
+                            <FilterBar
+                                quickSearch={quickSearch}
+                                selectedRequesters={selectedRequesters}
+                                selectedStatus={selectedStatus}
+                                dateFrom={dateFrom}
+                                dateTo={dateTo}
+                                requesterOptions={requesterOptions}
+                                statusOptions={statusOptions}
+                                onQuickSearchChange={setQuickSearch}
+                                onRequestersChange={setSelectedRequesters}
+                                onStatusChange={setSelectedStatus}
+                                onDateFromChange={setDateFrom}
+                                onDateToChange={setDateTo}
+                                onWorkshopsChange={setSelectedWorkshops}
+                                workshopOptions={workshopOptions}
+                                selectedWorkshops={selectedWorkshops}
+                            />
+                        </div>
                     )}
-                    {showEmpty && <EmptyState onImport={openFilePicker} />}
-                    {showNoResults && (
-                        <NoResults
-                            message={
-                                selectedRequesters.length > 0
-                                    ? t('noresults.filtered', { count: selectedRequesters.length })
-                                    : t('noresults.tab')
-                            }
-                        />
-                    )}
-                    {!showEmpty && !showNoResults && (
-                        <>
-                            {/* Desktop/Tablet Table */}
-                            <div className="hidden md:block h-full">
-                                <DataTable rows={visibleRows} />
-                            </div>
-                            
-                            {/* Mobile List (Mock) */}
-                            <div className="block md:hidden h-full">
-                                <MobilePurchaseList />
-                            </div>
-                        </>
-                    )}
+
+                    <div className="flex-1 overflow-hidden relative">
+                        {showEmpty && <EmptyState onImport={openFilePicker} />}
+                        
+                        {showNoResults && (
+                            <NoResults
+                                message={
+                                    selectedRequesters.length > 0
+                                        ? t('noresults.filtered', { count: selectedRequesters.length })
+                                        : t('noresults.tab')
+                                }
+                            />
+                        )}
+                        
+                        {!showEmpty && !showNoResults && (
+                            <>
+                                {/* Desktop Content */}
+                                <div className="hidden md:block h-full">
+                                    <DataTable rows={visibleRows} />
+                                </div>
+
+                                {/* Mobile Content */}
+                                <div className="block md:hidden h-full">
+                                    <MobilePurchaseList 
+                                        rows={visibleRows}
+                                        totalLoaded={rows.length}
+                                    />
+                                </div>
+                            </>
+                        )}
+                    </div>
+
                     {isLoading && <LoadingOverlay />}
                 </main>
 
