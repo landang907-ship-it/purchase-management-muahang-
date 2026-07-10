@@ -1,11 +1,41 @@
 /**
- * App – root component. Renders Login or Purchase based on auth state.
+ * App – root component with Routing.
  */
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '@/features/auth/ui/LoginPage';
 import { PurchasePage } from '@/features/purchase/ui/PurchasePage';
+import { ProfilePage } from '@/features/auth/ui/ProfilePage';
+import { AdminUserManagement } from '@/features/auth/ui/AdminUserManagement';
+import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
-export default function App() {
+function AuthRedirect() {
     const { isAuthenticated } = useAuth();
-    return isAuthenticated ? <PurchasePage /> : <LoginPage />;
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />;
+}
+
+export default function App() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                {/* Public / Login Route */}
+                <Route path="/login" element={<AuthRedirect />} />
+
+                {/* Protected Routes (Require Login) */}
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/dashboard" element={<PurchasePage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                </Route>
+
+                {/* Admin Routes (Require Admin Role) */}
+                <Route element={<ProtectedRoute requireAdmin={true} />}>
+                    <Route path="/admin/users" element={<AdminUserManagement />} />
+                </Route>
+
+                {/* Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }

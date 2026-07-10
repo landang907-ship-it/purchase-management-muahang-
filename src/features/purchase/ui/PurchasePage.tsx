@@ -20,10 +20,12 @@ import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useMaterialImages } from '@/features/purchase/hooks/useMaterialImages';
+import { useNavigate } from 'react-router-dom';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const userId = user?.user;
 
     // Toast queue (shared)
@@ -126,6 +128,8 @@ export function PurchasePage() {
                 onImport={openFilePicker}
                 onLogout={handleLogout}
                 onSettings={() => setShowWorkshopPanel(true)}
+                onProfile={() => navigate('/profile')}
+                onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
                 userLabel={userId}
             />
 

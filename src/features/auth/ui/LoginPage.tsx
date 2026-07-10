@@ -98,7 +98,11 @@ export function LoginPage() {
 
                 if (credentialsCheck.ok) {
                     const trimmedUser = form.user.trim();
-                    login({ user: trimmedUser, language: form.language.trim().toUpperCase() });
+                    login({ 
+                        user: trimmedUser, 
+                        language: form.language.trim().toUpperCase(),
+                        role: trimmedUser === 'admin123' ? 'admin' : 'user'
+                    });
                     showToast(`Đăng nhập thành công / 登录成功 (${trimmedUser})`, 'success');
                     return;
                 }
@@ -110,6 +114,7 @@ export function LoginPage() {
                     login({
                         user: dbResult.user.user,
                         language: dbResult.user.language || form.language.trim().toUpperCase(),
+                        role: dbResult.user.role,
                     });
                     showToast(`Đăng nhập thành công / 登录成功 (${dbResult.user.user})`, 'success');
                     return;
@@ -153,7 +158,11 @@ export function LoginPage() {
             // 1. Check hardcoded
             const credentialsCheck = validateCredentials(form.user, form.password);
             if (credentialsCheck.ok) {
-                login({ user: form.user.trim(), language: form.language.trim().toUpperCase() });
+                login({ 
+                    user: form.user.trim(), 
+                    language: form.language.trim().toUpperCase(),
+                    role: form.user.trim() === 'admin123' ? 'admin' : 'user'
+                });
                 showToast(`Đăng nhập thành công / 登录成功 (${form.user.trim()})`, 'success');
                 return;
             }
@@ -164,6 +173,7 @@ export function LoginPage() {
                 login({
                     user: dbResult.user.user,
                     language: dbResult.user.language || form.language.trim().toUpperCase(),
+                    role: dbResult.user.role,
                 });
                 showToast(`Đăng nhập thành công / 登录成功 (${dbResult.user.user})`, 'success');
                 return;

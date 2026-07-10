@@ -31,11 +31,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return () => window.removeEventListener('storage', onStorage);
     }, []);
 
-    const login = useCallback((next: { user: string; language: string }) => {
+    const login = useCallback((next: { user: string; language: string; role?: 'admin' | 'user' }) => {
         const payload: AuthUser = {
             user: next.user,
             language: next.language,
             loggedInAt: Date.now(),
+            role: next.role || 'user',
         };
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         setUser(payload);

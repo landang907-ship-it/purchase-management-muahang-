@@ -8,12 +8,13 @@ export interface AuthUser {
     user: string;
     language: string;
     loggedInAt: number;
+    role?: 'admin' | 'user';
 }
 
 export interface AuthContextValue {
     user: AuthUser | null;
     isAuthenticated: boolean;
-    login: (next: { user: string; language: string }) => void;
+    login: (next: { user: string; language: string; role?: 'admin' | 'user' }) => void;
     logout: () => void;
 }
 

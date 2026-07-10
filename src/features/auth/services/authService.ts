@@ -22,6 +22,7 @@ export interface LoginResult {
     user?: {
         user: string;
         language: string;
+        role?: 'admin' | 'user';
     };
     error?: string;
 }
@@ -136,7 +137,7 @@ export async function verifyCredentialsFromDB(
         // Query user from database
         const { data, error } = await supabase
             .from('accounts')
-            .select('user, password, language')
+            .select('user, password, language, role')
             .eq('user', trimmedUser)
             .single();
 
@@ -159,6 +160,7 @@ export async function verifyCredentialsFromDB(
             user: {
                 user: data.user,
                 language: data.language || 'VI',
+                role: data.role || 'user',
             },
         };
     } catch (err) {
