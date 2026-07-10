@@ -2,14 +2,14 @@ import { supabase } from './supabaseClient';
 import type { PurchaseRow } from './excel';
 
 /**
- * Maximum number of recent records to keep per user.
+ * Maximum number of recent records to keep globally.
  * Older records are auto-deleted on every new import.
  */
-const MAX_RECORDS_PER_USER = 2;
+const MAX_GLOBAL_RECORDS = 5;
 
 /**
  * Save imported Excel data to Supabase.
- * Auto-deletes older records so each user only keeps the N most recent files.
+ * Auto-deletes older records so we only keep the N most recent files globally.
  */
 export async function savePurchaseData(userId: string, rows: PurchaseRow[], fileName: string) {
   // 1. Insert new record
@@ -24,18 +24,17 @@ export async function savePurchaseData(userId: string, rows: PurchaseRow[], file
 
   if (insertErr) throw insertErr;
 
-  // 2. Fetch all records for this user, sorted newest first
+  // 2. Fetch all records, sorted newest first
   const { data: all, error: fetchErr } = await supabase
     .from('purchase_records')
     .select('id, imported_at')
-    .eq('user_id', userId)
     .order('imported_at', { ascending: false });
 
   if (fetchErr) throw fetchErr;
 
-  // 3. Find IDs to delete (keep only the MAX_RECORDS_PER_USER newest)
+  // 3. Find IDs to delete (keep only the MAX_GLOBAL_RECORDS newest)
   const toDelete = (all ?? [])
-    .slice(MAX_RECORDS_PER_USER)
+    .slice(MAX_GLOBAL_RECORDS)
     .map((r) => r.id);
 
   if (toDelete.length === 0) return;
@@ -60,7 +59,6 @@ export async function loadPurchaseData(userId: string): Promise<PurchaseRow[]> {
   const { data, error } = await supabase
     .from('purchase_records')
     .select('data')
-    .eq('user_id', userId)
     .order('imported_at', { ascending: false })
     .limit(1);
 
@@ -72,13 +70,11 @@ export async function loadPurchaseData(userId: string): Promise<PurchaseRow[]> {
  * List all recent records metadata for a user (for picker UI).
  */
 export async function listPurchaseRecords(
-  userId: string,
-  limit = MAX_RECORDS_PER_USER,
+  limit = MAX_GLOBAL_RECORDS,
 ): Promise<Array<{ id: string; file_name: string; imported_at: string; total_rows: number }>> {
   const { data, error } = await supabase
     .from('purchase_records')
     .select('id, file_name, imported_at, total_rows')
-    .eq('user_id', userId)
     .order('imported_at', { ascending: false })
     .limit(limit);
 
