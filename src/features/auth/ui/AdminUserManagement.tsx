@@ -53,8 +53,14 @@ export function AdminUserManagement() {
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
                 <main
-                    className="flex-1 flex flex-col overflow-y-auto bg-[#f4f7ff] p-4 md:p-8"
-                    style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+                    className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8"
+                    style={{ 
+                        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+                        backgroundImage: 'linear-gradient(rgba(240, 240, 240, 0.75), rgba(240, 240, 240, 0.75)), url(/login-bg.webp)',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover'
+                    }}
                 >
                     <div className="max-w-6xl mx-auto w-full p-6 bg-white rounded-lg shadow border border-gray-200">
                         <div className="flex justify-between items-center mb-6">
