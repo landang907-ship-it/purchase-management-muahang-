@@ -55,7 +55,7 @@ export async function savePurchaseData(userId: string, rows: PurchaseRow[], file
 /**
  * Load the most recent saved record for a user.
  */
-export async function loadPurchaseData(userId: string): Promise<PurchaseRow[]> {
+export async function loadPurchaseData(_userId?: string): Promise<PurchaseRow[]> {
   const { data, error } = await supabase
     .from('purchase_records')
     .select('data')
