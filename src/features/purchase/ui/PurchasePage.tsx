@@ -126,11 +126,6 @@ export function PurchasePage() {
     return (
         <div className="relative h-full w-full overflow-hidden bg-blue-dark">
             <Header
-                onImport={openFilePicker}
-                onLogout={handleLogout}
-                onSettings={() => setShowWorkshopPanel(true)}
-                onProfile={() => navigate('/profile')}
-                onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
                 userLabel={userId}
             />
 
@@ -193,7 +188,13 @@ export function PurchasePage() {
                     {isLoading && <LoadingOverlay />}
                 </main>
 
-                <RightTaskBar />
+                <RightTaskBar 
+                    onImport={openFilePicker}
+                    onLogout={handleLogout}
+                    onSettings={() => setShowWorkshopPanel(true)}
+                    onProfile={() => navigate('/profile')}
+                    onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
+                />
 
                 <input
                     ref={fileInputRef}

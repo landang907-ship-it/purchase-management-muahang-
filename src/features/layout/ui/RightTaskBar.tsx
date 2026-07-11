@@ -2,6 +2,15 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PanelRightClose, PanelRight, FileText, Tags, ShoppingCart, Sparkles } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+import { Upload, Settings, Shield, User, LogOut } from 'lucide-react';
+
+interface RightTaskBarProps {
+    onImport?: () => void;
+    onSettings?: () => void;
+    onAdmin?: () => void;
+    onProfile?: () => void;
+    onLogout?: () => void;
+}
 
 const COLLAPSED_WIDTH = 52;
 const EXPANDED_WIDTH = 220;
@@ -29,7 +38,13 @@ const RIGHT_TASK_ITEMS = [
     },
 ];
 
-export function RightTaskBar() {
+export function RightTaskBar({
+    onImport,
+    onSettings,
+    onAdmin,
+    onProfile,
+    onLogout,
+}: RightTaskBarProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const toggleExpanded = () => setIsExpanded((prev) => !prev);
@@ -92,6 +107,53 @@ export function RightTaskBar() {
                             'w-full h-10 rounded-md outline-none',
                             'hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-blue-400',
                             'transition-all duration-200 cursor-pointer overflow-hidden',
+                            isExpanded ? 'px-3' : 'justify-center'
+                        )}
+                        title={!isExpanded ? item.label : undefined}
+                    >
+                        <span className={cn(
+                            'flex items-center justify-center shrink-0',
+                            'text-white/70 group-hover:text-white transition-colors'
+                        )}>
+                            {item.icon}
+                        </span>
+
+                        <AnimatePresence mode="wait">
+                            {isExpanded && (
+                                <motion.span
+                                    initial={{ opacity: 0, x: -5, width: 0 }}
+                                    animate={{ opacity: 1, x: 0, width: 'auto' }}
+                                    exit={{ opacity: 0, x: -5, width: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="text-sm font-medium text-white/90 whitespace-nowrap overflow-hidden"
+                                >
+                                    {item.label}
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                    </button>
+                ))}
+                
+                {/* Divider for Actions */}
+                <div className="h-px bg-white/10 mx-2 my-2" />
+
+                {/* Actions that were moved from Header */}
+                {[
+                    { id: 'import', label: 'Nhập File', icon: <Upload size={18} strokeWidth={2} className="text-red-400" />, onClick: onImport, show: !!onImport },
+                    { id: 'settings', label: 'Cài đặt', icon: <Settings size={18} strokeWidth={2} />, onClick: onSettings, show: !!onSettings },
+                    { id: 'admin', label: 'Quản trị', icon: <Shield size={18} strokeWidth={2} className="text-purple-400" />, onClick: onAdmin, show: !!onAdmin },
+                    { id: 'profile', label: 'Hồ sơ cá nhân', icon: <User size={18} strokeWidth={2} />, onClick: onProfile, show: !!onProfile },
+                    { id: 'logout', label: 'Đăng xuất', icon: <LogOut size={18} strokeWidth={2} />, onClick: onLogout, show: !!onLogout },
+                ].filter(i => i.show).map((item) => (
+                    <button
+                        key={item.id}
+                        type="button"
+                        onClick={item.onClick}
+                        className={cn(
+                            'group relative flex items-center gap-3',
+                            'w-full h-10 rounded-md outline-none',
+                            'hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-blue-400',
+                            'transition-all duration-200 cursor-pointer overflow-hidden mt-1',
                             isExpanded ? 'px-3' : 'justify-center'
                         )}
                         title={!isExpanded ? item.label : undefined}
