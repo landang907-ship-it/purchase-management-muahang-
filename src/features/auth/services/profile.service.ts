@@ -28,7 +28,7 @@ export async function getProfile(userName: string): Promise<UserProfile | null> 
 /**
  * Update the user's profile
  */
-export async function updateProfile(userName: string, updates: Partial<UserProfile>): Promise<boolean> {
+export async function updateProfile(userName: string, updates: Partial<UserProfile>): Promise<{ success: boolean; error?: string }> {
     const { error } = await supabase
         .from('accounts')
         .update(updates)
@@ -36,9 +36,9 @@ export async function updateProfile(userName: string, updates: Partial<UserProfi
 
     if (error) {
         console.error('Error updating profile:', error);
-        return false;
+        return { success: false, error: error.message || error.details || 'Unknown error' };
     }
-    return true;
+    return { success: true };
 }
 
 /**

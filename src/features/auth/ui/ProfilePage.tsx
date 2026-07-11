@@ -9,6 +9,9 @@ export function ProfilePage() {
     const navigate = useNavigate();
     const [displayName, setDisplayName] = useState('');
     const [department, setDepartment] = useState('');
+    const [newUsername, setNewUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
@@ -20,6 +23,7 @@ export function ProfilePage() {
                 if (data) {
                     setDisplayName(data.display_name || '');
                     setDepartment(data.department || '');
+                    setNewUsername(data.user || '');
                 }
             }
             setLoading(false);
@@ -29,19 +33,58 @@ export function ProfilePage() {
 
     const handleSave = async () => {
         if (!user?.user) return;
+
+        if (password && password !== confirmPassword) {
+            setToastMessage('Mật khẩu xác nhận không khớp');
+            setTimeout(() => setToastMessage(''), 3000);
+            return;
+        }
+
+        if (password && password.length < 4) {
+            setToastMessage('Mật khẩu phải có ít nhất 4 ký tự');
+            setTimeout(() => setToastMessage(''), 3000);
+            return;
+        }
+
+        if (newUsername.trim().length < 3) {
+            setToastMessage('Tài khoản phải có ít nhất 3 ký tự');
+            setTimeout(() => setToastMessage(''), 3000);
+            return;
+        }
+
         setSaving(true);
-        const success = await updateProfile(user.user, {
+
+        const updates: any = {
             display_name: displayName,
             department: department,
             updated_at: new Date().toISOString()
-        });
-        setSaving(false);
-        if (success) {
-            setToastMessage('Cập nhật hồ sơ thành công');
-        } else {
-            setToastMessage('Cập nhật thất bại. Vui lòng thử lại.');
+        };
+
+        if (newUsername.trim() !== user.user) {
+            updates.user = newUsername.trim();
         }
-        setTimeout(() => setToastMessage(''), 3000);
+
+        if (password) {
+            const { hashPassword } = await import('@/features/auth/services/authService');
+            updates.password = await hashPassword(password);
+        }
+
+        const result = await updateProfile(user.user, updates);
+        setSaving(false);
+        if (result.success) {
+            setToastMessage('Cập nhật hồ sơ thành công');
+            if (updates.user && updates.user !== user.user) {
+                // Update local session
+                logout();
+                navigate('/login');
+                return;
+            }
+            setPassword('');
+            setConfirmPassword('');
+        } else {
+            setToastMessage(`Cập nhật thất bại: ${result.error}`);
+        }
+        setTimeout(() => setToastMessage(''), 5000);
     };
 
     const handleLogout = () => {
@@ -91,7 +134,14 @@ export function ProfilePage() {
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Tài khoản (Tên đăng nhập)</label>
-                                <input type="text" disabled value={user?.user || ''} className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md shadow-sm text-gray-600" />
+                                <input 
+                                    type="text" 
+                                    value={newUsername}
+                                    onChange={e => setNewUsername(e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                                    placeholder="Nhập tên đăng nhập mới"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">Lưu ý: Bạn sẽ phải đăng nhập lại nếu đổi tên đăng nhập.</p>
                             </div>
                             
                             <div>
@@ -115,6 +165,30 @@ export function ProfilePage() {
                                     placeholder="Nhập phân xưởng"
                                 />
                             </div>
+                            
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Đổi mật khẩu (Bỏ trống nếu không đổi)</label>
+                                <input 
+                                    type="password" 
+                                    value={password} 
+                                    onChange={e => setPassword(e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                                    placeholder="Nhập mật khẩu mới"
+                                />
+                            </div>
+
+                            {password && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700">Xác nhận mật khẩu</label>
+                                    <input 
+                                        type="password" 
+                                        value={confirmPassword} 
+                                        onChange={e => setConfirmPassword(e.target.value)}
+                                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                                        placeholder="Nhập lại mật khẩu mới"
+                                    />
+                                </div>
+                            )}
 
                             <div className="pt-6 flex items-center justify-between">
                                 <button 
