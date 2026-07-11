@@ -35,19 +35,17 @@ export function RightTaskBar() {
     const toggleExpanded = () => setIsExpanded((prev) => !prev);
 
     return (
-        <motion.aside
-            initial={false}
-            animate={{ width: isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className={cn(
-                'relative shrink-0 flex flex-col',
-                'bg-blue-dark border-l border-white/10',
-                'overflow-hidden z-20 shadow-lg'
-            )}
-            style={{
-                height: '100%',
-            }}
-        >
+        <div className="relative shrink-0 h-full z-20" style={{ width: COLLAPSED_WIDTH }}>
+            <motion.aside
+                initial={false}
+                animate={{ width: isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className={cn(
+                    'absolute right-0 top-0 bottom-0 flex flex-col',
+                    'bg-blue-dark border-l border-white/10',
+                    'overflow-hidden shadow-2xl'
+                )}
+            >
             {/* Toggle button */}
             <div className="flex items-center justify-start p-2">
                 <button
@@ -122,5 +120,6 @@ export function RightTaskBar() {
                 ))}
             </nav>
         </motion.aside>
+        </div>
     );
 }
