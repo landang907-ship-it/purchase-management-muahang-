@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { getProfile, updateProfile } from '@/features/auth/services/profile.service';
+import { getProfile, updateProfile, deleteAccount } from '@/features/auth/services/profile.service';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/features/purchase/ui/Header';
 
@@ -85,6 +85,25 @@ export function ProfilePage() {
             setToastMessage(`Cập nhật thất bại: ${result.error}`);
         }
         setTimeout(() => setToastMessage(''), 5000);
+    };
+
+    const handleDelete = async () => {
+        if (!user?.user) return;
+        
+        if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Hành động này không thể hoàn tác!')) {
+            setSaving(true);
+            const result = await deleteAccount(user.user);
+            setSaving(false);
+            
+            if (result.success) {
+                alert('Xóa tài khoản thành công.');
+                logout();
+                navigate('/login');
+            } else {
+                setToastMessage(`Xóa tài khoản thất bại: ${result.error}`);
+                setTimeout(() => setToastMessage(''), 5000);
+            }
+        }
     };
 
     const handleLogout = () => {
@@ -190,13 +209,21 @@ export function ProfilePage() {
                                 </div>
                             )}
 
-                            <div className="pt-6 flex items-center justify-between">
+                            <div className="pt-6 flex flex-col sm:flex-row items-center gap-4 justify-between border-t border-gray-100 mt-4">
                                 <button 
                                     onClick={handleSave} 
                                     disabled={saving}
-                                    className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
+                                    className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
                                 >
-                                    {saving ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+                                    {saving ? 'Đang xử lý...' : 'Lưu Thay Đổi'}
+                                </button>
+                                
+                                <button 
+                                    onClick={handleDelete} 
+                                    disabled={saving}
+                                    className="w-full sm:w-auto px-6 py-2.5 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 disabled:opacity-50 transition-colors shadow-sm border border-red-200"
+                                >
+                                    Xóa Tài Khoản
                                 </button>
                             </div>
                         </div>

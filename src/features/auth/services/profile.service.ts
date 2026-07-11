@@ -72,3 +72,19 @@ export async function updateUserRole(userName: string, role: 'admin' | 'user'): 
     }
     return true;
 }
+
+/**
+ * Delete the user's account
+ */
+export async function deleteAccount(userName: string): Promise<{ success: boolean; error?: string }> {
+    const { error } = await supabase
+        .from('accounts')
+        .delete()
+        .eq('user', userName);
+
+    if (error) {
+        console.error('Error deleting account:', error);
+        return { success: false, error: error.message || error.details || 'Unknown error' };
+    }
+    return { success: true };
+}
