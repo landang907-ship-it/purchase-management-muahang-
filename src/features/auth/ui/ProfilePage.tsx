@@ -3,6 +3,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { getProfile, updateProfile, deleteAccount } from '@/features/auth/services/profile.service';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/features/purchase/ui/Header';
+import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 
 export function ProfilePage() {
     const { user, logout } = useAuth();
@@ -122,10 +123,7 @@ export function ProfilePage() {
     return (
         <div className="relative h-screen w-full overflow-hidden bg-blue-dark">
             <Header
-                onImport={() => navigate('/')}
-                onLogout={handleLogout}
                 userLabel={user?.user}
-                onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
             />
 
             <div
@@ -235,6 +233,11 @@ export function ProfilePage() {
                         )}
                     </div>
                 </main>
+                <RightTaskBar 
+                    onImport={() => navigate('/')}
+                    onLogout={handleLogout}
+                    onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
+                />
             </div>
         </div>
     );

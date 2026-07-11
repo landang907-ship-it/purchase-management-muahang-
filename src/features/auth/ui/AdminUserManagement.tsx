@@ -3,6 +3,7 @@ import { getAllProfiles, updateUserRole, type UserProfile } from '@/features/aut
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Header } from '@/features/purchase/ui/Header';
+import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 
 export function AdminUserManagement() {
     const navigate = useNavigate();
@@ -41,11 +42,7 @@ export function AdminUserManagement() {
     return (
         <div className="relative h-screen w-full overflow-hidden bg-blue-dark">
             <Header
-                onImport={() => navigate('/')}
-                onLogout={handleLogout}
                 userLabel={user?.user}
-                onProfile={() => navigate('/profile')}
-                onAdmin={undefined} // Đang ở trang admin rồi
             />
 
             <div
@@ -117,6 +114,11 @@ export function AdminUserManagement() {
             )}
                     </div>
                 </main>
+                <RightTaskBar
+                    onImport={() => navigate('/')}
+                    onLogout={handleLogout}
+                    onProfile={() => navigate('/profile')}
+                />
             </div>
         </div>
     );
