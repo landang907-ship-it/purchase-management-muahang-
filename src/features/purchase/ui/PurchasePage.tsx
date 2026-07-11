@@ -11,6 +11,7 @@ import { NoResults } from '@/features/purchase/ui/NoResults';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
 import { WorkshopPanel } from '@/features/purchase/ui/WorkshopPanel';
 import { MobilePurchaseList } from '@/features/purchase/ui/MobilePurchaseList';
+import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -191,6 +192,8 @@ export function PurchasePage() {
 
                     {isLoading && <LoadingOverlay />}
                 </main>
+
+                <RightTaskBar />
 
                 <input
                     ref={fileInputRef}
