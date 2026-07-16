@@ -18,6 +18,17 @@ export default {
   'header.import': 'NHẬP FILE',
   'header.logout': 'Đăng xuất',
 
+  // Actions
+  'action.settings': 'Cài đặt',
+  'action.admin': 'Quản trị',
+  'action.profile': 'Hồ sơ',
+
+  // Sidebar
+  'sidebar.system_orders': 'Đơn hệ thống',
+  'sidebar.material_code': 'Mã vật tư',
+  'sidebar.purchase_request': 'Yêu cầu mua hàng',
+  'sidebar.new_features': 'Tính năng mới',
+
   // Tabs
   'tab.system': 'Hệ thống',
   'tab.ariaLabel': 'Bộ lọc dữ liệu',
@@ -51,7 +62,7 @@ export default {
   'date.clear': 'Xóa bộ lọc ngày',
 
   // No results
-  'noresults.tab': 'Không có dữ liệu',
+  'noresults.tab': 'Chọn Phân Xưởng để hiển thị dữ liệu',
   'noresults.filtered': 'Đã lọc {{count}} người yêu cầu — không có kết quả',
 
   // App

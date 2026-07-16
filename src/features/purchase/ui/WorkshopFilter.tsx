@@ -48,10 +48,14 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
         }
     };
 
-    const handleOpen = () => {
+    const handleToggle = () => {
         if (disabled) return;
-        updatePosition();
-        setOpen(true);
+        if (open) {
+            setOpen(false);
+        } else {
+            updatePosition();
+            setOpen(true);
+        }
     };
 
     useEffect(() => {
@@ -133,7 +137,7 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
             className={cn(
                 'z-[9999]',
                 'bg-white border border-border rounded-lg shadow-xl',
-                'overflow-hidden',
+                'overflow-hidden min-w-[240px] max-w-[90vw]',
                 'flex flex-col max-h-[60vh]',
             )}
         >
@@ -290,7 +294,7 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
                         aria-expanded={open}
                         disabled={disabled}
                         whileTap={{ scale: 0.98 }}
-                        onClick={handleOpen}
+                        onClick={handleToggle}
                         className={cn(
                             'flex-1 min-w-0',
                             'flex items-center justify-between gap-1',

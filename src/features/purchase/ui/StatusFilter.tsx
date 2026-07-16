@@ -38,10 +38,14 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
         }
     };
 
-    const handleOpen = () => {
+    const handleToggle = () => {
         if (disabled) return;
-        updatePosition();
-        setOpen(true);
+        if (open) {
+            setOpen(false);
+        } else {
+            updatePosition();
+            setOpen(true);
+        }
     };
 
     useEffect(() => {
@@ -228,7 +232,7 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
                         aria-expanded={open}
                         disabled={disabled}
                         whileTap={{ scale: 0.98 }}
-                        onClick={handleOpen}
+                        onClick={handleToggle}
                         className={cn(
                             'flex-1 min-w-0',
                             'flex items-center justify-between gap-1',

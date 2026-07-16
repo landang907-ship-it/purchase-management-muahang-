@@ -22,6 +22,8 @@ import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useMaterialImages } from '@/features/purchase/hooks/useMaterialImages';
 import { useNavigate } from 'react-router-dom';
+import { Upload, Settings, Shield, User, LogOut } from 'lucide-react';
+import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
@@ -127,6 +129,32 @@ export function PurchasePage() {
         <div className="relative h-full w-full overflow-hidden bg-blue-dark">
             <Header
                 userLabel={userId}
+                actions={
+                    <div className="hidden md:flex items-center gap-1 sm:gap-2 shrink-0">
+                        <button onClick={openFilePicker} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
+                            <Upload size={15} strokeWidth={2.5} />
+                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('header.import')}</span>
+                        </button>
+                        <button onClick={() => setShowWorkshopPanel(true)} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
+                            <Settings size={15} strokeWidth={2.5} />
+                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.settings')}</span>
+                        </button>
+                        {user?.role === 'admin' && (
+                            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
+                                <Shield size={15} strokeWidth={2.5} />
+                                <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.admin')}</span>
+                            </button>
+                        )}
+                        <button onClick={() => navigate('/profile')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
+                            <User size={15} strokeWidth={2.5} />
+                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.profile')}</span>
+                        </button>
+                        <button onClick={handleLogout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
+                            <LogOut size={15} strokeWidth={2.5} />
+                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
+                        </button>
+                    </div>
+                }
             />
 
             {/* Layout: Main content (TaskBar from layout/ overlays the left side) */}
@@ -134,10 +162,47 @@ export function PurchasePage() {
                 className="absolute inset-x-0 bottom-0 flex"
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
+                <RightTaskBar mobileActions={
+                    <>
+                        <button onClick={openFilePicker} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
+                            <Upload size={16} strokeWidth={2} className="text-red-500 shrink-0" />
+                            <span className="text-sm font-medium">{t('header.import')}</span>
+                        </button>
+                        <button onClick={() => setShowWorkshopPanel(true)} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
+                            <Settings size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
+                            <span className="text-sm font-medium">{t('action.settings')}</span>
+                        </button>
+                        {user?.role === 'admin' && (
+                            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
+                                <Shield size={16} strokeWidth={2} className="text-purple-500 shrink-0" />
+                                <span className="text-sm font-medium">{t('action.admin')}</span>
+                            </button>
+                        )}
+                        <button onClick={() => navigate('/profile')} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
+                            <User size={16} strokeWidth={2} className="text-blue-500 shrink-0" />
+                            <span className="text-sm font-medium">{t('action.profile')}</span>
+                        </button>
+                        <button onClick={handleLogout} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
+                            <LogOut size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
+                            <span className="text-sm font-medium">{t('header.logout')}</span>
+                        </button>
+                    </>
+                } />
                 <main
                     className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                 >
+                    {/* Action Bar (Always visible) */}
+                    <div className="bg-white px-3 py-2 flex items-center justify-between gap-4 border-b border-gray-100 shrink-0 shadow-sm z-20 overflow-x-auto scrollbar-hide">
+                        <div className="shrink-0 min-w-[120px]">
+                            <WorkshopFilter
+                                options={workshopOptions}
+                                value={selectedWorkshops}
+                                onChange={setSelectedWorkshops}
+                            />
+                        </div>
+                    </div>
+
                     {/* Shared FilterBar */}
                     {!showEmpty && (
                         <div className="shrink-0 z-10 relative">
@@ -154,9 +219,6 @@ export function PurchasePage() {
                                 onStatusChange={setSelectedStatus}
                                 onDateFromChange={setDateFrom}
                                 onDateToChange={setDateTo}
-                                onWorkshopsChange={setSelectedWorkshops}
-                                workshopOptions={workshopOptions}
-                                selectedWorkshops={selectedWorkshops}
                             />
                         </div>
                     )}
@@ -187,14 +249,6 @@ export function PurchasePage() {
 
                     {isLoading && <LoadingOverlay />}
                 </main>
-
-                <RightTaskBar 
-                    onImport={openFilePicker}
-                    onLogout={handleLogout}
-                    onSettings={() => setShowWorkshopPanel(true)}
-                    onProfile={() => navigate('/profile')}
-                    onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
-                />
 
                 <input
                     ref={fileInputRef}

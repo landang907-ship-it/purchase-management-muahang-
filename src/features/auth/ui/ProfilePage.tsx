@@ -107,11 +107,6 @@ export function ProfilePage() {
         }
     };
 
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
     if (loading) {
         return (
             <div className="relative h-screen w-full flex items-center justify-center bg-[#f4f7ff]">
@@ -130,6 +125,7 @@ export function ProfilePage() {
                 className="absolute inset-x-0 bottom-0 flex"
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
+                <RightTaskBar />
                 <main
                     className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8"
                     style={{ 
@@ -233,11 +229,7 @@ export function ProfilePage() {
                         )}
                     </div>
                 </main>
-                <RightTaskBar 
-                    onImport={() => navigate('/')}
-                    onLogout={handleLogout}
-                    onAdmin={user?.role === 'admin' ? () => navigate('/admin/users') : undefined}
-                />
+                <RightTaskBar />
             </div>
         </div>
     );

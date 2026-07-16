@@ -1,15 +1,16 @@
 /**
  * Header – fixed top bar with title, import button, and logout.
  */
-import { motion } from 'motion/react';
+
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface HeaderProps {
     userLabel?: string;
+    actions?: React.ReactNode;
 }
 
-export function Header({ userLabel }: HeaderProps) {
+export function Header({ userLabel, actions }: HeaderProps) {
     const { t } = useTranslation();
     return (
         <header
@@ -19,7 +20,7 @@ export function Header({ userLabel }: HeaderProps) {
                 'pt-[env(safe-area-inset-top,0px)]',
             )}
         >
-            <div className="flex items-center justify-between gap-2 px-2 py-1.5 min-h-[48px] sm:min-h-[56px]">
+            <div className="flex items-center justify-between gap-2 px-2 pl-12 md:pl-2 py-1.5 min-h-[48px] sm:min-h-[56px]">
                 <div className="flex-1 min-w-0 leading-tight">
                     <h1 className="text-[14px] sm:text-[15px] md:text-[16px] font-extrabold tracking-wide uppercase truncate">
                         {t('header.title')}
@@ -31,6 +32,11 @@ export function Header({ userLabel }: HeaderProps) {
                         ) : null}
                     </p>
                 </div>
+                {actions && (
+                    <div className="shrink-0 flex items-center">
+                        {actions}
+                    </div>
+                )}
             </div>
         </header>
     );

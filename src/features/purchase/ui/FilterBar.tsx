@@ -9,7 +9,6 @@ import { QuickSearch } from './QuickSearch';
 import { RequesterFilter } from './RequesterFilter';
 import { StatusFilter } from './StatusFilter';
 import { DateRangeFilter } from './DateRangeFilter';
-import { WorkshopFilter } from './WorkshopFilter';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -21,14 +20,11 @@ interface FilterBarProps {
     dateTo: string;
     requesterOptions: string[];
     statusOptions: string[];
-    selectedWorkshops: string[];
-    workshopOptions: string[];
     onQuickSearchChange: (value: string) => void;
     onRequestersChange: (value: string[]) => void;
     onStatusChange: (value: string) => void;
     onDateFromChange: (value: string) => void;
     onDateToChange: (value: string) => void;
-    onWorkshopsChange: (value: string[]) => void;
 }
 
 /**
@@ -44,25 +40,17 @@ export function FilterBar({
     dateTo,
     requesterOptions,
     statusOptions,
-    selectedWorkshops,
-    workshopOptions,
     onQuickSearchChange,
     onRequestersChange,
     onStatusChange,
     onDateFromChange,
     onDateToChange,
-    onWorkshopsChange,
 }: FilterBarProps) {
     const [expanded, setExpanded] = useState(false);
     const { t } = useTranslation();
 
     return (
-        <div className="bg-white px-2 py-2 space-y-2">
-            <WorkshopFilter
-                options={workshopOptions}
-                value={selectedWorkshops}
-                onChange={onWorkshopsChange}
-            />
+        <div className="bg-white px-2 py-2 space-y-2 border-t border-gray-100">
 
             <button
                 type="button"

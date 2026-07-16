@@ -7,7 +7,7 @@ import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 
 export function AdminUserManagement() {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const [profiles, setProfiles] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -32,11 +32,6 @@ export function AdminUserManagement() {
                 alert('Cập nhật thất bại. Kiểm tra lại kết nối.');
             }
         }
-    };
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
     };
 
     return (
@@ -114,11 +109,7 @@ export function AdminUserManagement() {
             )}
                     </div>
                 </main>
-                <RightTaskBar
-                    onImport={() => navigate('/')}
-                    onLogout={handleLogout}
-                    onProfile={() => navigate('/profile')}
-                />
+                <RightTaskBar />
             </div>
         </div>
     );

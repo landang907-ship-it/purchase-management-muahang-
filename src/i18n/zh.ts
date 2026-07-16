@@ -18,6 +18,17 @@ export default {
   'header.import': '导入文件',
   'header.logout': '登出',
 
+  // Actions
+  'action.settings': '设置',
+  'action.admin': '管理',
+  'action.profile': '个人资料',
+
+  // Sidebar
+  'sidebar.system_orders': '系统订单',
+  'sidebar.material_code': '物料代码',
+  'sidebar.purchase_request': '采购申请',
+  'sidebar.new_features': '新功能',
+
   // Tabs
   'tab.system': '系统',
   'tab.ariaLabel': '数据筛选',
@@ -51,7 +62,7 @@ export default {
   'date.clear': '清除日期筛选',
 
   // No results
-  'noresults.tab': '暂无数据',
+  'noresults.tab': '请选择车间以显示数据',
   'noresults.filtered': '已筛选 {{count}} 位申请人 — 无结果',
 
   // App
