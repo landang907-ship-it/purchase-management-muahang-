@@ -44,7 +44,7 @@ export function HomePage() {
                     <div className="shrink-0 flex items-center">
                         <button onClick={logout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                             <LogOut size={15} strokeWidth={2.5} />
-                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
                         </button>
                     </div>
                 }

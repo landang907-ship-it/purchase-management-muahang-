@@ -131,28 +131,28 @@ export function PurchasePage() {
             <Header
                 userLabel={userId}
                 actions={
-                    <div className="hidden md:flex items-center gap-1 sm:gap-2 shrink-0">
+                    <div className="flex items-center gap-1 sm:gap-2 shrink-0 overflow-x-auto scrollbar-hide">
                         <button onClick={openFilePicker} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                             <Upload size={15} strokeWidth={2.5} />
-                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('header.import')}</span>
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.import')}</span>
                         </button>
                         <button onClick={() => setShowWorkshopPanel(true)} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                             <Settings size={15} strokeWidth={2.5} />
-                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.settings')}</span>
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.settings')}</span>
                         </button>
                         {user?.role === 'admin' && (
                             <button onClick={() => navigate('/admin/users')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                                 <Shield size={15} strokeWidth={2.5} />
-                                <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.admin')}</span>
+                                <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.admin')}</span>
                             </button>
                         )}
                         <button onClick={() => navigate('/profile')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                             <User size={15} strokeWidth={2.5} />
-                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('action.profile')}</span>
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.profile')}</span>
                         </button>
                         <button onClick={handleLogout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
                             <LogOut size={15} strokeWidth={2.5} />
-                            <span className="text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
                         </button>
                     </div>
                 }
