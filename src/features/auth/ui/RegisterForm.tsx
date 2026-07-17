@@ -121,14 +121,14 @@ export function RegisterSection({
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between mb-2 md:mb-4 px-1">
-                <h2 className="text-[13px] md:text-sm font-extrabold text-white drop-shadow-sm tracking-wide uppercase">
+            <div className="flex items-center justify-between mb-3 px-1">
+                <h2 className="text-[14px] font-medium text-white/90 tracking-tight">
                     {tRegistration('register.title', lang)}
                 </h2>
                 <button
                     type="button"
                     onClick={onToggle}
-                    className="text-[11px] md:text-xs text-blue-200 hover:text-white font-bold transition-colors"
+                    className="text-[13px] text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full font-medium transition-all duration-200"
                 >
                     {isOpen
                         ? tRegistration('register.hide', lang)
