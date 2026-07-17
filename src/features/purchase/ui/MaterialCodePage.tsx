@@ -12,7 +12,7 @@ import { cn } from '@/shared/lib/cn';
 export function MaterialCodePage() {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { toasts, showToast, dismiss } = useToastQueue();
+    const { toasts, showToast } = useToastQueue();
     const [materials, setMaterials] = useState<MaterialCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
