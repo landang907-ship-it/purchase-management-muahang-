@@ -29,7 +29,7 @@ export default {
   'sidebar.material_code': '物料代码',
   'sidebar.purchase_request': '采购申请',
   'sidebar.new_features': '新功能',
-  'sidebar.processed_orders': '已处理订单',
+  'sidebar.processed_orders': '处理中的采购单',
 
   // Tabs
   'tab.system': '系统',
