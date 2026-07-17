@@ -1,28 +1,100 @@
+import { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
-import { Upload } from 'lucide-react';
+import { Upload, FileText, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { useRef } from 'react';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
+import { read, utils } from 'xlsx';
+import { fetchMaterialCodes, upsertMaterialCodes, type MaterialCode } from '../services/materialCodeService';
+import { cn } from '@/shared/lib/cn';
 
 export function MaterialCodePage() {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { showToast } = useToastQueue();
+    const [materials, setMaterials] = useState<MaterialCode[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [importing, setImporting] = useState(false);
+
+    useEffect(() => {
+        loadMaterials();
+    }, []);
+
+    const loadMaterials = async () => {
+        setLoading(true);
+        try {
+            const data = await fetchMaterialCodes();
+            setMaterials(data);
+        } catch (error) {
+            console.error('Error fetching materials:', error);
+            showToast('Lỗi khi tải danh sách vật tư', 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const openFilePicker = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            // TODO: implement material code file upload logic
-            console.log('Import material code file:', file.name);
-            showToast(`Đã chọn file: ${file.name}`, 'info');
-        }
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+        if (!file) return;
+
+        setImporting(true);
+        try {
+            const data = await file.arrayBuffer();
+            const workbook = read(data);
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            
+            // Lấy dữ liệu dạng mảng 2 chiều
+            const rows: any[][] = utils.sheet_to_json(firstSheet, { header: 1 });
+            
+            if (rows.length < 2) {
+                showToast('File không có dữ liệu', 'warning');
+                return;
+            }
+
+            // Tìm index của cột "Vật tư" và "Mô tả vật tư"
+            const headers = rows[0].map(h => String(h || '').trim().toLowerCase());
+            const codeIdx = headers.findIndex(h => h === 'vật tư');
+            const descIdx = headers.findIndex(h => h === 'mô tả vật tư');
+
+            if (codeIdx === -1 || descIdx === -1) {
+                showToast('File không đúng định dạng. Cần có cột "Vật tư" và "Mô tả vật tư"', 'error');
+                return;
+            }
+
+            // Parse dữ liệu
+            const parsedCodes: MaterialCode[] = [];
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                if (!row || row.length === 0) continue;
+                
+                const code = String(row[codeIdx] || '').trim();
+                const desc = String(row[descIdx] || '').trim();
+                
+                if (code) {
+                    parsedCodes.push({ code, description: desc });
+                }
+            }
+
+            if (parsedCodes.length > 0) {
+                await upsertMaterialCodes(parsedCodes);
+                showToast(`Đã nhập thành công ${parsedCodes.length} mã vật tư`, 'success');
+                await loadMaterials();
+            } else {
+                showToast('Không tìm thấy mã vật tư nào hợp lệ trong file', 'warning');
+            }
+
+        } catch (error) {
+            console.error('Import error:', error);
+            showToast('Lỗi khi xử lý file', 'error');
+        } finally {
+            setImporting(false);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         }
     };
 
@@ -31,9 +103,18 @@ export function MaterialCodePage() {
             <Header
                 actions={
                     <div className="flex items-center gap-1 sm:gap-2 shrink-0 overflow-x-auto scrollbar-hide">
-                        <button onClick={openFilePicker} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                            <Upload size={15} strokeWidth={2.5} />
-                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.import')}</span>
+                        <button 
+                            onClick={openFilePicker} 
+                            disabled={importing}
+                            className={cn(
+                                "flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0",
+                                importing && "opacity-70 cursor-not-allowed"
+                            )}
+                        >
+                            {importing ? <Loader2 size={15} strokeWidth={2.5} className="animate-spin" /> : <Upload size={15} strokeWidth={2.5} />}
+                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">
+                                {importing ? 'Đang xử lý...' : t('header.import')}
+                            </span>
                         </button>
                     </div>
                 }
@@ -45,10 +126,65 @@ export function MaterialCodePage() {
             >
                 <RightTaskBar />
                 
-                <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-50 to-blue-50/50 p-4 md:p-8 lg:p-12" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 2rem)' }}>
-                    <div className="max-w-6xl mx-auto w-full flex items-center justify-center h-full text-slate-400">
-                        {/* Empty state for material code page */}
-                        <p className="text-sm">Trang quản lý mã vật tư</p>
+                <main className="flex-1 overflow-auto bg-[#f4f7ff]" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px))' }}>
+                    <div className="max-w-6xl mx-auto w-full p-4 md:p-6 h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <FileText className="text-blue-500" size={24} />
+                                Quản lý mã vật tư
+                            </h2>
+                            <span className="text-sm text-slate-500 font-medium bg-white px-3 py-1 rounded-full shadow-sm border border-slate-200">
+                                Tổng số: <span className="text-blue-600 font-bold">{materials.length}</span>
+                            </span>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col">
+                            <div className="overflow-x-auto flex-1">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm">
+                                        <tr>
+                                            <th className="px-4 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                                                Vật tư
+                                            </th>
+                                            <th className="px-4 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                                                Mô tả vật tư
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {loading ? (
+                                            <tr>
+                                                <td colSpan={2} className="px-4 py-8 text-center text-slate-500">
+                                                    <Loader2 className="animate-spin mx-auto mb-2 text-blue-500" size={24} />
+                                                    Đang tải dữ liệu...
+                                                </td>
+                                            </tr>
+                                        ) : materials.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                    <div className="max-w-md mx-auto">
+                                                        <FileText className="mx-auto mb-3 text-slate-300" size={48} />
+                                                        <p className="text-lg font-medium text-slate-700 mb-1">Chưa có mã vật tư nào</p>
+                                                        <p className="text-sm">Vui lòng chọn nút "Nhập file" ở góc trên bên phải để tải lên danh sách mã vật tư từ file Excel.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            materials.map((item, idx) => (
+                                                <tr key={item.id || idx} className="hover:bg-blue-50/50 transition-colors">
+                                                    <td className="px-4 py-3 text-sm font-medium text-slate-700 whitespace-nowrap">
+                                                        {item.code}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-sm text-slate-600">
+                                                        {item.description}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </main>
             </div>
