@@ -143,18 +143,7 @@ export function PurchasePage() {
                 className="absolute inset-x-0 bottom-0 flex"
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
-                <RightTaskBar mobileActions={
-                    <>
-                        <button onClick={openFilePicker} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <Upload size={16} strokeWidth={2} className="text-red-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('header.import')}</span>
-                        </button>
-                        <button onClick={() => setShowWorkshopPanel(true)} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <Settings size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('action.settings')}</span>
-                        </button>
-                    </>
-                } />
+                <RightTaskBar />
                 <main
                     className="flex-1 flex flex-col overflow-hidden bg-[#f4f7ff]"
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
