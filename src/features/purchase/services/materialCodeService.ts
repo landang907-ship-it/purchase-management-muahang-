@@ -58,3 +58,17 @@ export async function upsertMaterialCodes(codes: MaterialCode[]): Promise<void> 
         }
     }
 }
+
+/**
+ * Deletes all material codes from the database.
+ */
+export async function deleteAllMaterialCodes(): Promise<void> {
+    const { error } = await supabase
+        .from('material_codes')
+        .delete()
+        .neq('code', ''); // Delete all rows where code is not empty string (effectively all rows)
+
+    if (error) {
+        throw new Error(error.message);
+    }
+}

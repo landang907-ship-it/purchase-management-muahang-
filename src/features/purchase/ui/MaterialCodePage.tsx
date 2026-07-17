@@ -6,7 +6,7 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { Toast } from '@/shared/ui/Toast';
 import { read, utils } from 'xlsx';
-import { fetchMaterialCodes, upsertMaterialCodes, type MaterialCode } from '../services/materialCodeService';
+import { fetchMaterialCodes, upsertMaterialCodes, deleteAllMaterialCodes, type MaterialCode } from '../services/materialCodeService';
 import { cn } from '@/shared/lib/cn';
 
 export function MaterialCodePage() {
@@ -118,8 +118,10 @@ export function MaterialCodePage() {
             const uniqueCodes = Array.from(uniqueCodesMap.values());
 
             if (uniqueCodes.length > 0) {
+                // Xóa toàn bộ dữ liệu cũ trước khi nạp dữ liệu mới
+                await deleteAllMaterialCodes();
                 await upsertMaterialCodes(uniqueCodes);
-                showToast(`Đã nhập thành công ${uniqueCodes.length} mã vật tư (đã gộp các mã trùng)`, 'success', 5000);
+                showToast(`Đã xóa dữ liệu cũ và nhập thành công ${uniqueCodes.length} mã vật tư mới`, 'success', 5000);
                 await loadMaterials();
             } else {
                 showToast('Không tìm thấy dòng dữ liệu nào hợp lệ bên dưới tiêu đề', 'warning', 5000);
