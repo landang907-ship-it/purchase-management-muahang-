@@ -76,7 +76,8 @@ export function MaterialCodePage() {
             }
 
             if (headerRowIdx === -1) {
-                showToast('Không tìm thấy cột "Vật tư" và "Mô tả vật tư" trong file', 'error');
+                const sampleHeaders = rows.slice(0, 3).map(r => (r || []).join(', ')).join(' | ');
+                showToast(`Không tìm thấy 2 cột cần thiết. File đang có: ${sampleHeaders.slice(0, 100)}...`, 'error', 10000);
                 return;
             }
 
@@ -96,15 +97,16 @@ export function MaterialCodePage() {
 
             if (parsedCodes.length > 0) {
                 await upsertMaterialCodes(parsedCodes);
-                showToast(`Đã nhập thành công ${parsedCodes.length} mã vật tư`, 'success');
+                showToast(`Đã nhập thành công ${parsedCodes.length} mã vật tư`, 'success', 5000);
                 await loadMaterials();
             } else {
-                showToast('Không tìm thấy mã vật tư nào hợp lệ trong file', 'warning');
+                showToast('Không tìm thấy dòng dữ liệu nào hợp lệ bên dưới tiêu đề', 'warning', 5000);
             }
 
         } catch (error) {
             console.error('Import error:', error);
-            showToast('Lỗi khi xử lý file', 'error');
+            const msg = error instanceof Error ? error.message : String(error);
+            showToast(`Lỗi hệ thống: ${msg}`, 'error', 10000);
         } finally {
             setImporting(false);
             if (fileInputRef.current) {
