@@ -29,7 +29,7 @@ export default {
   'sidebar.material_code': 'Mã vật tư',
   'sidebar.purchase_request': 'Yêu cầu mua hàng',
   'sidebar.new_features': 'Tính năng mới',
-  'sidebar.processed_orders': 'Đơn đã xử lý',
+  'sidebar.processed_orders': 'Đơn thu mua đang xử lý',
 
   // Tabs
   'tab.system': 'Hệ thống',
