@@ -109,9 +109,16 @@ export function MaterialCodePage() {
                 }
             }
 
-            if (parsedCodes.length > 0) {
-                await upsertMaterialCodes(parsedCodes);
-                showToast(`Đã nhập thành công ${parsedCodes.length} mã vật tư`, 'success', 5000);
+            // Loại bỏ các mã trùng lặp trong cùng một file (Postgres sẽ báo lỗi nếu insert 2 dòng có cùng khóa chính trong 1 lệnh)
+            const uniqueCodesMap = new Map<string, MaterialCode>();
+            for (const item of parsedCodes) {
+                uniqueCodesMap.set(item.code, item); // Dòng sau cùng sẽ ghi đè dòng trước nếu trùng mã
+            }
+            const uniqueCodes = Array.from(uniqueCodesMap.values());
+
+            if (uniqueCodes.length > 0) {
+                await upsertMaterialCodes(uniqueCodes);
+                showToast(`Đã nhập thành công ${uniqueCodes.length} mã vật tư (đã gộp các mã trùng)`, 'success', 5000);
                 await loadMaterials();
             } else {
                 showToast('Không tìm thấy dòng dữ liệu nào hợp lệ bên dưới tiêu đề', 'warning', 5000);
