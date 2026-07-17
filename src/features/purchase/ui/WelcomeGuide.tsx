@@ -1,10 +1,8 @@
 import { motion } from 'motion/react';
 import { Filter, ListFilter, ImagePlus, CheckCircle } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
-import { useTranslation } from '@/i18n/useTranslation';
 
 export function WelcomeGuide() {
-    const { t } = useTranslation();
 
     const steps = [
         {
