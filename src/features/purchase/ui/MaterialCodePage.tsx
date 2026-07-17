@@ -56,17 +56,20 @@ export function MaterialCodePage() {
                 return;
             }
 
-            // Tìm dòng header chứa các cột cần thiết (tìm trong 10 dòng đầu)
+            // Tìm dòng header chứa các cột cần thiết (tìm trong 50 dòng đầu)
             let headerRowIdx = -1;
             let codeIdx = -1;
             let descIdx = -1;
 
-            for (let i = 0; i < Math.min(rows.length, 10); i++) {
+            for (let i = 0; i < Math.min(rows.length, 50); i++) {
                 const row = rows[i] || [];
                 const rowStrs = row.map(cell => String(cell || '').trim().toLowerCase());
                 
-                const cIdx = rowStrs.findIndex(s => s.includes('vật tư'));
-                const dIdx = rowStrs.findIndex(s => s.includes('mô tả vật tư'));
+                // Mở rộng các từ khóa tìm kiếm cột mã vật tư
+                const cIdx = rowStrs.findIndex(s => s.includes('vật tư') || s.includes('mã liệu') || s.includes('mã vt') || s.includes('material'));
+                
+                // Mở rộng các từ khóa tìm kiếm cột mô tả
+                const dIdx = rowStrs.findIndex(s => s.includes('mô tả') || s.includes('tên vật tư') || s.includes('description') || s.includes('chi tiết') || (s.includes('tên') && cIdx !== -1 && rowStrs.indexOf(s) !== cIdx));
 
                 if (cIdx !== -1 && dIdx !== -1) {
                     headerRowIdx = i;
@@ -77,8 +80,9 @@ export function MaterialCodePage() {
             }
 
             if (headerRowIdx === -1) {
-                const sampleHeaders = rows.slice(0, 3).map(r => (r || []).join(', ')).join(' | ');
-                showToast(`Không tìm thấy 2 cột cần thiết. File đang có: ${sampleHeaders.slice(0, 100)}...`, 'error', 10000);
+                const nonEmpties = rows.filter(r => r && r.some(c => c)).slice(0, 5);
+                const sampleHeaders = nonEmpties.map(r => r.join(', ')).join(' | ');
+                showToast(`Không tìm thấy cột Mã/Tên Vật tư. File đang có: ${sampleHeaders.slice(0, 150)}...`, 'error', 15000);
                 return;
             }
 
