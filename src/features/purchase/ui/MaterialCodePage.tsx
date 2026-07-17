@@ -55,26 +55,41 @@ export function MaterialCodePage() {
                 return;
             }
 
-            // Tìm index của cột "Vật tư" và "Mô tả vật tư"
-            const headers = rows[0].map(h => String(h || '').trim().toLowerCase());
-            const codeIdx = headers.findIndex(h => h === 'vật tư');
-            const descIdx = headers.findIndex(h => h === 'mô tả vật tư');
+            // Tìm dòng header chứa các cột cần thiết (tìm trong 10 dòng đầu)
+            let headerRowIdx = -1;
+            let codeIdx = -1;
+            let descIdx = -1;
 
-            if (codeIdx === -1 || descIdx === -1) {
-                showToast('File không đúng định dạng. Cần có cột "Vật tư" và "Mô tả vật tư"', 'error');
+            for (let i = 0; i < Math.min(rows.length, 10); i++) {
+                const row = rows[i] || [];
+                const rowStrs = row.map(cell => String(cell || '').trim().toLowerCase());
+                
+                const cIdx = rowStrs.findIndex(s => s.includes('vật tư'));
+                const dIdx = rowStrs.findIndex(s => s.includes('mô tả vật tư'));
+
+                if (cIdx !== -1 && dIdx !== -1) {
+                    headerRowIdx = i;
+                    codeIdx = cIdx;
+                    descIdx = dIdx;
+                    break;
+                }
+            }
+
+            if (headerRowIdx === -1) {
+                showToast('Không tìm thấy cột "Vật tư" và "Mô tả vật tư" trong file', 'error');
                 return;
             }
 
-            // Parse dữ liệu
+            // Parse dữ liệu từ dòng dưới header
             const parsedCodes: MaterialCode[] = [];
-            for (let i = 1; i < rows.length; i++) {
+            for (let i = headerRowIdx + 1; i < rows.length; i++) {
                 const row = rows[i];
                 if (!row || row.length === 0) continue;
                 
                 const code = String(row[codeIdx] || '').trim();
                 const desc = String(row[descIdx] || '').trim();
                 
-                if (code) {
+                if (code && code !== 'undefined' && code !== 'null') {
                     parsedCodes.push({ code, description: desc });
                 }
             }
