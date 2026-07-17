@@ -8,7 +8,7 @@ import { useToastQueue } from '@/shared/hooks/useToastQueue';
 export function MaterialCodePage() {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { addToast } = useToastQueue();
+    const { showToast } = useToastQueue();
 
     const openFilePicker = () => {
         fileInputRef.current?.click();
@@ -19,7 +19,7 @@ export function MaterialCodePage() {
         if (file) {
             // TODO: implement material code file upload logic
             console.log('Import material code file:', file.name);
-            addToast(`Đã chọn file: ${file.name}`, 'info');
+            showToast(`Đã chọn file: ${file.name}`, 'info');
         }
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
