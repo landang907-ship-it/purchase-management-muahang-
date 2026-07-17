@@ -4,7 +4,6 @@ import { type ProcessedOrder, fetchProcessedOrders } from '../services/processed
 import { Header } from './Header';
 import { FileText, Clock, ArrowLeft } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 export function ProcessedOrdersPage() {

@@ -22,12 +22,11 @@ import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useMaterialImages } from '@/features/purchase/hooks/useMaterialImages';
-import { useNavigate } from 'react-router-dom';
 import { Upload, Settings } from 'lucide-react';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
 
 export function PurchasePage() {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const { t } = useTranslation();
     const userId = user?.user;
 

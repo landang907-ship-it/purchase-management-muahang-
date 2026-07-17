@@ -1,6 +1,5 @@
 import { Header } from './Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { motion, type Variants } from 'motion/react';
 import { 
