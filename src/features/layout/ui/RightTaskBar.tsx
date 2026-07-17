@@ -26,6 +26,7 @@ const RIGHT_TASK_ITEMS = [
         id: 'material_code',
         labelKey: 'sidebar.material_code',
         icon: <Tags size={16} strokeWidth={2} />,
+        path: '/materials',
     },
     {
         id: 'purchase_request',
