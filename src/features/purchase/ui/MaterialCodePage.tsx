@@ -4,6 +4,7 @@ import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Upload, FileText, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
+import { Toast } from '@/shared/ui/Toast';
 import { read, utils } from 'xlsx';
 import { fetchMaterialCodes, upsertMaterialCodes, type MaterialCode } from '../services/materialCodeService';
 import { cn } from '@/shared/lib/cn';
@@ -11,7 +12,7 @@ import { cn } from '@/shared/lib/cn';
 export function MaterialCodePage() {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { showToast } = useToastQueue();
+    const { toasts, showToast, dismiss } = useToastQueue();
     const [materials, setMaterials] = useState<MaterialCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
@@ -213,6 +214,8 @@ export function MaterialCodePage() {
                 accept=".xlsx, .xls, .csv" 
                 onChange={handleFileChange} 
             />
+
+            <Toast toasts={toasts} dismiss={dismiss} />
         </div>
     );
 }
