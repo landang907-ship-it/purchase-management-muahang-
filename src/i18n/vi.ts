@@ -19,7 +19,7 @@ export default {
   'header.logout': 'Đăng xuất',
 
   // Actions
-  'action.settings': 'Cài đặt',
+  'action.settings': 'Cài đặt phân xưởng',
   'action.admin': 'Quản trị',
   'action.profile': 'Hồ sơ',
 
