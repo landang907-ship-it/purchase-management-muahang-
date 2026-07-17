@@ -137,9 +137,22 @@ export function MaterialCodePage() {
         }
     };
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 100;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
     const filteredMaterials = materials.filter(m => 
         (m.code && m.code.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (m.description && m.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
+    const totalPages = Math.ceil(filteredMaterials.length / itemsPerPage);
+    const paginatedMaterials = filteredMaterials.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
     );
 
     return (
@@ -219,7 +232,7 @@ export function MaterialCodePage() {
                                                     Đang tải dữ liệu...
                                                 </td>
                                             </tr>
-                                        ) : filteredMaterials.length === 0 ? (
+                                        ) : paginatedMaterials.length === 0 ? (
                                             <tr>
                                                 <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
@@ -234,7 +247,7 @@ export function MaterialCodePage() {
                                                 </td>
                                             </tr>
                                         ) : (
-                                            filteredMaterials.map((item, idx) => (
+                                            paginatedMaterials.map((item, idx) => (
                                                 <tr key={item.id || idx} className="hover:bg-blue-50/50 transition-colors">
                                                     <td className="px-4 py-3 text-sm font-medium text-slate-700 whitespace-nowrap">
                                                         {item.code}
@@ -248,6 +261,34 @@ export function MaterialCodePage() {
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="p-4 border-t border-slate-200 bg-white flex items-center justify-between">
+                                    <div className="text-sm text-slate-500">
+                                        Hiển thị <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-medium">{Math.min(currentPage * itemsPerPage, filteredMaterials.length)}</span> trong <span className="font-medium">{filteredMaterials.length}</span> kết quả
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button 
+                                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                            disabled={currentPage === 1}
+                                            className="px-3 py-1.5 text-sm font-medium rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            Trước
+                                        </button>
+                                        <div className="flex items-center px-2 text-sm font-medium text-slate-600">
+                                            Trang {currentPage} / {totalPages}
+                                        </div>
+                                        <button 
+                                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                            disabled={currentPage === totalPages}
+                                            className="px-3 py-1.5 text-sm font-medium rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            Sau
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>
