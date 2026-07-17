@@ -46,13 +46,9 @@ export function AdminUserManagement() {
             >
                 <RightTaskBar />
                 <main
-                    className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8"
+                    className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8 bg-[#f4f7ff]"
                     style={{ 
-                        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-                        backgroundImage: 'linear-gradient(rgba(240, 240, 240, 0.75), rgba(240, 240, 240, 0.75)), url(/login-bg.webp)',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center',
-                        backgroundSize: 'cover'
+                        paddingBottom: 'env(safe-area-inset-bottom, 0px)'
                     }}
                 >
                     <div className="max-w-6xl mx-auto w-full p-6 bg-white rounded-lg shadow border border-gray-200">
