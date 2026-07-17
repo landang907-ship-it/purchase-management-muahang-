@@ -215,7 +215,7 @@ export function MaterialCodePage() {
                 onChange={handleFileChange} 
             />
 
-            <Toast toasts={toasts} dismiss={dismiss} />
+            <Toast toasts={toasts} />
         </div>
     );
 }
