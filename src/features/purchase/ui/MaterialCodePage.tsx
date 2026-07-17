@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
-import { Upload, FileText, Loader2 } from 'lucide-react';
+import { Upload, FileText, Loader2, Search } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { Toast } from '@/shared/ui/Toast';
@@ -16,6 +16,7 @@ export function MaterialCodePage() {
     const [materials, setMaterials] = useState<MaterialCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         loadMaterials();
@@ -136,6 +137,11 @@ export function MaterialCodePage() {
         }
     };
 
+    const filteredMaterials = materials.filter(m => 
+        (m.code && m.code.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (m.description && m.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
             <Header
@@ -177,6 +183,22 @@ export function MaterialCodePage() {
                         </div>
 
                         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col">
+                            {/* Thanh công cụ (Search) */}
+                            <div className="p-4 border-b border-slate-100 flex items-center gap-3 bg-white">
+                                <div className="relative max-w-md w-full">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Search size={16} className="text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Tìm kiếm mã hoặc tên vật tư..."
+                                        className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-slate-50 outline-none transition-all"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
                             <div className="overflow-x-auto flex-1">
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm">
@@ -197,18 +219,22 @@ export function MaterialCodePage() {
                                                     Đang tải dữ liệu...
                                                 </td>
                                             </tr>
-                                        ) : materials.length === 0 ? (
+                                        ) : filteredMaterials.length === 0 ? (
                                             <tr>
                                                 <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
                                                         <FileText className="mx-auto mb-3 text-slate-300" size={48} />
-                                                        <p className="text-lg font-medium text-slate-700 mb-1">Chưa có mã vật tư nào</p>
-                                                        <p className="text-sm">Vui lòng chọn nút "Nhập file" ở góc trên bên phải để tải lên danh sách mã vật tư từ file Excel.</p>
+                                                        <p className="text-lg font-medium text-slate-700 mb-1">
+                                                            {searchQuery ? 'Không tìm thấy kết quả nào' : 'Chưa có mã vật tư nào'}
+                                                        </p>
+                                                        {!searchQuery && (
+                                                            <p className="text-sm">Vui lòng chọn nút "Nhập file" ở góc trên bên phải để tải lên danh sách mã vật tư từ file Excel.</p>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
                                         ) : (
-                                            materials.map((item, idx) => (
+                                            filteredMaterials.map((item, idx) => (
                                                 <tr key={item.id || idx} className="hover:bg-blue-50/50 transition-colors">
                                                     <td className="px-4 py-3 text-sm font-medium text-slate-700 whitespace-nowrap">
                                                         {item.code}
