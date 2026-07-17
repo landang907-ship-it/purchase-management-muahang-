@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Sparkles, Menu, Home } from 'lucide-react';
+import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Sparkles, Menu, Home, Shield, User, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -50,6 +51,7 @@ interface RightTaskBarProps {
 }
 
 export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
+    const { user, logout } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -190,8 +192,126 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                             </button>
                         ))}
                         
+                        <div className="mt-auto flex flex-col gap-1.5 pt-3 border-t border-slate-200/50">
+                            {user?.role === 'admin' && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        navigate('/admin/users');
+                                        if (isMobile) setIsMobileOpen(false);
+                                    }}
+                                    className={cn(
+                                        'group relative flex items-center gap-3',
+                                        'w-full h-10 rounded-xl outline-none',
+                                        'hover:bg-slate-100/60 focus-visible:ring-2 focus-visible:ring-blue-400',
+                                        'transition-all duration-200 cursor-pointer overflow-hidden',
+                                        isExpanded || isMobile ? 'px-3.5' : 'justify-center',
+                                        location.pathname === '/admin/users' ? 'bg-blue-50 text-blue-600' : 'text-slate-600 group-hover:text-slate-900'
+                                    )}
+                                    title={(!isExpanded && !isMobile) ? t('action.admin') : undefined}
+                                >
+                                    <span className={cn(
+                                        'flex items-center justify-center shrink-0 transition-colors',
+                                        location.pathname === '/admin/users' ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-900'
+                                    )}>
+                                        <Shield size={16} strokeWidth={2} />
+                                    </span>
+                                    <AnimatePresence mode="wait">
+                                        {(isExpanded || isMobile) && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: -5, width: 0 }}
+                                                animate={{ opacity: 1, x: 0, width: 'auto' }}
+                                                exit={{ opacity: 0, x: -5, width: 0 }}
+                                                transition={{ duration: 0.2 }}
+                                                className={cn(
+                                                    "text-sm font-medium whitespace-nowrap overflow-hidden",
+                                                    location.pathname === '/admin/users' ? 'text-blue-600 font-semibold' : 'text-slate-700'
+                                                )}
+                                            >
+                                                {t('action.admin')}
+                                            </motion.span>
+                                        )}
+                                    </AnimatePresence>
+                                </button>
+                            )}
+                            
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigate('/profile');
+                                    if (isMobile) setIsMobileOpen(false);
+                                }}
+                                className={cn(
+                                    'group relative flex items-center gap-3',
+                                    'w-full h-10 rounded-xl outline-none',
+                                    'hover:bg-slate-100/60 focus-visible:ring-2 focus-visible:ring-blue-400',
+                                    'transition-all duration-200 cursor-pointer overflow-hidden',
+                                    isExpanded || isMobile ? 'px-3.5' : 'justify-center',
+                                    location.pathname === '/profile' ? 'bg-blue-50 text-blue-600' : 'text-slate-600 group-hover:text-slate-900'
+                                )}
+                                title={(!isExpanded && !isMobile) ? t('action.profile') : undefined}
+                            >
+                                <span className={cn(
+                                    'flex items-center justify-center shrink-0 transition-colors',
+                                    location.pathname === '/profile' ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-900'
+                                )}>
+                                    <User size={16} strokeWidth={2} />
+                                </span>
+                                <AnimatePresence mode="wait">
+                                    {(isExpanded || isMobile) && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -5, width: 0 }}
+                                            animate={{ opacity: 1, x: 0, width: 'auto' }}
+                                            exit={{ opacity: 0, x: -5, width: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className={cn(
+                                                "text-sm font-medium whitespace-nowrap overflow-hidden",
+                                                location.pathname === '/profile' ? 'text-blue-600 font-semibold' : 'text-slate-700'
+                                            )}
+                                        >
+                                            {t('action.profile')}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    logout();
+                                    if (isMobile) setIsMobileOpen(false);
+                                }}
+                                className={cn(
+                                    'group relative flex items-center gap-3',
+                                    'w-full h-10 rounded-xl outline-none',
+                                    'hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-400',
+                                    'transition-all duration-200 cursor-pointer overflow-hidden',
+                                    isExpanded || isMobile ? 'px-3.5' : 'justify-center',
+                                    'text-slate-600 hover:text-red-600'
+                                )}
+                                title={(!isExpanded && !isMobile) ? t('header.logout') : undefined}
+                            >
+                                <span className="flex items-center justify-center shrink-0 transition-colors text-slate-500 group-hover:text-red-500">
+                                    <LogOut size={16} strokeWidth={2} />
+                                </span>
+                                <AnimatePresence mode="wait">
+                                    {(isExpanded || isMobile) && (
+                                        <motion.span
+                                            initial={{ opacity: 0, x: -5, width: 0 }}
+                                            animate={{ opacity: 1, x: 0, width: 'auto' }}
+                                            exit={{ opacity: 0, x: -5, width: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="text-sm font-medium whitespace-nowrap overflow-hidden text-slate-700 group-hover:text-red-600"
+                                        >
+                                            {t('header.logout')}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+                            </button>
+                        </div>
+                        
                         {mobileActions && (
-                            <div className="md:hidden mt-auto flex flex-col gap-1.5 pt-3 border-t border-slate-200/50">
+                            <div className="md:hidden flex flex-col gap-1.5 pt-3 border-t border-slate-200/50">
                                 {mobileActions}
                             </div>
                         )}

@@ -39,29 +39,13 @@ export function HomePage() {
 
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
-            <Header
-                actions={
-                    <div className="shrink-0 flex items-center">
-                        <button onClick={logout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                            <LogOut size={15} strokeWidth={2.5} />
-                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
-                        </button>
-                    </div>
-                }
-            />
+            <Header />
             
             <div
                 className="absolute inset-x-0 bottom-0 flex"
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
-                <RightTaskBar mobileActions={
-                    <>
-                        <button onClick={logout} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <LogOut size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('header.logout')}</span>
-                        </button>
-                    </>
-                } />
+                <RightTaskBar />
                 
                 <main className="flex-1 overflow-auto bg-gradient-to-br from-slate-50 to-blue-50/50 p-4 md:p-8 lg:p-12" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 2rem)' }}>
                     <div className="max-w-6xl mx-auto w-full">

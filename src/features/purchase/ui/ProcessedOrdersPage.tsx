@@ -31,16 +31,7 @@ export function ProcessedOrdersPage() {
 
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
-            <Header
-                actions={
-                    <div className="shrink-0 flex items-center">
-                        <button onClick={logout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                            <LogOut size={15} strokeWidth={2.5} />
-                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
-                        </button>
-                    </div>
-                }
-            />
+            <Header />
             
             {/* Layout: Main content (TaskBar from layout/ overlays the left side) */}
             <div
@@ -52,10 +43,6 @@ export function ProcessedOrdersPage() {
                         <button onClick={() => navigate('/dashboard')} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
                             <ArrowLeft size={16} strokeWidth={2} className="text-blue-500 shrink-0" />
                             <span className="text-sm font-medium">{t('sidebar.home' as any)}</span>
-                        </button>
-                        <button onClick={logout} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <LogOut size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('header.logout')}</span>
                         </button>
                     </>
                 } />

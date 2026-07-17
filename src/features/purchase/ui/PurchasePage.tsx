@@ -140,20 +140,6 @@ export function PurchasePage() {
                             <Settings size={15} strokeWidth={2.5} />
                             <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.settings')}</span>
                         </button>
-                        {user?.role === 'admin' && (
-                            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                                <Shield size={15} strokeWidth={2.5} />
-                                <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.admin')}</span>
-                            </button>
-                        )}
-                        <button onClick={() => navigate('/profile')} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                            <User size={15} strokeWidth={2.5} />
-                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('action.profile')}</span>
-                        </button>
-                        <button onClick={handleLogout} className="flex items-center gap-1.5 px-2 py-1.5 text-white/90 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0">
-                            <LogOut size={15} strokeWidth={2.5} />
-                            <span className="hidden sm:block text-[12px] font-semibold whitespace-nowrap">{t('header.logout')}</span>
-                        </button>
                     </div>
                 }
             />
@@ -172,20 +158,6 @@ export function PurchasePage() {
                         <button onClick={() => setShowWorkshopPanel(true)} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
                             <Settings size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
                             <span className="text-sm font-medium">{t('action.settings')}</span>
-                        </button>
-                        {user?.role === 'admin' && (
-                            <button onClick={() => navigate('/admin/users')} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                                <Shield size={16} strokeWidth={2} className="text-purple-500 shrink-0" />
-                                <span className="text-sm font-medium">{t('action.admin')}</span>
-                            </button>
-                        )}
-                        <button onClick={() => navigate('/profile')} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <User size={16} strokeWidth={2} className="text-blue-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('action.profile')}</span>
-                        </button>
-                        <button onClick={handleLogout} className="flex items-center gap-3 w-full h-8 px-3 rounded-md hover:bg-yellow-100 text-gray-800 transition-colors">
-                            <LogOut size={16} strokeWidth={2} className="text-slate-500 shrink-0" />
-                            <span className="text-sm font-medium">{t('header.logout')}</span>
                         </button>
                     </>
                 } />
