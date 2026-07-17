@@ -10,7 +10,6 @@ import {
     Zap, 
     Smartphone, 
     ArrowRight,
-    LogOut,
     CheckCircle2,
     BarChart3
 } from 'lucide-react';
@@ -18,7 +17,6 @@ import { useTranslation } from '@/i18n/useTranslation';
 
 export function HomePage() {
     const navigate = useNavigate();
-    const { logout } = useAuth();
     const { t } = useTranslation();
 
     // Animation variants

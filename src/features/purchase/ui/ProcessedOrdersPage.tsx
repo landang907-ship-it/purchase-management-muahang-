@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { type ProcessedOrder, fetchProcessedOrders } from '../services/processedOrdersService';
 import { Header } from './Header';
-import { FileText, Clock, LogOut, ArrowLeft } from 'lucide-react';
+import { FileText, Clock, ArrowLeft } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 export function ProcessedOrdersPage() {
     const { t } = useTranslation();
-    const { logout } = useAuth();
     const navigate = useNavigate();
     const [orders, setOrders] = useState<ProcessedOrder[]>([]);
     const [loading, setLoading] = useState(true);

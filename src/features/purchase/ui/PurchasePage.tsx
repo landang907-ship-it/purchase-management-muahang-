@@ -23,13 +23,12 @@ import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useMaterialImages } from '@/features/purchase/hooks/useMaterialImages';
 import { useNavigate } from 'react-router-dom';
-import { Upload, Settings, Shield, User, LogOut } from 'lucide-react';
+import { Upload, Settings } from 'lucide-react';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const userId = user?.user;
 
     // Toast queue (shared)
@@ -115,10 +114,6 @@ export function PurchasePage() {
 
     const isLoading = dataLoading || uploadLoading;
 
-    const handleLogout = useCallback(() => {
-        logout();
-        showToast(t('app.logoutSuccess'), 'info', 2200);
-    }, [logout, showToast, t]);
 
     const showEmpty = rows.length === 0;
     const showNoResults = !showEmpty && visibleRows.length === 0;
