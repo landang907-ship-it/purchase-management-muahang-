@@ -12,6 +12,9 @@ const MAX_GLOBAL_RECORDS = 5;
  * Auto-deletes older records so we only keep the N most recent files globally.
  */
 export async function savePurchaseData(userId: string, rows: PurchaseRow[], fileName: string) {
+  // 0. Load the current/oldest active records to diff against
+  const oldRows = await loadPurchaseData(userId);
+
   // 1. Insert new record
   const { error: insertErr } = await supabase
     .from('purchase_records')
@@ -23,6 +26,44 @@ export async function savePurchaseData(userId: string, rows: PurchaseRow[], file
     });
 
   if (insertErr) throw insertErr;
+
+  // 1.5. Detect processed (disappeared) orders
+  if (oldRows.length > 0) {
+    // Collect keys of new rows. Assuming Yc.m.hàng + Vật tư is the unique key
+    const newKeys = new Set(
+      rows.map((r: any) => `${r['Yc.m.hàng'] || ''}_${r['Vật tư'] || ''}`)
+    );
+
+    const disappearedOrders = oldRows.filter((oldRow: any) => {
+      // Check if it was in status '05' (or similar processing status)
+      const status = String(oldRow['T.trg xử lý'] || '').trim();
+      if (status !== '05') return false;
+
+      const key = `${oldRow['Yc.m.hàng'] || ''}_${oldRow['Vật tư'] || ''}`;
+      return !newKeys.has(key);
+    });
+
+    if (disappearedOrders.length > 0) {
+      const recordsToInsert = disappearedOrders.map((r: any) => ({
+        user_id: userId,
+        pr_number: r['Yc.m.hàng'] || '',
+        item_no: r['Vật tư'] || '',
+        description: r['Văn bản ngắn'] || '',
+        requester: r['Ng.yêu cầu'] || '',
+        quantity: String(r['Số lượng'] || ''),
+        unit: r['Đơn vị đo lường'] || '',
+        status: r['T.trg xử lý'] || '',
+      }));
+      
+      const { error: processErr } = await supabase
+        .from('processed_orders')
+        .insert(recordsToInsert);
+        
+      if (processErr) {
+        console.warn('[savePurchaseData] Failed to save processed orders:', processErr);
+      }
+    }
+  }
 
   // 2. Fetch all records, sorted newest first
   const { data: all, error: fetchErr } = await supabase

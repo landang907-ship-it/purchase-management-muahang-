@@ -8,6 +8,7 @@ import { EmptyState } from '@/features/purchase/ui/EmptyState';
 import { Header } from '@/features/purchase/ui/Header';
 import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
 import { NoResults } from '@/features/purchase/ui/NoResults';
+import { WelcomeGuide } from '@/features/purchase/ui/WelcomeGuide';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
 import { WorkshopPanel } from '@/features/purchase/ui/WorkshopPanel';
 import { MobilePurchaseList } from '@/features/purchase/ui/MobilePurchaseList';
@@ -227,13 +228,17 @@ export function PurchasePage() {
                         {showEmpty && <EmptyState onImport={openFilePicker} />}
                         
                         {showNoResults && (
-                            <NoResults
-                                message={
-                                    selectedRequesters.length > 0
-                                        ? t('noresults.filtered', { count: selectedRequesters.length })
-                                        : t('noresults.tab')
-                                }
-                            />
+                            selectedWorkshops.length === 0 ? (
+                                <WelcomeGuide />
+                            ) : (
+                                <NoResults
+                                    message={
+                                        selectedRequesters.length > 0
+                                            ? t('noresults.filtered', { count: selectedRequesters.length })
+                                            : t('noresults.tab')
+                                    }
+                                />
+                            )
                         )}
                         
                         {!showEmpty && !showNoResults && (

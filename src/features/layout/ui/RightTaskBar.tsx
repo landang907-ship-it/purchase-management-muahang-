@@ -1,17 +1,25 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Sparkles, Menu } from 'lucide-react';
+import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Sparkles, Menu, Home } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const COLLAPSED_WIDTH = 44;
-const EXPANDED_WIDTH = 180;
+const COLLAPSED_WIDTH = 60;
+const EXPANDED_WIDTH = 220;
 
 const RIGHT_TASK_ITEMS = [
+    {
+        id: 'home',
+        labelKey: 'sidebar.home',
+        icon: <Home size={16} strokeWidth={2} />,
+        path: '/dashboard',
+    },
     {
         id: 'system_orders',
         labelKey: 'sidebar.system_orders',
         icon: <FileText size={16} strokeWidth={2} />,
+        path: '/system-orders',
     },
     {
         id: 'material_code',
@@ -27,6 +35,13 @@ const RIGHT_TASK_ITEMS = [
         id: 'new_features',
         labelKey: 'sidebar.new_features',
         icon: <Sparkles size={16} strokeWidth={2} />,
+        path: '/',
+    },
+    {
+        id: 'processed_orders',
+        labelKey: 'sidebar.processed_orders',
+        icon: <FileText size={16} strokeWidth={2} />,
+        path: '/processed-orders',
     },
 ];
 
@@ -36,6 +51,8 @@ interface RightTaskBarProps {
 
 export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [isExpanded, setIsExpanded] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -78,7 +95,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
             <div 
                 className={cn(
                     "relative shrink-0 h-full z-[55] transition-all duration-300",
-                    isMobile ? "w-0" : "w-[44px]"
+                    isMobile ? "w-0" : "w-[60px]"
                 )}
             >
                 <motion.aside
@@ -87,13 +104,13 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     className={cn(
                         'absolute left-0 top-0 bottom-0 flex flex-col',
-                        'bg-yellow-50 border-r border-yellow-200',
-                        'overflow-hidden shadow-2xl transition-transform duration-300',
+                        'bg-white/70 border-r border-slate-200/50 backdrop-blur-xl',
+                        'overflow-hidden shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-transform duration-300',
                         isMobile && !isMobileOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'
                     )}
                 >
                     {/* Toggle button - hidden on mobile since it's always expanded off-canvas */}
-                    <div className="hidden md:flex items-center justify-start p-2">
+                    <div className="hidden md:flex items-center justify-start p-3">
                         <button
                             type="button"
                             onClick={toggleExpanded}
@@ -101,9 +118,9 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                             title={isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
                             className={cn(
                                 'flex items-center justify-center',
-                                'w-8 h-8 rounded-md',
-                                'text-gray-600 hover:text-gray-900 hover:bg-yellow-100',
-                                'transition-colors'
+                                'w-9 h-9 rounded-xl',
+                                'text-slate-500 hover:text-slate-900 hover:bg-slate-100/60',
+                                'transition-all duration-200'
                             )}
                         >
                             <AnimatePresence mode="wait" initial={false}>
@@ -124,27 +141,32 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                         </button>
                     </div>
 
-                    {/* Divider */}
-                    <div className="h-px bg-yellow-200/60 mx-2 mb-2" />
+                    <div className="h-px bg-slate-200/50 mx-4 mb-3 mt-1" />
 
-                    {/* Navigation items */}
-                    <nav className="flex-1 flex flex-col gap-1 p-2 overflow-y-auto scrollbar-thin">
+                    <nav className="flex-1 flex flex-col gap-1.5 px-3 py-2 overflow-y-auto scrollbar-thin">
                         {RIGHT_TASK_ITEMS.map((item) => (
                             <button
                                 key={item.id}
                                 type="button"
+                                onClick={() => {
+                                    if (item.path) {
+                                        navigate(item.path);
+                                        if (isMobile) setIsMobileOpen(false);
+                                    }
+                                }}
                                 className={cn(
                                     'group relative flex items-center gap-3',
-                                    'w-full h-8 rounded-md outline-none',
-                                    'hover:bg-yellow-100 focus-visible:ring-2 focus-visible:ring-yellow-400',
+                                    'w-full h-10 rounded-xl outline-none',
+                                    'hover:bg-slate-100/60 focus-visible:ring-2 focus-visible:ring-blue-400',
                                     'transition-all duration-200 cursor-pointer overflow-hidden',
-                                    isExpanded || isMobile ? 'px-3' : 'justify-center'
+                                    isExpanded || isMobile ? 'px-3.5' : 'justify-center',
+                                    location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-slate-600 group-hover:text-slate-900'
                                 )}
                                 title={(!isExpanded && !isMobile) ? t(item.labelKey as any) : undefined}
                             >
                                 <span className={cn(
-                                    'flex items-center justify-center shrink-0',
-                                    'text-gray-600 group-hover:text-gray-900 transition-colors'
+                                    'flex items-center justify-center shrink-0 transition-colors',
+                                    location.pathname === item.path ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-900'
                                 )}>
                                     {item.icon}
                                 </span>
@@ -156,7 +178,10 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                                             animate={{ opacity: 1, x: 0, width: 'auto' }}
                                             exit={{ opacity: 0, x: -5, width: 0 }}
                                             transition={{ duration: 0.2 }}
-                                            className="text-sm font-medium text-gray-800 whitespace-nowrap overflow-hidden"
+                                            className={cn(
+                                                "text-sm font-medium whitespace-nowrap overflow-hidden",
+                                                location.pathname === item.path ? 'text-blue-600 font-semibold' : 'text-slate-700'
+                                            )}
                                         >
                                             {t(item.labelKey as any)}
                                         </motion.span>
@@ -166,7 +191,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                         ))}
                         
                         {mobileActions && (
-                            <div className="md:hidden mt-auto flex flex-col gap-1 pt-2 border-t border-yellow-200/60">
+                            <div className="md:hidden mt-auto flex flex-col gap-1.5 pt-3 border-t border-slate-200/50">
                                 {mobileActions}
                             </div>
                         )}

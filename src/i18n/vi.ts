@@ -24,10 +24,12 @@ export default {
   'action.profile': 'Hồ sơ',
 
   // Sidebar
+  'sidebar.home': 'Trang chủ',
   'sidebar.system_orders': 'Đơn hệ thống',
   'sidebar.material_code': 'Mã vật tư',
   'sidebar.purchase_request': 'Yêu cầu mua hàng',
   'sidebar.new_features': 'Tính năng mới',
+  'sidebar.processed_orders': 'Đơn đã xử lý',
 
   // Tabs
   'tab.system': 'Hệ thống',
@@ -114,4 +116,35 @@ export default {
   'workshop.orphanedTitle': 'TAG-NAME chưa gán',
   'workshop.selectWorkshop': 'Chọn phân xưởng',
   'workshop.assign': 'Gán',
+
+  // Home Page
+  'home.hero.title': 'Quản lý Mua hàng',
+  'home.hero.subtitle': 'Thế hệ mới',
+  'home.hero.description': 'Tự động hóa đối soát, phân bổ thông minh và loại bỏ thao tác thủ công. Bức tranh toàn cảnh về quy trình cung ứng của bạn.',
+  'home.hero.cta': 'Bắt đầu làm việc',
+  
+  'home.feature.sync.title': 'Tự động đối soát đơn hàng',
+  'home.feature.sync.desc': 'Thuật toán thông minh tự động dò tìm các đơn hàng đã được xử lý xong và biến mất khỏi báo cáo gốc. Quản lý tình trạng đơn hàng mà không cần rà soát thủ công.',
+  'home.feature.sync.link': 'Xem danh sách đơn đã xử lý',
+  
+  'home.feature.import.title': 'Nhập liệu siêu tốc',
+  'home.feature.import.desc': 'Kéo thả file Excel xuất trực tiếp từ hệ thống SAP. Ứng dụng tự động bóc tách, lên màu và cấu trúc lại dữ liệu trong chớp mắt.',
+  
+  'home.feature.allocation.title': 'Phân bổ xưởng tự động',
+  'home.feature.allocation.desc': 'Nhận diện mã vật tư thông minh. Tự động gom nhóm đơn hàng về đúng phân xưởng, tổ đội mà không cần thao tác phân loại tay.',
+  
+  'home.feature.visual.title': 'Quản lý hình ảnh trực quan',
+  'home.feature.visual.desc': 'Đính kèm ảnh chụp thực tế cho từng vật tư. Đánh bay rủi ro mua sai hàng do mô tả văn bản trên SAP thiếu trực quan.',
+  
+  'home.feature.multi.title': 'Đa thiết bị & Đa ngôn ngữ',
+  'home.feature.multi.desc': 'Trải nghiệm Responsive mượt mà trên di động. Hỗ trợ song ngữ Tiếng Việt & Tiếng Trung để tối ưu luồng làm việc quốc tế.',
+
+  // Processed Orders
+  'processed.subtitle': 'Danh sách các đơn hàng đã biến mất khỏi file hệ thống (Đã xử lý xong).',
+  'processed.back_home': 'Quay lại trang chủ',
+  'processed.loading': 'Đang tải dữ liệu...',
+  'processed.empty.title': 'Chưa có đơn hàng nào biến mất.',
+  'processed.empty.subtitle': 'Hệ thống sẽ tự động đối chiếu và cập nhật danh sách này khi bạn nhập file mới.',
+  'processed.col.disappear_time': 'Thời gian biến mất',
+  'processed.col.status': 'Trạng thái',
 };

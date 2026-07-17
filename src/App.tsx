@@ -4,6 +4,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '@/features/auth/ui/LoginPage';
 import { PurchasePage } from '@/features/purchase/ui/PurchasePage';
+import { HomePage } from '@/features/purchase/ui/HomePage';
+import { ProcessedOrdersPage } from '@/features/purchase/ui/ProcessedOrdersPage';
 import { ProfilePage } from '@/features/auth/ui/ProfilePage';
 import { AdminUserManagement } from '@/features/auth/ui/AdminUserManagement';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
@@ -23,7 +25,9 @@ export default function App() {
 
                 {/* Protected Routes (Require Login) */}
                 <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<PurchasePage />} />
+                    <Route path="/dashboard" element={<HomePage />} />
+                    <Route path="/system-orders" element={<PurchasePage />} />
+                    <Route path="/processed-orders" element={<ProcessedOrdersPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Route>
