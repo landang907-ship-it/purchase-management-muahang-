@@ -125,6 +125,7 @@ export function ProfilePage() {
                 className="absolute inset-x-0 bottom-0 flex"
                 style={{ top: 'calc(env(safe-area-inset-top, 0px) + 56px)' }}
             >
+                <RightTaskBar />
                 <main
                     className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8 bg-[#f4f7ff]"
                     style={{ 
@@ -224,7 +225,6 @@ export function ProfilePage() {
                         )}
                     </div>
                 </main>
-                <RightTaskBar />
             </div>
         </div>
     );
