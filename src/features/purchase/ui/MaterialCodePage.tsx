@@ -56,6 +56,15 @@ export function MaterialCodePage() {
                 return;
             }
 
+            // Hàm bỏ dấu tiếng Việt để so sánh chính xác dù khác bảng mã Unicode
+            const normalizeStr = (str: string) => {
+                return String(str || '')
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim();
+            };
+
             // Tìm dòng header chứa các cột cần thiết (tìm trong 50 dòng đầu)
             let headerRowIdx = -1;
             let codeIdx = -1;
@@ -63,15 +72,15 @@ export function MaterialCodePage() {
 
             for (let i = 0; i < Math.min(rows.length, 50); i++) {
                 const row = rows[i] || [];
-                const rowStrs = row.map(cell => String(cell || '').trim().toLowerCase());
+                const rowStrs = row.map(cell => normalizeStr(cell));
                 
-                // Mở rộng các từ khóa tìm kiếm cột mã vật tư
-                const cIdx = rowStrs.findIndex(s => s.includes('vật tư') || s.includes('mã liệu') || s.includes('mã vt') || s.includes('material'));
+                // Mở rộng các từ khóa tìm kiếm cột mã vật tư (đã bỏ dấu)
+                const cIdx = rowStrs.findIndex(s => s.includes('vat tu') || s.includes('ma lieu') || s.includes('ma vt') || s.includes('material'));
                 
-                // Mở rộng các từ khóa tìm kiếm cột mô tả
-                const dIdx = rowStrs.findIndex(s => s.includes('mô tả') || s.includes('tên vật tư') || s.includes('description') || s.includes('chi tiết') || (s.includes('tên') && cIdx !== -1 && rowStrs.indexOf(s) !== cIdx));
+                // Mở rộng các từ khóa tìm kiếm cột mô tả (đã bỏ dấu)
+                const dIdx = rowStrs.findIndex(s => s.includes('mo ta') || s.includes('ten vat tu') || s.includes('description') || s.includes('chi tiet') || (s.includes('ten') && cIdx !== -1 && rowStrs.indexOf(s) !== cIdx));
 
-                if (cIdx !== -1 && dIdx !== -1) {
+                if (cIdx !== -1 && dIdx !== -1 && cIdx !== dIdx) {
                     headerRowIdx = i;
                     codeIdx = cIdx;
                     descIdx = dIdx;
