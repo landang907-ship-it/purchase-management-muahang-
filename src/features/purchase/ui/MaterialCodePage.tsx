@@ -2,13 +2,28 @@ import { Header } from './Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Upload } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useRef } from 'react';
+import { useToastQueue } from '@/shared/hooks/useToastQueue';
 
 export function MaterialCodePage() {
     const { t } = useTranslation();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { addToast } = useToastQueue();
 
     const openFilePicker = () => {
-        // TODO: implement material code file upload
-        console.log('Import material code file');
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // TODO: implement material code file upload logic
+            console.log('Import material code file:', file.name);
+            addToast(`Đã chọn file: ${file.name}`, 'info');
+        }
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     return (
@@ -37,6 +52,14 @@ export function MaterialCodePage() {
                     </div>
                 </main>
             </div>
+            
+            <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept=".xlsx, .xls, .csv" 
+                onChange={handleFileChange} 
+            />
         </div>
     );
 }
