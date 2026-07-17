@@ -189,10 +189,10 @@ export function LoginPage() {
 
     return (
         <main
-            className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-8 overflow-hidden relative"
+            className="h-[100dvh] w-full flex flex-col items-center justify-center px-4 overflow-hidden relative"
             style={{
-                paddingTop: 'calc(env(safe-area-inset-top, 0px) + 20px)',
-                paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 20px)',
+                paddingTop: 'env(safe-area-inset-top, 0px)',
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)',
             }}
         >
             {/* Background image */}
@@ -207,12 +207,12 @@ export function LoginPage() {
             />
 
             {/* Apple-style Central Glass Card */}
-            <div className="w-full max-w-[420px] anim-fade-up-100 flex flex-col items-center relative z-10">
+            <div className="w-full max-w-[420px] max-h-full flex flex-col items-center relative z-10 overflow-y-auto scrollbar-hide py-4 anim-fade-up-100">
                 
                 {/* Header inside the card area to keep it grouped */}
-                <div className="flex flex-col items-center text-white drop-shadow-lg mb-8 text-center">
-                    <div className="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-[24px] border border-white/40 flex items-center justify-center mb-6 shadow-xl">
-                        <Fingerprint size={40} strokeWidth={1.5} className="text-white" />
+                <div className="flex flex-col items-center text-white drop-shadow-lg mb-4 md:mb-6 text-center shrink-0">
+                    <div className="w-14 h-14 md:w-20 md:h-20 bg-white/20 backdrop-blur-xl rounded-[20px] md:rounded-[24px] border border-white/40 flex items-center justify-center mb-3 md:mb-5 shadow-xl">
+                        <Fingerprint className="text-white w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Want Want Việt Nam</h1>
                     <h2 className="text-sm md:text-base font-medium tracking-widest mt-1 opacity-90">旺旺集团越南</h2>
@@ -220,13 +220,13 @@ export function LoginPage() {
 
                 <section
                     className={cn(
-                        "w-full bg-white/20 backdrop-blur-2xl rounded-[32px]",
+                        "w-full bg-white/20 backdrop-blur-2xl rounded-[28px] md:rounded-[32px] shrink-0",
                         "shadow-[0_8px_32px_0_rgba(0,0,0,0.15)]",
-                        "p-6 md:p-8 flex flex-col gap-6 border border-white/40"
+                        "p-5 md:p-8 flex flex-col gap-4 md:gap-6 border border-white/40"
                     )}
                     aria-label="Thông tin đăng nhập"
                 >
-                    <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-5">
+                    <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3 md:gap-5">
                         
                         {/* Language Toggle (Apple style segment control) */}
                         <div className="flex flex-col gap-2">
@@ -339,7 +339,7 @@ export function LoginPage() {
                 </section>
             </div>
 
-            <div className="absolute bottom-6 left-0 right-0 anim-fade-up-200">
+            <div className="absolute bottom-2 md:bottom-6 left-0 right-0 anim-fade-up-200">
                 <SiteFooter />
             </div>
 
