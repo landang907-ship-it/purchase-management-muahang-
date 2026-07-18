@@ -7,6 +7,7 @@ import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { Toast } from '@/shared/ui/Toast';
 import { read, utils } from 'xlsx';
 import { fetchMaterialCodes, upsertMaterialCodes, deleteAllMaterialCodes, type MaterialCode } from '../services/materialCodeService';
+import { fetchMaterialImages, type MaterialImageMap } from '../services/materialService';
 import { cn } from '@/shared/lib/cn';
 
 export function MaterialCodePage() {
@@ -16,7 +17,9 @@ export function MaterialCodePage() {
     const [materials, setMaterials] = useState<MaterialCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
+    const [importing, setImporting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [images, setImages] = useState<Record<string, MaterialImageMap>>({});
 
     useEffect(() => {
         loadMaterials();
@@ -151,6 +154,21 @@ export function MaterialCodePage() {
     // Chỉ hiển thị tối đa 100 kết quả đầu tiên để trình duyệt không bị đơ
     const displayMaterials = filteredMaterials.slice(0, 100);
 
+    useEffect(() => {
+        const codes = displayMaterials.map(m => m.code);
+        if (codes.length === 0) return;
+        
+        // Fetch missing images
+        const missingCodes = codes.filter(c => !images[c]);
+        if (missingCodes.length === 0) return;
+
+        fetchMaterialImages(missingCodes).then(map => {
+            if (Object.keys(map).length > 0) {
+                setImages(prev => ({ ...prev, ...map }));
+            }
+        });
+    }, [displayMaterials, images]);
+
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
             <Header
@@ -212,6 +230,9 @@ export function MaterialCodePage() {
                                 <table className="w-full text-left border-collapse">
                                     <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm">
                                         <tr>
+                                            <th className="px-4 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-200 w-16">
+                                                Ảnh
+                                            </th>
                                             <th className="px-4 py-3 text-xs font-semibold text-slate-600 uppercase tracking-wider border-b border-slate-200">
                                                 Vật tư
                                             </th>
@@ -223,14 +244,14 @@ export function MaterialCodePage() {
                                     <tbody className="divide-y divide-slate-100">
                                         {loading ? (
                                             <tr>
-                                                <td colSpan={2} className="px-4 py-8 text-center text-slate-500">
+                                                <td colSpan={3} className="px-4 py-8 text-center text-slate-500">
                                                     <Loader2 className="animate-spin mx-auto mb-2 text-blue-500" size={24} />
                                                     Đang tải dữ liệu...
                                                 </td>
                                             </tr>
                                         ) : materials.length === 0 ? (
                                             <tr>
-                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                <td colSpan={3} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
                                                         <FileText className="mx-auto mb-3 text-slate-300" size={48} />
                                                         <p className="text-lg font-medium text-slate-700 mb-1">
@@ -242,7 +263,7 @@ export function MaterialCodePage() {
                                             </tr>
                                         ) : !searchQuery ? (
                                             <tr>
-                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                <td colSpan={3} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
                                                         <Search className="mx-auto mb-3 text-blue-300" size={48} />
                                                         <p className="text-lg font-medium text-slate-700 mb-1">
@@ -254,7 +275,7 @@ export function MaterialCodePage() {
                                             </tr>
                                         ) : displayMaterials.length === 0 ? (
                                             <tr>
-                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                <td colSpan={3} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
                                                         <Search className="mx-auto mb-3 text-slate-300" size={48} />
                                                         <p className="text-lg font-medium text-slate-700 mb-1">
@@ -266,6 +287,22 @@ export function MaterialCodePage() {
                                         ) : (
                                             displayMaterials.map((item, idx) => (
                                                 <tr key={item.id || idx} className="hover:bg-blue-50/50 transition-colors">
+                                                    <td className="px-4 py-2 border-b border-slate-100 align-middle">
+                                                        {images[item.code]?.thumb_url ? (
+                                                            <div className="w-10 h-10 rounded-md border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center">
+                                                                <img
+                                                                    src={images[item.code].thumb_url}
+                                                                    alt={item.code}
+                                                                    className="w-full h-full object-cover"
+                                                                    loading="lazy"
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <div className="w-10 h-10 rounded-md border border-slate-200 bg-slate-50 flex items-center justify-center">
+                                                                <span className="text-slate-300 text-[10px]">No img</span>
+                                                            </div>
+                                                        )}
+                                                    </td>
                                                     <td className="px-4 py-3 text-sm font-medium text-slate-700 whitespace-nowrap">
                                                         {item.code}
                                                     </td>
