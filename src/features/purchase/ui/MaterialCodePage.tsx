@@ -17,7 +17,6 @@ export function MaterialCodePage() {
     const [materials, setMaterials] = useState<MaterialCode[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
-    const [importing, setImporting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [images, setImages] = useState<Record<string, MaterialImageMap>>({});
 
