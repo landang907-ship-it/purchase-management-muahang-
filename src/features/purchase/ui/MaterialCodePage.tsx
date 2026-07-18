@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Header } from './Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Upload, FileText, Loader2, Search } from 'lucide-react';
@@ -139,10 +139,14 @@ export function MaterialCodePage() {
         }
     };
 
-    const filteredMaterials = materials.filter(m => 
-        (m.code && m.code.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (m.description && m.description.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const filteredMaterials = useMemo(() => {
+        if (!searchQuery) return materials;
+        const query = searchQuery.toLowerCase();
+        return materials.filter(m => 
+            (m.code && m.code.toLowerCase().includes(query)) ||
+            (m.description && m.description.toLowerCase().includes(query))
+        );
+    }, [materials, searchQuery]);
 
     // Chỉ hiển thị tối đa 100 kết quả đầu tiên để trình duyệt không bị đơ
     const displayMaterials = filteredMaterials.slice(0, 100);

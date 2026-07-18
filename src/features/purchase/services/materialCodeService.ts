@@ -9,29 +9,42 @@ export interface MaterialCode {
 
 /**
  * Fetches all material codes from the database.
- * Uses pagination to bypass the default 1000 rows limit of Supabase.
+ * Uses a count query followed by parallel requests to bypass the default 1000 rows limit of Supabase.
  */
 export async function fetchMaterialCodes(): Promise<MaterialCode[]> {
-    let allData: MaterialCode[] = [];
-    let from = 0;
+    const { count, error: countError } = await supabase
+        .from('material_codes')
+        .select('*', { count: 'exact', head: true });
+
+    if (countError) {
+        throw new Error(countError.message);
+    }
+
+    if (!count) return [];
+
     const step = 1000;
+    const promises = [];
+    
+    for (let from = 0; from < count; from += step) {
+        promises.push(
+            supabase
+                .from('material_codes')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .range(from, from + step - 1)
+        );
+    }
 
-    while (true) {
-        const { data, error } = await supabase
-            .from('material_codes')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .range(from, from + step - 1);
-
-        if (error) {
-            throw new Error(error.message);
+    const results = await Promise.all(promises);
+    let allData: MaterialCode[] = [];
+    
+    for (const res of results) {
+        if (res.error) {
+            throw new Error(res.error.message);
         }
-        
-        if (!data || data.length === 0) break;
-        allData = [...allData, ...data];
-        
-        if (data.length < step) break;
-        from += step;
+        if (res.data) {
+            allData = allData.concat(res.data);
+        }
     }
 
     return allData;
