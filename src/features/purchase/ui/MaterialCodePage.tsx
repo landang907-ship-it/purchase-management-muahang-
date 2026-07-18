@@ -228,17 +228,38 @@ export function MaterialCodePage() {
                                                     Đang tải dữ liệu...
                                                 </td>
                                             </tr>
-                                        ) : displayMaterials.length === 0 ? (
+                                        ) : materials.length === 0 ? (
                                             <tr>
                                                 <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
                                                     <div className="max-w-md mx-auto">
                                                         <FileText className="mx-auto mb-3 text-slate-300" size={48} />
                                                         <p className="text-lg font-medium text-slate-700 mb-1">
-                                                            {searchQuery ? 'Không tìm thấy kết quả nào' : 'Chưa có mã vật tư nào'}
+                                                            Chưa có mã vật tư nào
                                                         </p>
-                                                        {!searchQuery && (
-                                                            <p className="text-sm">Vui lòng chọn nút "Nhập file" ở góc trên bên phải để tải lên danh sách mã vật tư từ file Excel.</p>
-                                                        )}
+                                                        <p className="text-sm">Vui lòng chọn nút "Nhập file" ở góc trên bên phải để tải lên danh sách mã vật tư từ file Excel.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ) : !searchQuery ? (
+                                            <tr>
+                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                    <div className="max-w-md mx-auto">
+                                                        <Search className="mx-auto mb-3 text-blue-300" size={48} />
+                                                        <p className="text-lg font-medium text-slate-700 mb-1">
+                                                            Sẵn sàng tìm kiếm
+                                                        </p>
+                                                        <p className="text-sm">Vui lòng gõ mã hoặc tên vào ô tìm kiếm phía trên để hiển thị danh sách vật tư.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ) : displayMaterials.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={2} className="px-4 py-12 text-center text-slate-500">
+                                                    <div className="max-w-md mx-auto">
+                                                        <Search className="mx-auto mb-3 text-slate-300" size={48} />
+                                                        <p className="text-lg font-medium text-slate-700 mb-1">
+                                                            Không tìm thấy kết quả nào
+                                                        </p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -258,7 +279,7 @@ export function MaterialCodePage() {
                                 </table>
                             </div>
                             
-                            {filteredMaterials.length > 100 && (
+                            {!!searchQuery && filteredMaterials.length > 100 && (
                                 <div className="p-3 bg-slate-50 border-t border-slate-200 text-center text-sm text-slate-500">
                                     Đang hiển thị 100 kết quả đầu tiên. Vui lòng gõ thêm từ khóa để tìm kiếm chính xác hơn.
                                 </div>
