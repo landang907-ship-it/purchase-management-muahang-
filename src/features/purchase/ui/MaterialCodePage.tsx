@@ -7,7 +7,7 @@ import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { Toast } from '@/shared/ui/Toast';
 import { read, utils } from 'xlsx';
 import { fetchMaterialCodes, upsertMaterialCodes, deleteAllMaterialCodes, type MaterialCode } from '../services/materialCodeService';
-import { fetchMaterialImages, type MaterialImageMap } from '../services/materialService';
+import { fetchMaterialImages, fetchAllMaterialCodesWithImages, type MaterialImageMap } from '../services/materialService';
 import { cn } from '@/shared/lib/cn';
 
 export function MaterialCodePage() {
@@ -19,6 +19,7 @@ export function MaterialCodePage() {
     const [importing, setImporting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [images, setImages] = useState<Record<string, MaterialImageMap>>({});
+    const [codesWithImages, setCodesWithImages] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         loadMaterials();
@@ -27,8 +28,12 @@ export function MaterialCodePage() {
     const loadMaterials = async () => {
         setLoading(true);
         try {
-            const data = await fetchMaterialCodes();
+            const [data, imgCodes] = await Promise.all([
+                fetchMaterialCodes(),
+                fetchAllMaterialCodesWithImages()
+            ]);
             setMaterials(data);
+            setCodesWithImages(imgCodes);
         } catch (error) {
             console.error('Error fetching materials:', error);
             showToast('Lỗi khi tải danh sách vật tư', 'error');
@@ -144,11 +149,20 @@ export function MaterialCodePage() {
     const filteredMaterials = useMemo(() => {
         if (!searchQuery) return materials;
         const query = searchQuery.toLowerCase();
-        return materials.filter(m => 
+        
+        const filtered = materials.filter(m => 
             (m.code && m.code.toLowerCase().includes(query)) ||
             (m.description && m.description.toLowerCase().includes(query))
         );
-    }, [materials, searchQuery]);
+
+        // Ưu tiên hiển thị các mã vật tư có hình ảnh lên đầu tiên
+        return filtered.sort((a, b) => {
+            const aHasImg = codesWithImages.has(a.code) ? 1 : 0;
+            const bHasImg = codesWithImages.has(b.code) ? 1 : 0;
+            // Xếp giảm dần: 1 (có ảnh) lên trước 0 (không có ảnh)
+            return bHasImg - aHasImg;
+        });
+    }, [materials, searchQuery, codesWithImages]);
 
     // Chỉ hiển thị tối đa 100 kết quả đầu tiên để trình duyệt không bị đơ
     const displayMaterials = filteredMaterials.slice(0, 100);

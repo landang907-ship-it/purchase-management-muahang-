@@ -68,3 +68,26 @@ export async function fetchMaterialImages(materialCodes: string[]): Promise<Reco
     
     return map;
 }
+
+/**
+ * Lấy danh sách TẤT CẢ các mã vật tư đã có hình ảnh trong hệ thống
+ * Dùng để ưu tiên hiển thị khi tìm kiếm
+ */
+export async function fetchAllMaterialCodesWithImages(): Promise<Set<string>> {
+    try {
+        const { data, error } = await supabase
+            .from('materials')
+            .select('material_code')
+            .not('thumb_url', 'is', null);
+
+        if (error) {
+            console.error('Error fetching material codes with images:', error);
+            return new Set();
+        }
+
+        return new Set(data?.map(item => item.material_code) || []);
+    } catch (err) {
+        console.error('Failed to fetch material codes with images:', err);
+        return new Set();
+    }
+}
