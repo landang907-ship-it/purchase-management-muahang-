@@ -61,16 +61,22 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
 
     // 3. Insert in chunks of 500 to avoid payload size limits
     const chunkSize = 500;
-    for (let i = 0; i < ordersToInsert.length; i += chunkSize) {
-        const chunk = ordersToInsert.slice(i, i + chunkSize);
-        const { error: insertErr } = await supabase
-            .from('purchase_orders')
-            .upsert(chunk, { onConflict: 'user_id, unique_order_key' });
+    try {
+        for (let i = 0; i < ordersToInsert.length; i += chunkSize) {
+            const chunk = ordersToInsert.slice(i, i + chunkSize);
+            const { error: insertErr } = await supabase
+                .from('purchase_orders')
+                .upsert(chunk, { onConflict: 'user_id,unique_order_key' });
 
-        if (insertErr) {
-            console.error('[savePurchaseDataV2] Error inserting chunk:', insertErr);
-            throw insertErr;
+            if (insertErr) {
+                console.error('[savePurchaseDataV2] Error inserting chunk:', insertErr);
+                throw insertErr;
+            }
         }
+    } catch (err) {
+        // Rollback batch creation if insert fails to prevent empty batches on reload
+        await supabase.from('import_batches').delete().eq('id', batch.id);
+        throw err;
     }
 }
 

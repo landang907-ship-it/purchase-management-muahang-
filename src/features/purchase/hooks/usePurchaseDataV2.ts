@@ -60,8 +60,8 @@ export function usePurchaseDataV2({ userId, onMessage, t: _t }: UsePurchaseDataV
             queryClient.invalidateQueries({ queryKey: ['purchaseOrders', userId] });
         },
         onError: (err: any) => {
-            const msg = err instanceof Error ? err.message : 'Lỗi kết nối';
-            onMessage?.(`Không thể lưu lên Supabase: ${msg}`, 'warning', 5000);
+            const msg = err?.message || (err instanceof Error ? err.message : 'Lỗi kết nối');
+            onMessage?.(`Lỗi Supabase: ${msg}`, 'warning', 5000);
             console.error('[Supabase Save V2]', err);
         }
     });
