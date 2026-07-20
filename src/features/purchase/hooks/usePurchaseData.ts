@@ -4,6 +4,7 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { loadPurchaseData, savePurchaseData } from '@/features/purchase/services/purchaseService';
+import { supabase } from '@/features/purchase/services/supabaseClient';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 import type { ToastVariant } from '@/shared/hooks/useToastQueue';
 
@@ -39,9 +40,42 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
             setIsLoading(true);
             try {
                 const saved = await loadPurchaseData(userId);
+                
                 if (isMounted && saved.length > 0) {
-                    setRows(saved);
-                    onMessage?.(t('import.success', { count: saved.length }), 'success');
+                    // Fetch urgent metadata from purchase_orders
+                    const { data: urgentData } = await supabase
+                        .from('purchase_orders')
+                        .select('unique_order_key, is_urgent, urgent_reason, urgent_image_url')
+                        .eq('user_id', userId)
+                        .eq('is_urgent', true);
+
+                    const urgentMap = new Map();
+                    if (urgentData) {
+                        for (const item of urgentData) {
+                            urgentMap.set(item.unique_order_key, item);
+                        }
+                    }
+
+                    // Merge urgent metadata into the raw excel rows
+                    const merged = saved.map(row => {
+                        const prNumber = row['Yc.m.hàng'] || '';
+                        const itemNo = row['Vật tư'] || '';
+                        const key = `${prNumber}_${itemNo}`;
+                        
+                        if (urgentMap.has(key)) {
+                            const meta = urgentMap.get(key);
+                            return {
+                                ...row,
+                                is_urgent: meta.is_urgent,
+                                urgent_reason: meta.urgent_reason,
+                                urgent_image_url: meta.urgent_image_url
+                            };
+                        }
+                        return row;
+                    });
+
+                    setRows(merged);
+                    onMessage?.(t('import.success', { count: merged.length }), 'success');
                 }
             } catch (err) {
                 // eslint-disable-next-line no-console
