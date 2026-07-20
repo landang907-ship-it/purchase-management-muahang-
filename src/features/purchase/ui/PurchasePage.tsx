@@ -163,11 +163,13 @@ export function PurchasePage() {
                     </div>
 
                     {/* Urgent Notifications Panel */}
-                    {!showEmpty && Object.values(urgentCountsPerWorkshop).some(c => c > 0) && (
+                    {!showEmpty && Object.entries(urgentCountsPerWorkshop).some(([wsName, count]) => count > 0 && selectedWorkshops.includes(wsName)) && (
                         <div className="bg-red-50 px-3 py-2 border-b border-red-100 shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-hide">
                             <span className="text-red-600 text-[11px] font-semibold shrink-0">🚨 Cần gấp:</span>
                             <div className="flex items-center gap-2">
-                                {Object.entries(urgentCountsPerWorkshop).filter(([_, count]) => count > 0).map(([wsName, count]) => (
+                                {Object.entries(urgentCountsPerWorkshop)
+                                    .filter(([wsName, count]) => count > 0 && selectedWorkshops.includes(wsName))
+                                    .map(([wsName, count]) => (
                                     <button
                                         key={wsName}
                                         onClick={() => {
