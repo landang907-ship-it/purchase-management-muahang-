@@ -44,20 +44,30 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
 
     if (batchErr) throw batchErr;
 
-    // 2. Prepare orders for bulk insert
-    const ordersToInsert = rows.map((r: any) => ({
-        batch_id: batch.id,
-        user_id: userId,
-        pr_number: r['Yc.m.hàng'] || '',
-        item_no: r['Vật tư'] || '',
-        description: r['Văn bản ngắn'] || '',
-        requester: r['Ng.yêu cầu'] || '',
-        quantity: r['Số lượng'] ? Number(r['Số lượng']) : 0,
-        unit: r['Đơn vị đo lường'] || '',
-        status: r['T.trg xử lý'] || '',
-        tag_name: r['TAG-NAME'] || '',
-        unique_order_key: `${r['Yc.m.hàng'] || ''}_${r['Vật tư'] || ''}`,
-    }));
+    // 2. Prepare orders for bulk insert, handling duplicates within the file
+    const ordersMap = new Map<string, any>();
+    
+    for (const r of rows) {
+        const prNumber = r['Yc.m.hàng'] || '';
+        const itemNo = r['Vật tư'] || '';
+        const uniqueKey = `${prNumber}_${itemNo}`;
+        
+        ordersMap.set(uniqueKey, {
+            batch_id: batch.id,
+            user_id: userId,
+            pr_number: prNumber,
+            item_no: itemNo,
+            description: r['Văn bản ngắn'] || '',
+            requester: r['Ng.yêu cầu'] || '',
+            quantity: r['Số lượng'] ? Number(r['Số lượng']) : 0,
+            unit: r['Đơn vị'] || '',
+            status: r['T.trg xử lý'] || '',
+            tag_name: r['TAG-NAME'] || '',
+            unique_order_key: uniqueKey,
+        });
+    }
+
+    const ordersToInsert = Array.from(ordersMap.values());
 
     // 3. Insert in chunks of 500 to avoid payload size limits
     const chunkSize = 500;
