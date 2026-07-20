@@ -62,6 +62,16 @@ export function ProcessedOrdersPage() {
         return map;
     }, [workshops]);
 
+    const tagToWorkshopMap = useMemo(() => {
+        const map: Record<string, string> = {};
+        for (const w of workshops) {
+            for (const tag of w.tagValues) {
+                map[tag] = w.name;
+            }
+        }
+        return map;
+    }, [workshops]);
+
     const visibleOrders = useMemo(() => {
         if (selectedWorkshops.length === 0) return [];
 
@@ -150,6 +160,7 @@ export function ProcessedOrdersPage() {
                                             <th className="px-4 py-3">{t('col.Văn bản ngắn' as any)}</th>
                                             <th className="px-4 py-3">{t('col.Ng.yêu cầu' as any)}</th>
                                             <th className="px-4 py-3 text-right">{t('col.Số lượng' as any)}</th>
+                                            <th className="px-4 py-3">{t('detail.workshop' as any)}</th>
                                             <th className="px-4 py-3">{t('processed.col.status' as any)}</th>
                                             <th className="px-4 py-3 text-right">{t('processed.col.disappear_time' as any)}</th>
                                         </tr>
@@ -165,6 +176,9 @@ export function ProcessedOrdersPage() {
                                                 <td className="px-4 py-3 text-slate-600">{order.requester}</td>
                                                 <td className="px-4 py-3 text-right font-medium text-slate-700">
                                                     {order.quantity} {order.unit}
+                                                </td>
+                                                <td className="px-4 py-3 text-slate-600">
+                                                    {order.tag_name ? (tagToWorkshopMap[order.tag_name] || order.tag_name) : '-'}
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
