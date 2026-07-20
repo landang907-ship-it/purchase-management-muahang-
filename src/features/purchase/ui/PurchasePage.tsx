@@ -17,7 +17,7 @@ import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTranslation } from '@/i18n/useTranslation';
-import { usePurchaseData } from '@/features/purchase/hooks/usePurchaseData';
+import { usePurchaseDataV2 as usePurchaseData } from '@/features/purchase/hooks/usePurchaseDataV2';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
