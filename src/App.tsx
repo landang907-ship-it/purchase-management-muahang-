@@ -6,6 +6,7 @@ import { LoginPage } from '@/features/auth/ui/LoginPage';
 import { PurchasePage } from '@/features/purchase/ui/PurchasePage';
 import { HomePage } from '@/features/purchase/ui/HomePage';
 import { ProcessedOrdersPage } from '@/features/purchase/ui/ProcessedOrdersPage';
+import { UrgentOrdersPage } from '@/features/purchase/ui/UrgentOrdersPage';
 import { MaterialCodePage } from '@/features/purchase/ui/MaterialCodePage';
 import { ProfilePage } from '@/features/auth/ui/ProfilePage';
 import { AdminUserManagement } from '@/features/auth/ui/AdminUserManagement';
@@ -28,6 +29,7 @@ export default function App() {
                 <Route element={<ProtectedRoute />}>
                     <Route path="/dashboard" element={<HomePage />} />
                     <Route path="/system-orders" element={<PurchasePage />} />
+                    <Route path="/urgent-orders" element={<UrgentOrdersPage />} />
                     <Route path="/processed-orders" element={<ProcessedOrdersPage />} />
                     <Route path="/materials" element={<MaterialCodePage />} />
                     <Route path="/profile" element={<ProfilePage />} />

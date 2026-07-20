@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useUrgentCount } from '@/features/purchase/hooks/useUrgentCount';
 
 const COLLAPSED_WIDTH = 60;
 const EXPANDED_WIDTH = 220;
@@ -32,6 +33,7 @@ const RIGHT_TASK_ITEMS = [
         id: 'purchase_request',
         labelKey: 'sidebar.purchase_request',
         icon: <ShoppingCart size={16} strokeWidth={2} />,
+        path: '/urgent-orders',
     },
 
     {
@@ -54,6 +56,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const urgentCount = useUrgentCount(user?.user);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -163,10 +166,15 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                                 title={(!isExpanded && !isMobile) ? t(item.labelKey as any) : undefined}
                             >
                                 <span className={cn(
-                                    'flex items-center justify-center shrink-0 transition-colors',
+                                    'relative flex items-center justify-center shrink-0 transition-colors',
                                     location.pathname === item.path ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-900'
                                 )}>
                                     {item.icon}
+                                    {item.id === 'purchase_request' && urgentCount > 0 && (
+                                        <span className="absolute -top-1 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                                            {urgentCount > 99 ? '99+' : urgentCount}
+                                        </span>
+                                    )}
                                 </span>
 
                                 <AnimatePresence mode="wait">
