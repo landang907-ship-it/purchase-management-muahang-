@@ -10,8 +10,6 @@ interface MobilePurchaseListProps {
     rows: PurchaseRow[];
     materialImages: Record<string, MaterialImageMap>;
     onImageUploaded: (materialCode: string, thumbUrl: string, origUrl: string) => void;
-    onFilterClick?: () => void;
-    workshopName?: string;
     onDataUpdated?: () => void;
 }
 
@@ -33,8 +31,6 @@ export function MobilePurchaseList({
     rows,
     materialImages,
     onImageUploaded,
-    onFilterClick,
-    workshopName,
     onDataUpdated
 }: MobilePurchaseListProps) {
     const { t } = useTranslation();
