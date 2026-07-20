@@ -114,9 +114,14 @@ export function MobilePurchaseList({
                                 {/* Item Name */}
                                 <div className="mb-3">
                                     <div className="text-[15px] font-medium text-gray-800 leading-snug line-clamp-2">
-                                        {item.is_urgent && (
+                                        {item.is_urgent && (!item.urgent_status || item.urgent_status === 'pending') && (
                                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-bold mr-1.5 uppercase tracking-wide">
                                                 🔥 Cần gấp
+                                            </span>
+                                        )}
+                                        {item.is_urgent && item.urgent_status === 'processing' && (
+                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 text-[10px] font-bold mr-1.5 uppercase tracking-wide">
+                                                🚚 Đang mua gấp
                                             </span>
                                         )}
                                         {name}

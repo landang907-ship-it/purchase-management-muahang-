@@ -30,12 +30,14 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
     const [urgentReason, setUrgentReason] = useState('');
     const [urgentFile, setUrgentFile] = useState<File | null>(null);
     const [isSubmittingUrgent, setIsSubmittingUrgent] = useState(false);
+    const [urgentStatus, setUrgentStatus] = useState<'pending'|'processing'|'completed'>('pending');
 
     useEffect(() => {
         if (isOpen && data) {
             document.body.style.overflow = 'hidden';
             setIsClosing(false);
             setUrgentReason(data.urgent_reason || '');
+            setUrgentStatus(data.urgent_status || 'pending');
             setUrgentFile(null);
         } else {
             document.body.style.overflow = 'unset';
@@ -79,7 +81,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
         }
     };
 
-    const handleUrgentSubmit = async () => {
+    const handleUrgentSubmit = async (newStatus?: 'pending' | 'processing' | 'completed') => {
         if (!user?.user) return;
         if (!urgentReason.trim()) {
             alert('Vui lòng nhập lý do cần gấp!');
@@ -87,6 +89,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
         }
 
         try {
+            const targetStatus = newStatus || urgentStatus;
             setIsSubmittingUrgent(true);
             let imageUrl = data.urgent_image_url;
 
@@ -95,12 +98,15 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                 imageUrl = await uploadUrgentImage(urgentFile, uniqueKey);
             }
 
-            await updateUrgentStatus(user.user, uniqueKey, true, urgentReason, imageUrl || undefined);
+            await updateUrgentStatus(user.user, uniqueKey, true, targetStatus, urgentReason, imageUrl || undefined);
             
             // Mutate local data for immediate UI update
             data.is_urgent = true;
+            data.urgent_status = targetStatus;
             data.urgent_reason = urgentReason;
             data.urgent_image_url = imageUrl;
+
+            setUrgentStatus(targetStatus);
 
             if (onDataUpdated) onDataUpdated();
             
@@ -131,11 +137,16 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
             >
                 {/* Header */}
                 <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 bg-gray-50/50 sm:rounded-t-xl rounded-t-xl shrink-0">
-                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide">
+                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide flex items-center">
                         {t('detail.title')} 
-                        {data.is_urgent && (
+                        {data.is_urgent && (!data.urgent_status || data.urgent_status === 'pending') && (
                             <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-100 text-red-600 text-xs font-bold uppercase tracking-wide">
                                 🔥 Cần gấp
+                            </span>
+                        )}
+                        {data.is_urgent && data.urgent_status === 'processing' && (
+                            <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-orange-100 text-orange-600 text-xs font-bold uppercase tracking-wide">
+                                🚚 Đang mua gấp
                             </span>
                         )}
                     </h3>
@@ -292,17 +303,35 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                                 </div>
                             </div>
 
-                            <button 
-                                onClick={handleUrgentSubmit}
-                                disabled={isSubmittingUrgent}
-                                className="w-full mt-2 py-2.5 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-md"
-                            >
-                                {isSubmittingUrgent ? (
-                                    <><Loader2 size={16} className="animate-spin" /> Đang xử lý...</>
-                                ) : (
-                                    data.is_urgent ? 'Cập nhật thông tin Cần gấp' : 'Xác nhận Cần gấp'
-                                )}
-                            </button>
+                            <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                                <button 
+                                    onClick={() => handleUrgentSubmit('pending')}
+                                    disabled={isSubmittingUrgent}
+                                    className={cn(
+                                        "flex-1 py-2 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm",
+                                        urgentStatus === 'pending' 
+                                            ? "bg-red-500 hover:bg-red-600 text-white" 
+                                            : "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
+                                    )}
+                                >
+                                    {isSubmittingUrgent && urgentStatus === 'pending' ? <Loader2 size={16} className="animate-spin" /> : null}
+                                    🔥 Cảnh báo khẩn
+                                </button>
+                                
+                                <button 
+                                    onClick={() => handleUrgentSubmit('processing')}
+                                    disabled={isSubmittingUrgent}
+                                    className={cn(
+                                        "flex-1 py-2 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm",
+                                        urgentStatus === 'processing' 
+                                            ? "bg-orange-500 hover:bg-orange-600 text-white" 
+                                            : "bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200"
+                                    )}
+                                >
+                                    {isSubmittingUrgent && urgentStatus === 'processing' ? <Loader2 size={16} className="animate-spin" /> : null}
+                                    🚚 Đang xử lý mua
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

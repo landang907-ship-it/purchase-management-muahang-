@@ -77,6 +77,9 @@ export function PurchasePage() {
         urgentOnly,
         setUrgentOnly,
         urgentCountsPerWorkshop,
+        urgentProcessingOnly,
+        setUrgentProcessingOnly,
+        urgentProcessingCountsPerWorkshop,
         resetForNewImport,
     } = usePurchaseFilters({ rows, workshops });
 
@@ -176,7 +179,8 @@ export function PurchasePage() {
                                                 if (!selectedWorkshops.includes(wsName)) {
                                                     setSelectedWorkshops([wsName]);
                                                 }
-                                                setUrgentOnly(true);
+                                                setUrgentProcessingOnly(false);
+                                                setUrgentOnly(!urgentOnly);
                                             }}
                                             className={cn(
                                                 "flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border transition-colors shrink-0",
@@ -204,6 +208,55 @@ export function PurchasePage() {
                                         className="ml-2 text-[11px] text-gray-500 hover:text-gray-800 underline shrink-0"
                                     >
                                         Bỏ lọc khẩn cấp
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Processing Notifications Panel */}
+                    {!showEmpty && selectedWorkshops.length > 0 && (
+                        <div className="bg-orange-50 px-3 py-2 border-b border-orange-100 shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                            <span className="text-orange-600 text-[11px] font-semibold shrink-0">🚚 Đang mua gấp:</span>
+                            <div className="flex items-center gap-2">
+                                {selectedWorkshops.map((wsName) => {
+                                    const count = urgentProcessingCountsPerWorkshop[wsName] || 0;
+                                    return (
+                                        <button
+                                            key={`proc-${wsName}`}
+                                            onClick={() => {
+                                                if (!selectedWorkshops.includes(wsName)) {
+                                                    setSelectedWorkshops([wsName]);
+                                                }
+                                                setUrgentOnly(false);
+                                                setUrgentProcessingOnly(!urgentProcessingOnly);
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border transition-colors shrink-0",
+                                                urgentProcessingOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                    ? "bg-orange-500 text-white border-orange-500 shadow-sm"
+                                                    : "bg-white text-orange-600 border-orange-200 hover:border-orange-300 hover:bg-orange-100"
+                                            )}
+                                        >
+                                            {wsName}
+                                            <span className={cn(
+                                                "ml-1 px-1.5 rounded-full text-[10px]",
+                                                urgentProcessingOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                    ? "bg-white text-orange-600"
+                                                    : "bg-orange-100 text-orange-600"
+                                            )}>
+                                                {count}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                                
+                                {urgentProcessingOnly && (
+                                    <button
+                                        onClick={() => setUrgentProcessingOnly(false)}
+                                        className="ml-2 text-[11px] text-gray-500 hover:text-gray-800 underline shrink-0"
+                                    >
+                                        Bỏ lọc tiến độ
                                     </button>
                                 )}
                             </div>

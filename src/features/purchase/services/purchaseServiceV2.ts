@@ -23,6 +23,7 @@ export interface PurchaseOrder {
     tag_name: string;
     unique_order_key: string;
     is_urgent?: boolean;
+    urgent_status?: 'pending' | 'processing' | 'completed';
     urgent_reason?: string | null;
     urgent_image_url?: string | null;
     request_date?: string;
@@ -198,7 +199,7 @@ export async function listImportBatches(userId: string): Promise<ImportBatch[]> 
     return data as ImportBatch[];
 }
 
-export async function updateUrgentStatus(userId: string, uniqueOrderKey: string, isUrgent: boolean, urgentReason?: string, urgentImageUrl?: string) {
+export async function updateUrgentStatus(userId: string, uniqueOrderKey: string, isUrgent: boolean, urgentStatus: 'pending' | 'processing' | 'completed' = 'pending', urgentReason?: string, urgentImageUrl?: string) {
     if (!userId || !uniqueOrderKey) return;
 
     // Use upsert to handle cases where the row might not exist in purchase_orders yet
@@ -208,6 +209,7 @@ export async function updateUrgentStatus(userId: string, uniqueOrderKey: string,
             user_id: userId,
             unique_order_key: uniqueOrderKey,
             is_urgent: isUrgent,
+            urgent_status: urgentStatus,
             urgent_reason: urgentReason || null,
             urgent_image_url: urgentImageUrl || null,
             // Add stub values for required columns in case this inserts a new row

@@ -45,7 +45,7 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
                     // Fetch urgent metadata from purchase_orders
                     const { data: urgentData } = await supabase
                         .from('purchase_orders')
-                        .select('unique_order_key, is_urgent, urgent_reason, urgent_image_url')
+                        .select('unique_order_key, is_urgent, urgent_status, urgent_reason, urgent_image_url')
                         .eq('user_id', userId)
                         .eq('is_urgent', true);
 
@@ -67,6 +67,7 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
                             return {
                                 ...row,
                                 is_urgent: meta.is_urgent,
+                                urgent_status: meta.urgent_status || 'pending',
                                 urgent_reason: meta.urgent_reason,
                                 urgent_image_url: meta.urgent_image_url
                             };
