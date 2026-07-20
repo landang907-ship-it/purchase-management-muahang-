@@ -111,10 +111,9 @@ export function PurchasePage() {
         onSave: save,
     });
 
-    const isLoading = dataLoading || uploadLoading;
+    const isLoading = uploadLoading;
 
-
-    const showEmpty = rows.length === 0;
+    const showEmpty = rows.length === 0 && !dataLoading;
     const showNoResults = !showEmpty && visibleRows.length === 0;
 
     // Workshop panel state
