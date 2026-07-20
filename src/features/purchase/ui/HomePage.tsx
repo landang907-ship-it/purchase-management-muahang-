@@ -13,10 +13,16 @@ import {
     BarChart3
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useDashboardData } from '@/features/purchase/hooks/useDashboardData';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
+const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#64748b'];
 export function HomePage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const { user } = useAuth();
+    const { data: stats, isLoading } = useDashboardData(user?.user);
 
     // Animation variants
     const containerVariants: Variants = {
@@ -74,6 +80,101 @@ export function HomePage() {
                                 <ArrowRight className="relative group-hover:translate-x-1 transition-transform" />
                             </motion.button>
                         </motion.div>
+
+                        {/* Analytics Dashboard Section */}
+                        {stats && (
+                            <motion.div 
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="show"
+                                className="mb-12"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+                                            <Clock size={28} />
+                                        </div>
+                                        <div>
+                                            <p className="text-slate-500 font-medium">Đang xử lý</p>
+                                            <h3 className="text-3xl font-bold text-slate-800">{stats.activeCount}</h3>
+                                        </div>
+                                    </motion.div>
+                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                            <CheckCircle2 size={28} />
+                                        </div>
+                                        <div>
+                                            <p className="text-slate-500 font-medium">Đã hoàn thành</p>
+                                            <h3 className="text-3xl font-bold text-slate-800">{stats.processedCount}</h3>
+                                        </div>
+                                    </motion.div>
+                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600">
+                                            <Network size={28} />
+                                        </div>
+                                        <div>
+                                            <p className="text-slate-500 font-medium">Người yêu cầu</p>
+                                            <h3 className="text-3xl font-bold text-slate-800">{stats.topRequesters.length}</h3>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {/* Pie Chart: Status */}
+                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-6">Trạng thái đơn hàng (Đang chờ)</h3>
+                                        <div className="h-64 w-full">
+                                            {stats.statusDistribution.length > 0 ? (
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <PieChart>
+                                                        <Pie
+                                                            data={stats.statusDistribution}
+                                                            cx="50%"
+                                                            cy="50%"
+                                                            innerRadius={60}
+                                                            outerRadius={80}
+                                                            paddingAngle={5}
+                                                            dataKey="value"
+                                                        >
+                                                            {stats.statusDistribution.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                            ))}
+                                                        </Pie>
+                                                        <Tooltip />
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            ) : (
+                                                <div className="h-full flex items-center justify-center text-slate-400">Không có dữ liệu</div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap justify-center gap-4 mt-4">
+                                            {stats.statusDistribution.map((entry, index) => (
+                                                <div key={entry.name} className="flex items-center gap-2">
+                                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                                    <span className="text-sm text-slate-600">{entry.name} ({entry.value})</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Bar Chart: Trend */}
+                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-6">Tiến độ hoàn thành (7 ngày qua)</h3>
+                                        <div className="h-64 w-full">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={stats.completionTrend}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                                                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
+                                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
+                                                    <Tooltip cursor={{ fill: '#f1f5f9' }} />
+                                                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            </motion.div>
+                        )}
 
                         {/* Bento Grid */}
                         <motion.div 
