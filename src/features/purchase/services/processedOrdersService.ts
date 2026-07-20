@@ -11,6 +11,9 @@ export interface ProcessedOrder {
   unit: string | null;
   status: string | null;
   tag_name: string | null;
+  is_urgent?: boolean;
+  urgent_reason?: string | null;
+  urgent_image_url?: string | null;
   disappeared_at: string;
 }
 

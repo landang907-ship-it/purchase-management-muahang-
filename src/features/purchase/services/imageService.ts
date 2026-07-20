@@ -72,3 +72,36 @@ export async function compressAndUploadImage(file: File, materialCode: string): 
         throw error;
     }
 }
+
+/**
+ * Nén ảnh cực nhẹ và tải lên thư mục urgent/ trong bucket
+ * Dùng cho tính năng Báo cáo Cần gấp (chụp từ điện thoại)
+ */
+export async function uploadUrgentImage(file: File, uniqueOrderKey: string): Promise<string> {
+    const options = {
+        maxSizeMB: 0.3, // ~300KB max, "cực nhẹ" như yêu cầu
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+        fileType: 'image/webp',
+        initialQuality: 0.7,
+    };
+
+    try {
+        const compressedFile = await imageCompression(file, options);
+        const safeKey = uniqueOrderKey.replace(/[^a-zA-Z0-9_-]/g, '_');
+        const fileName = `urgent/${safeKey}_${Date.now()}.webp`; // Thêm timestamp để tránh cache khi upload lại
+
+        const { error } = await supabase.storage.from(BUCKET_NAME).upload(fileName, compressedFile, {
+            contentType: 'image/webp',
+            upsert: true,
+        });
+
+        if (error) throw error;
+
+        const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName);
+        return data.publicUrl;
+    } catch (error) {
+        console.error('Error uploading urgent image:', error);
+        throw error;
+    }
+}

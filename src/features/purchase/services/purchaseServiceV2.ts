@@ -22,6 +22,9 @@ export interface PurchaseOrder {
     status: string;
     tag_name: string;
     unique_order_key: string;
+    is_urgent?: boolean;
+    urgent_reason?: string | null;
+    urgent_image_url?: string | null;
     created_at: string;
 }
 
@@ -109,6 +112,9 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
                     unit: o.unit,
                     status: o.status,
                     tag_name: o.tag_name,
+                    is_urgent: o.is_urgent,
+                    urgent_reason: o.urgent_reason,
+                    urgent_image_url: o.urgent_image_url,
                     // disappeared_at will default to NOW() in DB
                 }));
 
@@ -187,4 +193,27 @@ export async function listImportBatches(userId: string): Promise<ImportBatch[]> 
 
     if (error) throw error;
     return data as ImportBatch[];
+}
+
+export async function updateUrgentStatus(
+    userId: string,
+    uniqueOrderKey: string,
+    isUrgent: boolean,
+    urgentReason?: string,
+    urgentImageUrl?: string
+) {
+    const { error } = await supabase
+        .from('purchase_orders')
+        .update({
+            is_urgent: isUrgent,
+            urgent_reason: urgentReason || null,
+            urgent_image_url: urgentImageUrl || null
+        })
+        .eq('user_id', userId)
+        .eq('unique_order_key', uniqueOrderKey);
+
+    if (error) {
+        console.error('Error updating urgent status:', error);
+        throw error;
+    }
 }

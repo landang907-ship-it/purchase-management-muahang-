@@ -1,11 +1,13 @@
-import { X, Check, Image as ImageIcon, Upload, Loader2 } from 'lucide-react';
+import { X, Check, Image as ImageIcon, Upload, Loader2, AlertTriangle, FileText, Camera } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 import type { MaterialImageMap } from '@/features/purchase/services/materialService';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { compressAndUploadImage } from '@/features/purchase/services/imageService';
+import { compressAndUploadImage, uploadUrgentImage } from '@/features/purchase/services/imageService';
 import { upsertMaterialImage } from '@/features/purchase/services/materialService';
+import { updateUrgentStatus } from '@/features/purchase/services/purchaseServiceV2';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface PurchaseDetailModalProps {
     isOpen: boolean;
@@ -13,26 +15,35 @@ interface PurchaseDetailModalProps {
     data: PurchaseRow | null;
     materialImage: MaterialImageMap | null | undefined;
     onImageUploaded: (materialCode: string, thumbUrl: string, origUrl: string) => void;
+    onDataUpdated?: () => void; // Optional callback to refresh data
 }
 
-export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onImageUploaded }: PurchaseDetailModalProps) {
+export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onImageUploaded, onDataUpdated }: PurchaseDetailModalProps) {
     const { t } = useTranslation();
+    const { user } = useAuth();
     const [isClosing, setIsClosing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const urgentFileInputRef = useRef<HTMLInputElement>(null);
+
+    // Urgent form state
+    const [urgentReason, setUrgentReason] = useState('');
+    const [urgentFile, setUrgentFile] = useState<File | null>(null);
+    const [isSubmittingUrgent, setIsSubmittingUrgent] = useState(false);
 
     useEffect(() => {
-        if (isOpen) {
-            // Prevent scrolling on body when modal is open
+        if (isOpen && data) {
             document.body.style.overflow = 'hidden';
             setIsClosing(false);
+            setUrgentReason(data.urgent_reason || '');
+            setUrgentFile(null);
         } else {
             document.body.style.overflow = 'unset';
         }
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [isOpen, data]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -48,6 +59,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
     const name = data['Văn bản ngắn'];
     const status = data['T.trg xử lý'];
     const isApproved = status?.toUpperCase().includes('ĐÃ DUYỆT');
+    const uniqueKey = `${id}_${code}`;
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -64,6 +76,40 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
+    const handleUrgentSubmit = async () => {
+        if (!user?.user) return;
+        if (!urgentReason.trim()) {
+            alert('Vui lòng nhập lý do cần gấp!');
+            return;
+        }
+
+        try {
+            setIsSubmittingUrgent(true);
+            let imageUrl = data.urgent_image_url;
+
+            if (urgentFile) {
+                // Upload and compress image specifically for urgent requests
+                imageUrl = await uploadUrgentImage(urgentFile, uniqueKey);
+            }
+
+            await updateUrgentStatus(user.user, uniqueKey, true, urgentReason, imageUrl || undefined);
+            
+            // Mutate local data for immediate UI update
+            data.is_urgent = true;
+            data.urgent_reason = urgentReason;
+            data.urgent_image_url = imageUrl;
+
+            if (onDataUpdated) onDataUpdated();
+            
+            alert('Đã cập nhật trạng thái Cần gấp!');
+        } catch (error) {
+            console.error('Error submitting urgent request:', error);
+            alert('Có lỗi xảy ra, vui lòng thử lại.');
+        } finally {
+            setIsSubmittingUrgent(false);
         }
     };
 
@@ -85,7 +131,14 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
             >
                 {/* Header */}
                 <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 bg-gray-50/50 sm:rounded-t-xl rounded-t-xl shrink-0">
-                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide">{t('detail.title')}</h3>
+                    <h3 className="font-bold text-gray-800 text-base uppercase tracking-wide">
+                        {t('detail.title')} 
+                        {data.is_urgent && (
+                            <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-100 text-red-600 text-xs font-bold uppercase tracking-wide">
+                                🔥 Cần gấp
+                            </span>
+                        )}
+                    </h3>
                     <button 
                         onClick={handleClose}
                         className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-500 transition-colors"
@@ -94,101 +147,175 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="flex flex-col sm:flex-row p-4 gap-4">
+                {/* Content (Scrollable if needed) */}
+                <div className="flex flex-col p-4 gap-4 overflow-y-auto overflow-x-hidden scrollbar-thin">
                     
-                    {/* Image Area (Left/Top Half) */}
-                    <div className="w-full sm:w-1/2 h-[200px] sm:h-auto sm:min-h-[250px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 shrink-0 relative overflow-hidden group">
-                        {materialImage?.orig_url ? (
-                            <img 
-                                src={materialImage.orig_url} 
-                                alt={name}
-                                className="w-full h-full object-contain bg-white"
-                            />
-                        ) : (
-                            <>
-                                <ImageIcon size={32} className="mb-2 opacity-40" strokeWidth={1.5} />
-                                <span className="text-[13px] font-medium">{t('detail.imageArea')}</span>
-                            </>
-                        )}
-                        
-                        {/* Upload Overlay */}
-                        <div className={cn(
-                            "absolute inset-0 bg-black/50 flex flex-col items-center justify-center transition-opacity",
-                            materialImage?.orig_url ? "opacity-0 group-hover:opacity-100" : "opacity-100 hover:bg-black/60",
-                            isUploading && "opacity-100 bg-black/60"
-                        )}>
-                            <input 
-                                type="file" 
-                                accept="image/*" 
-                                className="hidden" 
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                disabled={isUploading || !code}
-                            />
-                            <button 
-                                onClick={() => fileInputRef.current?.click()}
-                                disabled={isUploading || !code}
-                                className="px-4 py-2 bg-white text-gray-800 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
-                            >
-                                {isUploading ? (
-                                    <>
-                                        <Loader2 size={16} className="animate-spin" />
-                                        {t('detail.uploading')}
-                                    </>
-                                ) : (
-                                    <>
-                                        <Upload size={16} />
-                                        {materialImage?.orig_url ? t('detail.changeImage') : t('detail.uploadImage')}
-                                    </>
+                    {/* Top Row: Image & Details */}
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        {/* Image Area (Left/Top Half) */}
+                        <div className="w-full sm:w-1/2 h-[200px] sm:h-[250px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 shrink-0 relative overflow-hidden group">
+                            {materialImage?.orig_url ? (
+                                <img 
+                                    src={materialImage.orig_url} 
+                                    alt={name}
+                                    className="w-full h-full object-contain bg-white"
+                                />
+                            ) : (
+                                <>
+                                    <ImageIcon size={32} className="mb-2 opacity-40" strokeWidth={1.5} />
+                                    <span className="text-[13px] font-medium">{t('detail.imageArea')}</span>
+                                </>
+                            )}
+                            
+                            {/* Upload Overlay */}
+                            <div className={cn(
+                                "absolute inset-0 bg-black/50 flex flex-col items-center justify-center transition-opacity",
+                                materialImage?.orig_url ? "opacity-0 group-hover:opacity-100" : "opacity-100 hover:bg-black/60",
+                                isUploading && "opacity-100 bg-black/60"
+                            )}>
+                                <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="hidden" 
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    disabled={isUploading || !code}
+                                />
+                                <button 
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isUploading || !code}
+                                    className="px-4 py-2 bg-white text-gray-800 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                                >
+                                    {isUploading ? (
+                                        <>
+                                            <Loader2 size={16} className="animate-spin" />
+                                            {t('detail.uploading')}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Upload size={16} />
+                                            {materialImage?.orig_url ? t('detail.changeImage') : t('detail.uploadImage')}
+                                        </>
+                                    )}
+                                </button>
+                                {!code && <span className="text-xs text-white/70 mt-2">{t('detail.noCode')}</span>}
+                            </div>
+                        </div>
+
+                        {/* Details Area (Right/Bottom Half) */}
+                        <div className="w-full sm:w-1/2 flex flex-col flex-1">
+                            <div className="mb-3 flex justify-between items-start gap-2">
+                                <h4 className="text-[15px] font-bold text-[#2d4373] leading-snug line-clamp-2">
+                                    {name || t('detail.unnamed')}
+                                </h4>
+                                {status && (
+                                    <span
+                                        className={cn(
+                                        "px-2 py-1 rounded-full text-[10px] font-bold tracking-wider text-white inline-flex items-center gap-1 shadow-sm shrink-0",
+                                        (status.trim() === '3' || status.trim() === '03') ? "bg-yellow-500" :
+                                        (status.trim() === '5' || status.trim() === '05') ? "bg-green-500" :
+                                        (status.trim() === '8' || status.trim() === '08') ? "bg-red-500" :
+                                        isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
+                                    )}
+                                    >
+                                        {isApproved && <Check size={12} strokeWidth={3} />}
+                                        {status.toUpperCase()}
+                                    </span>
                                 )}
-                            </button>
-                            {!code && <span className="text-xs text-white/70 mt-2">{t('detail.noCode')}</span>}
+                            </div>
+
+                            <div className="bg-gray-50/50 rounded-lg p-3 border border-gray-100 mb-4 flex-1">
+                                <DetailRow label={t('detail.id')} value={id} />
+                                <DetailRow label={t('detail.material')} value={code} />
+                                <DetailRow label={t('detail.qty')} value={data['Số lượng']} />
+                                <DetailRow label={t('detail.requester')} value={data['Ng.yêu cầu']} />
+                                <DetailRow label={t('detail.date')} value={data['Ngày YC']} />
+                                <DetailRow label={t('detail.workshop')} value={data['TAG-NAME']} />
+                            </div>
                         </div>
                     </div>
 
-                    {/* Details Area (Right/Bottom Half) */}
-                    <div className="w-full sm:w-1/2 flex flex-col flex-1">
-                        <div className="mb-3 flex justify-between items-start gap-2">
-                            <h4 className="text-[15px] font-bold text-[#2d4373] leading-snug line-clamp-2">
-                                {name || t('detail.unnamed')}
-                            </h4>
-                            {status && (
-                                <span
-                                    className={cn(
-                                    "px-2 py-1 rounded-full text-[10px] font-bold tracking-wider text-white inline-flex items-center gap-1 shadow-sm shrink-0",
-                                    (status.trim() === '3' || status.trim() === '03') ? "bg-yellow-500" :
-                                    (status.trim() === '5' || status.trim() === '05') ? "bg-green-500" :
-                                    (status.trim() === '8' || status.trim() === '08') ? "bg-red-500" :
-                                    isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
-                                )}
-                                >
-                                    {isApproved && <Check size={12} strokeWidth={3} />}
-                                    {status.toUpperCase()}
-                                </span>
-                            )}
-                        </div>
-
-                        <div className="bg-gray-50/50 rounded-lg p-3 border border-gray-100 mb-4 flex-1">
-                            <DetailRow label={t('detail.id')} value={id} />
-                            <DetailRow label={t('detail.material')} value={code} />
-                            <DetailRow label={t('detail.qty')} value={data['Số lượng']} />
-                            <DetailRow label={t('detail.requester')} value={data['Ng.yêu cầu']} />
-                            <DetailRow label={t('detail.date')} value={data['Ngày YC']} />
-                            <DetailRow label={t('detail.workshop')} value={data['TAG-NAME']} />
+                    {/* Urgent Section */}
+                    <div className="mt-2 border-t border-red-100 pt-4 bg-red-50/30 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                            <AlertTriangle className="text-red-500" size={18} strokeWidth={2.5} />
+                            <h4 className="font-bold text-red-700 text-sm">BÁO CÁO CẦN GẤP</h4>
                         </div>
                         
-                        <button
-                            onClick={handleClose}
-                            className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors shrink-0 text-sm"
-                        >
-                            {t('detail.close')}
-                        </button>
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                    Lý do cần gấp <span className="text-red-500">*</span>
+                                </label>
+                                <textarea 
+                                    className="w-full text-sm p-2.5 rounded-lg border border-gray-200 focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none resize-none"
+                                    rows={2}
+                                    placeholder="Nhập lý do (VD: Máy đang dừng, cần thay thế gấp...)"
+                                    value={urgentReason}
+                                    onChange={(e) => setUrgentReason(e.target.value)}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                    Hình ảnh vị trí hư hỏng (Tùy chọn, tối đa 5MB)
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <input 
+                                        type="file" 
+                                        accept="image/*" 
+                                        className="hidden" 
+                                        ref={urgentFileInputRef}
+                                        onChange={(e) => {
+                                            if (e.target.files?.[0]) setUrgentFile(e.target.files[0]);
+                                        }}
+                                    />
+                                    <button 
+                                        onClick={() => urgentFileInputRef.current?.click()}
+                                        className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 shadow-sm"
+                                    >
+                                        <Camera size={16} />
+                                        {urgentFile ? urgentFile.name : 'Chụp / Chọn ảnh'}
+                                    </button>
+
+                                    {/* Hiển thị link ảnh cũ nếu đã từng gửi */}
+                                    {!urgentFile && data.urgent_image_url && (
+                                        <a 
+                                            href={data.urgent_image_url} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+                                        >
+                                            <FileText size={14} /> Xem ảnh đã tải lên
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={handleUrgentSubmit}
+                                disabled={isSubmittingUrgent}
+                                className="w-full mt-2 py-2.5 bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-md"
+                            >
+                                {isSubmittingUrgent ? (
+                                    <><Loader2 size={16} className="animate-spin" /> Đang xử lý...</>
+                                ) : (
+                                    data.is_urgent ? 'Cập nhật thông tin Cần gấp' : 'Xác nhận Cần gấp'
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                {/* Footer safe area for mobile */}
-                <div className="h-2 sm:h-0 shrink-0" />
+                {/* Footer close button */}
+                <div className="p-4 border-t border-gray-100 shrink-0">
+                    <button
+                        onClick={handleClose}
+                        className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors text-sm"
+                    >
+                        {t('detail.close')}
+                    </button>
+                </div>
             </div>
         </div>
     );

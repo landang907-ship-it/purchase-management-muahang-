@@ -202,9 +202,13 @@ export interface PurchaseRow {
     'Ngày YC': string;
     'T.trg xử lý': string;
     'Đơn vị': string;
-    'TAG-NAME': string;
-    _rawDate: unknown;
-    _rawStatus: string;
+    'TAG-NAME'?: string;
+    // Internal fields mapped from database
+    _rawDate?: string;
+    _rawStatus?: string;
+    is_urgent?: boolean;
+    urgent_reason?: string | null;
+    urgent_image_url?: string | null;
 }
 
 export interface ParseResult {
@@ -335,7 +339,7 @@ export async function parseExcel(file: File): Promise<ParseResult> {
         });
 
         const dateColIdx = colIndices[5]; // Ngày YC
-        obj._rawDate = dateColIdx !== -1 ? row[dateColIdx] : '';
+        obj._rawDate = dateColIdx !== -1 ? String(row[dateColIdx] ?? '') : '';
         obj._rawStatus = obj['T.trg xử lý'];
 
         // Chỉ lấy dữ liệu của năm nay và 1 năm trước đó

@@ -35,6 +35,9 @@ export function usePurchaseDataV2({ userId, onMessage, t: _t }: UsePurchaseDataV
                 'TAG-NAME': order.tag_name,
                 _rawDate: order.created_at,
                 _rawStatus: order.status,
+                is_urgent: order.is_urgent,
+                urgent_reason: order.urgent_reason,
+                urgent_image_url: order.urgent_image_url,
             })) as PurchaseRow[];
         },
         enabled: !!userId,

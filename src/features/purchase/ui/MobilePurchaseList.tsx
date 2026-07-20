@@ -35,6 +35,7 @@ export function MobilePurchaseList({
 }: MobilePurchaseListProps) {
     const { t } = useTranslation();
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
+    const [, setUpdateTrigger] = useState(0);
 
     return (
         <div className="flex flex-col h-full bg-[#f4f7ff] font-sans overflow-hidden">
@@ -113,6 +114,11 @@ export function MobilePurchaseList({
                                 {/* Item Name */}
                                 <div className="mb-3">
                                     <div className="text-[15px] font-medium text-gray-800 leading-snug line-clamp-2">
+                                        {item.is_urgent && (
+                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-100 text-red-600 text-[10px] font-bold mr-1.5 uppercase tracking-wide">
+                                                🔥 Cần gấp
+                                            </span>
+                                        )}
                                         {name}
                                     </div>
                                 </div>
@@ -167,6 +173,7 @@ export function MobilePurchaseList({
                 data={selectedItem}
                 materialImage={selectedItem?.['Vật tư'] ? materialImages[selectedItem['Vật tư']] : null}
                 onImageUploaded={onImageUploaded}
+                onDataUpdated={() => setUpdateTrigger(prev => prev + 1)}
             />
         </div>
     );
