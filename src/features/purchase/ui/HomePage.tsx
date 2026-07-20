@@ -22,7 +22,7 @@ export function HomePage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { user } = useAuth();
-    const { data: stats, isLoading } = useDashboardData(user?.user);
+    const { data: stats } = useDashboardData(user?.user);
 
     // Animation variants
     const containerVariants: Variants = {
@@ -136,7 +136,7 @@ export function HomePage() {
                                                             paddingAngle={5}
                                                             dataKey="value"
                                                         >
-                                                            {stats.statusDistribution.map((entry, index) => (
+                                                            {stats.statusDistribution.map((_entry, index) => (
                                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                             ))}
                                                         </Pie>
