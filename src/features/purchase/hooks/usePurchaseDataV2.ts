@@ -10,7 +10,7 @@ interface UsePurchaseDataV2Options {
     t: (key: string, params?: Record<string, string | number>) => string;
 }
 
-export function usePurchaseDataV2({ userId, onMessage, t }: UsePurchaseDataV2Options) {
+export function usePurchaseDataV2({ userId, onMessage, t: _t }: UsePurchaseDataV2Options) {
     const queryClient = useQueryClient();
     const [fileName, setFileName] = useState('');
     const [localRows, setLocalRows] = useState<PurchaseRow[]>([]);
@@ -28,10 +28,13 @@ export function usePurchaseDataV2({ userId, onMessage, t }: UsePurchaseDataV2Opt
                 'Vật tư': order.item_no,
                 'Văn bản ngắn': order.description,
                 'Ng.yêu cầu': order.requester,
-                'Số lượng': order.quantity,
-                'Đơn vị đo lường': order.unit,
+                'Số lượng': String(order.quantity),
+                'Ngày YC': new Date(order.created_at).toLocaleDateString('vi-VN'),
+                'Đơn vị': order.unit,
                 'T.trg xử lý': order.status,
                 'TAG-NAME': order.tag_name,
+                _rawDate: order.created_at,
+                _rawStatus: order.status,
             })) as PurchaseRow[];
         },
         enabled: !!userId,
@@ -64,7 +67,7 @@ export function usePurchaseDataV2({ userId, onMessage, t }: UsePurchaseDataV2Opt
     });
 
     // Provide a shim interface to maintain compatibility with the old hook
-    const save = async (uid: string, rowsToSave: PurchaseRow[], name: string) => {
+    const save = async (_uid: string, rowsToSave: PurchaseRow[], name: string) => {
         // We can optionally await this if the caller expects it
         await saveMutation.mutateAsync({ rowsToSave, name });
     };
