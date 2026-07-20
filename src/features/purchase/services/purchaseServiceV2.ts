@@ -83,6 +83,57 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
                 throw insertErr;
             }
         }
+
+        // 4. Cleanup & Track disappeared orders
+        // 4a. Find all orders that were NOT in this batch (disappeared from Excel)
+        const { data: disappearedOrders, error: findErr } = await supabase
+            .from('purchase_orders')
+            .select('*')
+            .eq('user_id', userId)
+            .neq('batch_id', batch.id);
+
+        if (findErr) throw findErr;
+
+        if (disappearedOrders && disappearedOrders.length > 0) {
+            // 4b. Filter only those with status '05' to move to processed_orders
+            const completedOrders = disappearedOrders.filter(o => o.status === '05');
+            
+            if (completedOrders.length > 0) {
+                const processedToInsert = completedOrders.map(o => ({
+                    user_id: o.user_id,
+                    pr_number: o.pr_number,
+                    item_no: o.item_no,
+                    description: o.description,
+                    requester: o.requester,
+                    quantity: String(o.quantity), // processed_orders stores quantity as text historically
+                    unit: o.unit,
+                    status: o.status,
+                    tag_name: o.tag_name,
+                    // disappeared_at will default to NOW() in DB
+                }));
+
+                const { error: trackErr } = await supabase
+                    .from('processed_orders')
+                    .insert(processedToInsert);
+
+                if (trackErr) {
+                    console.error('[savePurchaseDataV2] Error tracking processed orders:', trackErr);
+                    // Non-fatal error, but we log it.
+                }
+            }
+
+            // 4c. Delete ALL disappeared orders from purchase_orders (both 05 and other statuses)
+            const { error: delErr } = await supabase
+                .from('purchase_orders')
+                .delete()
+                .eq('user_id', userId)
+                .neq('batch_id', batch.id);
+
+            if (delErr) {
+                console.error('[savePurchaseDataV2] Error deleting old orders:', delErr);
+            }
+        }
+
     } catch (err) {
         // Rollback batch creation if insert fails to prevent empty batches on reload
         await supabase.from('import_batches').delete().eq('id', batch.id);
