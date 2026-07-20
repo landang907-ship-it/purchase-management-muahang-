@@ -12,6 +12,7 @@ interface MobilePurchaseListProps {
     onImageUploaded: (materialCode: string, thumbUrl: string, origUrl: string) => void;
     onFilterClick?: () => void;
     workshopName?: string;
+    onDataUpdated?: () => void;
 }
 
 /**
@@ -32,6 +33,9 @@ export function MobilePurchaseList({
     rows,
     materialImages,
     onImageUploaded,
+    onFilterClick,
+    workshopName,
+    onDataUpdated
 }: MobilePurchaseListProps) {
     const { t } = useTranslation();
     const [selectedItem, setSelectedItem] = useState<PurchaseRow | null>(null);
@@ -173,7 +177,10 @@ export function MobilePurchaseList({
                 data={selectedItem}
                 materialImage={selectedItem?.['Vật tư'] ? materialImages[selectedItem['Vật tư']] : null}
                 onImageUploaded={onImageUploaded}
-                onDataUpdated={() => setUpdateTrigger(prev => prev + 1)}
+                onDataUpdated={() => {
+                    setUpdateTrigger(prev => prev + 1);
+                    onDataUpdated?.();
+                }}
             />
         </div>
     );

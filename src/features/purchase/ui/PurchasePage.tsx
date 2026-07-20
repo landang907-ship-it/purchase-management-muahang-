@@ -163,39 +163,40 @@ export function PurchasePage() {
                     </div>
 
                     {/* Urgent Notifications Panel */}
-                    {!showEmpty && Object.entries(urgentCountsPerWorkshop).some(([wsName, count]) => count > 0 && selectedWorkshops.includes(wsName)) && (
+                    {!showEmpty && selectedWorkshops.length > 0 && (
                         <div className="bg-red-50 px-3 py-2 border-b border-red-100 shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-hide">
                             <span className="text-red-600 text-[11px] font-semibold shrink-0">🚨 Cần gấp:</span>
                             <div className="flex items-center gap-2">
-                                {Object.entries(urgentCountsPerWorkshop)
-                                    .filter(([wsName, count]) => count > 0 && selectedWorkshops.includes(wsName))
-                                    .map(([wsName, count]) => (
-                                    <button
-                                        key={wsName}
-                                        onClick={() => {
-                                            if (!selectedWorkshops.includes(wsName)) {
-                                                setSelectedWorkshops([wsName]);
-                                            }
-                                            setUrgentOnly(true);
-                                        }}
-                                        className={cn(
-                                            "flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border transition-colors shrink-0",
-                                            urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
-                                                ? "bg-red-600 text-white border-red-600 shadow-sm"
-                                                : "bg-white text-red-600 border-red-200 hover:border-red-300 hover:bg-red-50"
-                                        )}
-                                    >
-                                        {wsName}
-                                        <span className={cn(
-                                            "ml-1 px-1.5 rounded-full text-[10px]",
-                                            urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
-                                                ? "bg-white text-red-600"
-                                                : "bg-red-100 text-red-600"
-                                        )}>
-                                            {count}
-                                        </span>
-                                    </button>
-                                ))}
+                                {selectedWorkshops.map((wsName) => {
+                                    const count = urgentCountsPerWorkshop[wsName] || 0;
+                                    return (
+                                        <button
+                                            key={wsName}
+                                            onClick={() => {
+                                                if (!selectedWorkshops.includes(wsName)) {
+                                                    setSelectedWorkshops([wsName]);
+                                                }
+                                                setUrgentOnly(true);
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border transition-colors shrink-0",
+                                                urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                    ? "bg-red-600 text-white border-red-600 shadow-sm"
+                                                    : "bg-white text-red-600 border-red-200 hover:border-red-300 hover:bg-red-50"
+                                            )}
+                                        >
+                                            {wsName}
+                                            <span className={cn(
+                                                "ml-1 px-1.5 rounded-full text-[10px]",
+                                                urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                    ? "bg-white text-red-600"
+                                                    : "bg-red-100 text-red-600"
+                                            )}>
+                                                {count}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
                                 
                                 {urgentOnly && (
                                     <button
@@ -252,6 +253,7 @@ export function PurchasePage() {
                                     rows={visibleRows}
                                     materialImages={materialImages}
                                     onImageUploaded={handleImageUploaded}
+                                    onDataUpdated={() => setRows([...rows])}
                                 />
                             </div>
                         )}
