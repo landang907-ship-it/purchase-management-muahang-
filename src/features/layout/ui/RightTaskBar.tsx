@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Sparkles, Menu, Home, Shield, User, LogOut } from 'lucide-react';
+import { PanelLeftClose, PanelLeft, FileText, Tags, ShoppingCart, Menu, Home, Shield, User, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/cn';
