@@ -45,7 +45,6 @@ export interface UsePurchaseFiltersResult {
     uniqueTags: string[];
     tagRowCounts: Record<string, number>;
     urgentCountsPerWorkshop: Record<string, number>;
-    urgentProcessingCountsPerWorkshop: Record<string, number>;
     visibleRows: PurchaseRow[];
     hasAnyFilter: boolean;
     setSelectedRequesters: (v: string[]) => void;
@@ -56,8 +55,6 @@ export interface UsePurchaseFiltersResult {
     setSelectedWorkshops: (v: string[]) => void;
     setUrgentOnly: (v: boolean) => void;
     urgentOnly: boolean;
-    setUrgentProcessingOnly: (v: boolean) => void;
-    urgentProcessingOnly: boolean;
     clearAll: () => void;
     resetForNewImport: () => void;
 }
@@ -78,7 +75,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
     const [dateTo, setDateTo] = useState<string>('');
     const [quickSearch, setQuickSearch] = useState<string>('');
     const [urgentOnly, setUrgentOnly] = useState<boolean>(false);
-    const [urgentProcessingOnly, setUrgentProcessingOnly] = useState<boolean>(false);
     const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(loadSelectedWorkshops);
 
     // Lưu selectedWorkshops vào localStorage khi thay đổi
@@ -173,21 +169,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         return counts;
     }, [rows, workshops]);
 
-    // Urgent processing counts per workshop (processing only)
-    const urgentProcessingCountsPerWorkshop = useMemo(() => {
-        const counts: Record<string, number> = {};
-        for (const w of workshops) {
-            const tags = new Set(w.tagValues);
-            let urgentCount = 0;
-            for (const r of rows) {
-                if (r.is_urgent && r.urgent_status === 'processing' && tags.has((r['TAG-NAME'] ?? '').trim())) {
-                    urgentCount++;
-                }
-            }
-            counts[w.name] = urgentCount;
-        }
-        return counts;
-    }, [rows, workshops]);
+
 
     const visibleRows = useMemo(() => {
         // Nếu chưa chọn workshop nào thì không hiển thị gì
@@ -209,12 +191,11 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
             result = result.filter((r) => tagSet.has((r['TAG-NAME'] ?? '').trim()));
         }
 
+        // HIDE ALL items that are currently in 'processing' status (they belong in ProcessedOrdersPage)
+        result = result.filter((r) => r.urgent_status !== 'processing');
+
         if (urgentOnly) {
             result = result.filter((r) => r.is_urgent && (!r.urgent_status || r.urgent_status === 'pending'));
-        }
-
-        if (urgentProcessingOnly) {
-            result = result.filter((r) => r.is_urgent && r.urgent_status === 'processing');
         }
 
         if (selectedRequesters.length > 0) {
@@ -265,7 +246,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         dateTo !== '' ||
         quickSearch !== '' ||
         urgentOnly ||
-        urgentProcessingOnly ||
         selectedWorkshops.length > 0;
 
     const clearAll = useCallback(() => {
@@ -275,7 +255,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         setDateTo('');
         setQuickSearch('');
         setUrgentOnly(false);
-        setUrgentProcessingOnly(false);
         setSelectedWorkshops([]);
     }, []);
 
@@ -284,7 +263,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         setSelectedRequesters([]);
         setQuickSearch('');
         setUrgentOnly(false);
-        setUrgentProcessingOnly(false);
         setSelectedWorkshops([]);
     }, []);
 
@@ -301,7 +279,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         uniqueTags,
         tagRowCounts,
         urgentCountsPerWorkshop,
-        urgentProcessingCountsPerWorkshop,
         visibleRows,
         hasAnyFilter,
         setSelectedRequesters,
@@ -312,8 +289,6 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         setSelectedWorkshops,
         urgentOnly,
         setUrgentOnly,
-        urgentProcessingOnly,
-        setUrgentProcessingOnly,
         clearAll,
         resetForNewImport,
     };

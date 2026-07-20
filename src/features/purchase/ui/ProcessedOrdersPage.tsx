@@ -179,7 +179,16 @@ export function ProcessedOrdersPage() {
                                     <tbody className="divide-y divide-slate-100">
                                         {visibleOrders.map((order) => (
                                             <tr key={order.id} className="hover:bg-slate-50 transition-colors">
-                                                <td className="px-4 py-3 font-medium text-slate-900">{order.pr_number}</td>
+                                                <td className="px-4 py-3 font-medium text-slate-900">
+                                                    <div className="flex items-center gap-2">
+                                                        {order.pr_number}
+                                                        {order.urgent_status === 'processing' && (
+                                                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 text-[10px] font-bold uppercase tracking-wide shrink-0">
+                                                                🚚 Đang mua gấp
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </td>
                                                 <td className="px-4 py-3 text-slate-600">{order.item_no}</td>
                                                 <td className="px-4 py-3 text-slate-600 max-w-xs truncate" title={order.description || ''}>
                                                     {order.description}
