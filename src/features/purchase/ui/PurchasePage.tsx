@@ -9,6 +9,7 @@ import { Header } from '@/features/purchase/ui/Header';
 import { LoadingOverlay } from '@/features/purchase/ui/LoadingOverlay';
 import { NoResults } from '@/features/purchase/ui/NoResults';
 import { WelcomeGuide } from '@/features/purchase/ui/WelcomeGuide';
+import { cn } from '@/shared/lib/cn';
 import { FilterBar } from '@/features/purchase/ui/FilterBar';
 import { WorkshopPanel } from '@/features/purchase/ui/WorkshopPanel';
 import { MobilePurchaseList } from '@/features/purchase/ui/MobilePurchaseList';
@@ -73,6 +74,9 @@ export function PurchasePage() {
         setDateTo,
         setQuickSearch,
         setSelectedWorkshops,
+        urgentOnly,
+        setUrgentOnly,
+        urgentCountsPerWorkshop,
         resetForNewImport,
     } = usePurchaseFilters({ rows, workshops });
 
@@ -157,6 +161,51 @@ export function PurchasePage() {
                             />
                         </div>
                     </div>
+
+                    {/* Urgent Notifications Panel */}
+                    {!showEmpty && Object.values(urgentCountsPerWorkshop).some(c => c > 0) && (
+                        <div className="bg-red-50 px-3 py-2 border-b border-red-100 shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                            <span className="text-red-600 text-[11px] font-semibold shrink-0">🚨 Cần gấp:</span>
+                            <div className="flex items-center gap-2">
+                                {Object.entries(urgentCountsPerWorkshop).filter(([_, count]) => count > 0).map(([wsName, count]) => (
+                                    <button
+                                        key={wsName}
+                                        onClick={() => {
+                                            if (!selectedWorkshops.includes(wsName)) {
+                                                setSelectedWorkshops([wsName]);
+                                            }
+                                            setUrgentOnly(true);
+                                        }}
+                                        className={cn(
+                                            "flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium border transition-colors shrink-0",
+                                            urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                ? "bg-red-600 text-white border-red-600 shadow-sm"
+                                                : "bg-white text-red-600 border-red-200 hover:border-red-300 hover:bg-red-50"
+                                        )}
+                                    >
+                                        {wsName}
+                                        <span className={cn(
+                                            "ml-1 px-1.5 rounded-full text-[10px]",
+                                            urgentOnly && selectedWorkshops.length === 1 && selectedWorkshops[0] === wsName
+                                                ? "bg-white text-red-600"
+                                                : "bg-red-100 text-red-600"
+                                        )}>
+                                            {count}
+                                        </span>
+                                    </button>
+                                ))}
+                                
+                                {urgentOnly && (
+                                    <button
+                                        onClick={() => setUrgentOnly(false)}
+                                        className="ml-2 text-[11px] text-gray-500 hover:text-gray-800 underline shrink-0"
+                                    >
+                                        Bỏ lọc khẩn cấp
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Shared FilterBar */}
                     {!showEmpty && (

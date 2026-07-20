@@ -44,6 +44,7 @@ export interface UsePurchaseFiltersResult {
     selectedWorkshops: string[];
     uniqueTags: string[];
     tagRowCounts: Record<string, number>;
+    urgentCountsPerWorkshop: Record<string, number>;
     visibleRows: PurchaseRow[];
     hasAnyFilter: boolean;
     setSelectedRequesters: (v: string[]) => void;
@@ -52,6 +53,8 @@ export interface UsePurchaseFiltersResult {
     setDateTo: (v: string) => void;
     setQuickSearch: (v: string) => void;
     setSelectedWorkshops: (v: string[]) => void;
+    setUrgentOnly: (v: boolean) => void;
+    urgentOnly: boolean;
     clearAll: () => void;
     resetForNewImport: () => void;
 }
@@ -71,6 +74,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
     const [dateFrom, setDateFrom] = useState<string>('');
     const [dateTo, setDateTo] = useState<string>('');
     const [quickSearch, setQuickSearch] = useState<string>('');
+    const [urgentOnly, setUrgentOnly] = useState<boolean>(false);
     const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(loadSelectedWorkshops);
 
     // Lưu selectedWorkshops vào localStorage khi thay đổi
@@ -149,6 +153,22 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         return counts;
     }, [rows]);
 
+    // Urgent counts per workshop
+    const urgentCountsPerWorkshop = useMemo(() => {
+        const counts: Record<string, number> = {};
+        for (const w of workshops) {
+            const tags = new Set(w.tagValues);
+            let urgentCount = 0;
+            for (const r of rows) {
+                if (r.is_urgent && tags.has((r['TAG-NAME'] ?? '').trim())) {
+                    urgentCount++;
+                }
+            }
+            counts[w.name] = urgentCount;
+        }
+        return counts;
+    }, [rows, workshops]);
+
     const visibleRows = useMemo(() => {
         // Nếu chưa chọn workshop nào thì không hiển thị gì
         if (selectedWorkshops.length === 0) {
@@ -167,6 +187,10 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         let result = rows;
         if (tagSet.size > 0) {
             result = result.filter((r) => tagSet.has((r['TAG-NAME'] ?? '').trim()));
+        }
+
+        if (urgentOnly) {
+            result = result.filter((r) => r.is_urgent);
         }
 
         if (selectedRequesters.length > 0) {
@@ -208,7 +232,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         }
 
         return result;
-    }, [rows, selectedRequesters, selectedStatus, dateFrom, dateTo, quickSearch, selectedWorkshops]);
+    }, [rows, selectedRequesters, selectedStatus, dateFrom, dateTo, quickSearch, selectedWorkshops, urgentOnly]);
 
     const hasAnyFilter =
         selectedRequesters.length > 0 ||
@@ -216,6 +240,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         dateFrom !== '' ||
         dateTo !== '' ||
         quickSearch !== '' ||
+        urgentOnly ||
         selectedWorkshops.length > 0;
 
     const clearAll = useCallback(() => {
@@ -224,6 +249,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         setDateFrom('');
         setDateTo('');
         setQuickSearch('');
+        setUrgentOnly(false);
         setSelectedWorkshops([]);
     }, []);
 
@@ -231,6 +257,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
     const resetForNewImport = useCallback(() => {
         setSelectedRequesters([]);
         setQuickSearch('');
+        setUrgentOnly(false);
         setSelectedWorkshops([]);
     }, []);
 
@@ -246,6 +273,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         selectedWorkshops,
         uniqueTags,
         tagRowCounts,
+        urgentCountsPerWorkshop,
         visibleRows,
         hasAnyFilter,
         setSelectedRequesters,
@@ -254,6 +282,8 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         setDateTo,
         setQuickSearch,
         setSelectedWorkshops,
+        urgentOnly,
+        setUrgentOnly,
         clearAll,
         resetForNewImport,
     };
