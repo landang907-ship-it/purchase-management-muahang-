@@ -25,6 +25,7 @@ export interface PurchaseOrder {
     is_urgent?: boolean;
     urgent_reason?: string | null;
     urgent_image_url?: string | null;
+    request_date?: string;
     created_at: string;
 }
 
@@ -67,6 +68,7 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
             status: r['T.trg xử lý'] || '',
             tag_name: r['TAG-NAME'] || '',
             unique_order_key: uniqueKey,
+            request_date: r['Ngày YC'] || '',
         });
     }
 
@@ -115,6 +117,7 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
                     is_urgent: o.is_urgent,
                     urgent_reason: o.urgent_reason,
                     urgent_image_url: o.urgent_image_url,
+                    request_date: o.request_date,
                     // disappeared_at will default to NOW() in DB
                 }));
 

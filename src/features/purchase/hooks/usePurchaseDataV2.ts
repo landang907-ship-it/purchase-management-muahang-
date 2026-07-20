@@ -29,7 +29,7 @@ export function usePurchaseDataV2({ userId, onMessage, t: _t }: UsePurchaseDataV
                 'Văn bản ngắn': order.description,
                 'Ng.yêu cầu': order.requester,
                 'Số lượng': String(order.quantity),
-                'Ngày YC': new Date(order.created_at).toLocaleDateString('vi-VN'),
+                'Ngày YC': order.request_date || new Date(order.created_at).toLocaleDateString('vi-VN'),
                 'Đơn vị': order.unit,
                 'T.trg xử lý': order.status,
                 'TAG-NAME': order.tag_name,
