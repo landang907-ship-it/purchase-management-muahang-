@@ -65,7 +65,7 @@ export async function savePurchaseDataV2(userId: string, rows: PurchaseRow[], fi
         const chunk = ordersToInsert.slice(i, i + chunkSize);
         const { error: insertErr } = await supabase
             .from('purchase_orders')
-            .insert(chunk);
+            .upsert(chunk, { onConflict: 'user_id, unique_order_key' });
 
         if (insertErr) {
             console.error('[savePurchaseDataV2] Error inserting chunk:', insertErr);
