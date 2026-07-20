@@ -33,12 +33,7 @@ const RIGHT_TASK_ITEMS = [
         labelKey: 'sidebar.purchase_request',
         icon: <ShoppingCart size={16} strokeWidth={2} />,
     },
-    {
-        id: 'new_features',
-        labelKey: 'sidebar.new_features',
-        icon: <Sparkles size={16} strokeWidth={2} />,
-        path: '/',
-    },
+
     {
         id: 'processed_orders',
         labelKey: 'sidebar.processed_orders',

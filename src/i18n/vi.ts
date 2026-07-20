@@ -27,7 +27,7 @@ export default {
   'sidebar.home': 'Trang chủ',
   'sidebar.system_orders': 'Đơn hệ thống',
   'sidebar.material_code': 'Mã vật tư',
-  'sidebar.purchase_request': 'Yêu cầu mua hàng',
+  'sidebar.purchase_request': 'Nhu cầu gấp',
   'sidebar.new_features': 'Tính năng mới',
   'sidebar.processed_orders': 'Đơn thu mua đang xử lý',
 
