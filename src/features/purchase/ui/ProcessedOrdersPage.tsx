@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { type ProcessedOrder, fetchProcessedOrders } from '../services/processedOrdersService';
 import { Header } from './Header';
-import { FileText, Clock, ArrowLeft, Factory } from 'lucide-react';
+import { FileText, Clock, ArrowLeft, Factory, Sparkles, Filter } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useNavigate } from 'react-router-dom';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
@@ -140,9 +140,20 @@ export function ProcessedOrdersPage() {
                         {loading ? (
                             <div className="p-8 text-center text-slate-500">{t('processed.loading' as any)}</div>
                         ) : selectedWorkshops.length === 0 ? (
-                            <div className="p-12 flex flex-col items-center justify-center text-slate-500">
-                                <Factory size={48} className="mb-4 text-slate-300" />
-                                <p className="text-lg">{t('noresults.tab' as any)}</p>
+                            <div className="p-8 md:p-16 flex flex-col items-center justify-center text-center">
+                                <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 mb-6 shadow-sm border border-blue-100">
+                                    <Sparkles size={32} strokeWidth={1.5} />
+                                </div>
+                                <h3 className="text-xl font-bold text-slate-800 mb-3">{t('processed.empty_state.title' as any)}</h3>
+                                <p className="text-slate-600 max-w-lg mb-8 leading-relaxed">
+                                    {t('processed.empty_state.desc' as any)}
+                                </p>
+                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3 max-w-lg w-full text-left">
+                                    <Filter className="text-blue-500 shrink-0 mt-0.5" size={20} />
+                                    <p className="text-sm text-slate-700 font-medium leading-relaxed">
+                                        {t('processed.empty_state.action' as any)}
+                                    </p>
+                                </div>
                             </div>
                         ) : visibleOrders.length === 0 ? (
                             <div className="p-12 flex flex-col items-center justify-center text-slate-500">
