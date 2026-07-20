@@ -144,7 +144,7 @@ export default {
   'processed.back_home': 'Quay lại trang chủ',
   'processed.loading': 'Đang tải dữ liệu...',
   'processed.empty_state.title': 'Theo dõi tiến độ tự động',
-  'processed.empty_state.desc': 'Thuật toán thông minh sẽ tự động so sánh dữ liệu giữa 2 lần bạn nhập file Excel liên tiếp. Nếu một đơn hàng (dựa trên Mã Yêu cầu & Mã Vật tư) từng tồn tại ở file cũ nhưng không còn xuất hiện trong file mới, hệ thống sẽ kết luận đơn hàng đó đã được giải quyết trên SAP và lưu trữ lại tại đây.',
+  'processed.empty_state.desc': 'Thuật toán thông minh sẽ tự động so sánh dữ liệu giữa 2 lần bạn nhập file Excel liên tiếp. Nếu một đơn hàng từng tồn tại ở file cũ nhưng không còn xuất hiện trong file mới, VÀ có trạng thái cuối cùng là \'05\', hệ thống sẽ kết luận đơn hàng đó đã được giải quyết trên SAP và lưu trữ tại đây (các đơn có trạng thái khác như 03, 08 sẽ bị loại bỏ).',
   'processed.empty_state.action': 'Vui lòng chọn một hoặc nhiều phân xưởng ở bộ lọc phía trên để xem thành quả công việc.',
   'processed.empty.title': 'Chưa có đơn hàng nào biến mất.',
   'processed.empty.subtitle': 'Hệ thống sẽ tự động đối chiếu và cập nhật danh sách này khi bạn nhập file mới.',
