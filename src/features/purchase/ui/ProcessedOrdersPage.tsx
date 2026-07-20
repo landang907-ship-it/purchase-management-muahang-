@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { type ProcessedOrder, fetchProcessedOrders } from '../services/processedOrdersService';
 import { Header } from './Header';
-import { FileText, Clock, ArrowLeft, Factory, Sparkles, Filter } from 'lucide-react';
+import { FileText, Clock, ArrowLeft, Sparkles, Filter } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useNavigate } from 'react-router-dom';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
