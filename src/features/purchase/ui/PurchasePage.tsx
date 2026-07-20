@@ -17,7 +17,7 @@ import { Toast } from '@/shared/ui/Toast';
 import { useToastQueue } from '@/shared/hooks/useToastQueue';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTranslation } from '@/i18n/useTranslation';
-import { usePurchaseDataV2 as usePurchaseData } from '@/features/purchase/hooks/usePurchaseDataV2';
+import { usePurchaseDataV2 } from '@/features/purchase/hooks/usePurchaseDataV2';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
@@ -40,7 +40,7 @@ export function PurchasePage() {
         setRows,
         setFileName,
         save,
-    } = usePurchaseData({ userId, onMessage: showToast, t });
+    } = usePurchaseDataV2({ userId, onMessage: showToast, t });
 
     // Workshop config - shared state between WorkshopPanel and Filter
     const {
