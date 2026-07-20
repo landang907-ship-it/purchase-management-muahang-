@@ -10,6 +10,7 @@ export interface ProcessedOrder {
   quantity: string | null;
   unit: string | null;
   status: string | null;
+  tag_name: string | null;
   disappeared_at: string;
 }
 

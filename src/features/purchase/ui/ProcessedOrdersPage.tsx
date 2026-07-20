@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { type ProcessedOrder, fetchProcessedOrders } from '../services/processedOrdersService';
 import { Header } from './Header';
-import { FileText, Clock, ArrowLeft } from 'lucide-react';
+import { FileText, Clock, ArrowLeft, Factory } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useNavigate } from 'react-router-dom';
+import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
+import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 export function ProcessedOrdersPage() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const userId = user?.user;
+    
     const [orders, setOrders] = useState<ProcessedOrder[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -26,6 +32,49 @@ export function ProcessedOrdersPage() {
         };
         load();
     }, []);
+
+    const { workshops } = useWorkshopConfig(userId);
+
+    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(() => {
+        try {
+            const raw = localStorage.getItem('purchase_selected_workshops');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) return parsed;
+            }
+        } catch {}
+        return [];
+    });
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('purchase_selected_workshops', JSON.stringify(selectedWorkshops));
+        } catch {}
+    }, [selectedWorkshops]);
+
+    const workshopOptions = useMemo(() => workshops.map((w) => w.name), [workshops]);
+
+    const workshopToTagsMap = useMemo(() => {
+        const map: Record<string, string[]> = {};
+        for (const w of workshops) {
+            map[w.name] = w.tagValues;
+        }
+        return map;
+    }, [workshops]);
+
+    const visibleOrders = useMemo(() => {
+        if (selectedWorkshops.length === 0) return [];
+
+        const tagSet = new Set<string>();
+        for (const wsName of selectedWorkshops) {
+            const tags = workshopToTagsMap[wsName] || [];
+            for (const tag of tags) {
+                tagSet.add(tag);
+            }
+        }
+
+        return orders.filter(o => tagSet.has((o.tag_name ?? '').trim()));
+    }, [orders, selectedWorkshops, workshopToTagsMap]);
 
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
@@ -66,10 +115,26 @@ export function ProcessedOrdersPage() {
                             </button>
                         </div>
 
+                        {/* Action Bar */}
+                        <div className="bg-white px-3 py-2 flex items-center justify-between gap-4 border border-slate-200 rounded-xl shadow-sm z-20 overflow-x-auto scrollbar-hide">
+                            <div className="shrink-0 min-w-[200px]">
+                                <WorkshopFilter
+                                    options={workshopOptions}
+                                    value={selectedWorkshops}
+                                    onChange={setSelectedWorkshops}
+                                />
+                            </div>
+                        </div>
+
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                         {loading ? (
                             <div className="p-8 text-center text-slate-500">{t('processed.loading' as any)}</div>
-                        ) : orders.length === 0 ? (
+                        ) : selectedWorkshops.length === 0 ? (
+                            <div className="p-12 flex flex-col items-center justify-center text-slate-500">
+                                <Factory size={48} className="mb-4 text-slate-300" />
+                                <p className="text-lg">{t('noresults.tab' as any)}</p>
+                            </div>
+                        ) : visibleOrders.length === 0 ? (
                             <div className="p-12 flex flex-col items-center justify-center text-slate-500">
                                 <FileText size={48} className="mb-4 text-slate-300" />
                                 <p className="text-lg">{t('processed.empty.title' as any)}</p>
@@ -90,7 +155,7 @@ export function ProcessedOrdersPage() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
-                                        {orders.map((order) => (
+                                        {visibleOrders.map((order) => (
                                             <tr key={order.id} className="hover:bg-slate-50 transition-colors">
                                                 <td className="px-4 py-3 font-medium text-slate-900">{order.pr_number}</td>
                                                 <td className="px-4 py-3 text-slate-600">{order.item_no}</td>

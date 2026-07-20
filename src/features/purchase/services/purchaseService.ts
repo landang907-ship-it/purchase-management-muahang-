@@ -53,6 +53,7 @@ export async function savePurchaseData(userId: string, rows: PurchaseRow[], file
         quantity: String(r['Số lượng'] || ''),
         unit: r['Đơn vị đo lường'] || '',
         status: r['T.trg xử lý'] || '',
+        tag_name: r['TAG-NAME'] || '',
       }));
       
       const { error: processErr } = await supabase
