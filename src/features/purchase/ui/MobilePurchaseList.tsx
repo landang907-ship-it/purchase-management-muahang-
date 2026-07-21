@@ -75,38 +75,41 @@ export function MobilePurchaseList({
                                 className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col p-4 hover:shadow-md transition-shadow"
                             >
                                 {/* Header and Meta Info */}
-                                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 mb-2 items-center">
-                                    {/* Row 1 Left: PR ID */}
-                                    <div className="text-[14px] font-bold text-[#2d4373]">
-                                        {id ? `${t('detail.id')} : ${id}` : 'N/A'}
-                                    </div>
-                                    
-                                    {/* Row 1 Right: Date & Status */}
-                                    <div className="flex justify-between items-center w-full min-w-0 gap-2">
-                                        <div className="text-[14px] text-emerald-500 font-medium truncate">
-                                            {item['Ngày YC'] || ''}
+                                <div className="flex justify-between items-start gap-2 mb-2">
+                                    {/* Left side: Info */}
+                                    <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-[14px] font-bold text-[#2d4373] truncate">
+                                                {id ? `${t('detail.id')} : ${id}` : 'N/A'}
+                                            </span>
+                                            <span className="text-[13px] text-emerald-500 font-medium shrink-0">
+                                                {item['Ngày YC'] || ''}
+                                            </span>
                                         </div>
-                                        {status && (
+                                        
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-xs text-gray-400 font-mono truncate max-w-[120px]">
+                                                {code || ''}
+                                            </span>
+                                            <span className="text-[11.5px] text-gray-500 font-medium truncate">
+                                                {item['Ng.yêu cầu'] ? `${t('detail.requester')} : ${item['Ng.yêu cầu']}` : ''}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Right side: Status Badge */}
+                                    {status && (
+                                        <div className="shrink-0">
                                             <span
                                                 className={cn(
-                                                    "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shrink-0 shadow-sm",
+                                                    "px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider text-white shadow-sm inline-block text-center",
                                                     getStatusColorClass(status, isApproved)
                                                 )}
                                             >
                                                 {formatStatusText(status)}
                                             </span>
-                                        )}
-                                    </div>
-
-                                    {/* Row 2 Left: Material Code */}
-                                    <div className="text-xs text-gray-400 font-mono truncate max-w-[140px]">
-                                        {code || ''}
-                                    </div>
-
-                                    {/* Row 2 Right: Requester */}
-                                    <div className="text-[11.5px] text-gray-500 font-medium truncate">
-                                        {item['Ng.yêu cầu'] ? `${t('detail.requester')} : ${item['Ng.yêu cầu']}` : ''}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                                 
                                 {/* Item Name */}
