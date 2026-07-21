@@ -30,6 +30,7 @@ export default {
   'sidebar.purchase_request': '采购申请',
   'sidebar.new_features': '新功能',
   'sidebar.processed_orders': '处理中的采购单',
+  'sidebar.notifications': '通知',
 
   // Tabs
   'tab.system': '系统',

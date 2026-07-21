@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PanelLeftClose, PanelLeft, FileText, Tags, Menu, Home, Shield, User, LogOut } from 'lucide-react';
+import { PanelLeftClose, PanelLeft, FileText, Tags, Menu, Home, Shield, User, LogOut, Bell } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/shared/lib/cn';
@@ -21,6 +21,12 @@ const RIGHT_TASK_ITEMS = [
         labelKey: 'sidebar.system_orders',
         icon: <FileText size={16} strokeWidth={2} />,
         path: '/system-orders',
+    },
+    {
+        id: 'notifications',
+        labelKey: 'sidebar.notifications',
+        icon: <Bell size={16} strokeWidth={2} />,
+        path: '/notifications',
     },
     {
         id: 'material_code',

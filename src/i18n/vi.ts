@@ -30,6 +30,7 @@ export default {
   'sidebar.purchase_request': 'Nhu cầu gấp',
   'sidebar.new_features': 'Tính năng mới',
   'sidebar.processed_orders': 'Đơn thu mua đang xử lý',
+  'sidebar.notifications': 'Thông báo',
 
   // Tabs
   'tab.system': 'Hệ thống',
