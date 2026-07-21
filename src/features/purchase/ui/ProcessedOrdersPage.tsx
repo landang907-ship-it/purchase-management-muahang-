@@ -6,6 +6,8 @@ import { FileText, Clock, ArrowLeft, Sparkles, Filter } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useNavigate } from 'react-router-dom';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
+import { QuickSearch } from '@/features/purchase/ui/QuickSearch';
+import { RequesterFilter } from '@/features/purchase/ui/RequesterFilter';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { formatStatusText } from '@/features/purchase/lib/status';
@@ -37,6 +39,8 @@ export function ProcessedOrdersPage() {
     const { workshops } = useWorkshopConfig(userId);
 
     const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>([]);
+    const [quickSearch, setQuickSearch] = useState<string>('');
+    const [selectedRequesters, setSelectedRequesters] = useState<string[]>([]);
 
     const workshopOptions = useMemo(() => workshops.map((w) => w.name), [workshops]);
 
@@ -58,6 +62,28 @@ export function ProcessedOrdersPage() {
         return map;
     }, [workshops]);
 
+    const requesterOptions = useMemo(() => {
+        if (selectedWorkshops.length === 0) return [];
+        
+        const tagSet = new Set<string>();
+        for (const wsName of selectedWorkshops) {
+            const tags = workshopToTagsMap[wsName] || [];
+            for (const tag of tags) {
+                tagSet.add(tag);
+            }
+        }
+
+        const set = new Set<string>();
+        for (const o of orders) {
+            const tag = (o.tag_name ?? '').trim();
+            if (tagSet.has(tag)) {
+                const v = (o.requester ?? '').trim();
+                if (v) set.add(v);
+            }
+        }
+        return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
+    }, [orders, selectedWorkshops, workshopToTagsMap]);
+
     const visibleOrders = useMemo(() => {
         if (selectedWorkshops.length === 0) return [];
 
@@ -69,8 +95,32 @@ export function ProcessedOrdersPage() {
             }
         }
 
-        return orders.filter(o => tagSet.has((o.tag_name ?? '').trim()));
-    }, [orders, selectedWorkshops, workshopToTagsMap]);
+        let result = orders.filter(o => tagSet.has((o.tag_name ?? '').trim()));
+
+        if (selectedRequesters.length > 0) {
+            const selectedSet = new Set(selectedRequesters);
+            result = result.filter(o => selectedSet.has((o.requester ?? '').trim()));
+        }
+
+        if (quickSearch.trim()) {
+            const searchLower = quickSearch.toLowerCase().trim();
+            result = result.filter(o => {
+                const text = (o.description ?? '').toLowerCase();
+                const prNo = (o.pr_number ?? '').toLowerCase();
+                const matNo = (o.item_no ?? '').toLowerCase();
+                const reqName = (o.requester ?? '').toLowerCase();
+                
+                return (
+                    text.includes(searchLower) ||
+                    prNo.includes(searchLower) ||
+                    matNo.includes(searchLower) ||
+                    reqName.includes(searchLower)
+                );
+            });
+        }
+
+        return result;
+    }, [orders, selectedWorkshops, workshopToTagsMap, selectedRequesters, quickSearch]);
 
     return (
         <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
@@ -112,12 +162,29 @@ export function ProcessedOrdersPage() {
                         </div>
 
                         {/* Action Bar */}
-                        <div className="bg-white px-3 border border-slate-200 rounded-xl shadow-sm z-20 w-full overflow-hidden mb-4">
-                            <WorkshopFilter
-                                options={workshopOptions}
-                                value={selectedWorkshops}
-                                onChange={setSelectedWorkshops}
-                            />
+                        <div className="bg-white border border-slate-200 rounded-xl shadow-sm z-20 w-full overflow-hidden mb-4">
+                            <div className="px-3 border-b border-slate-100">
+                                <WorkshopFilter
+                                    options={workshopOptions}
+                                    value={selectedWorkshops}
+                                    onChange={setSelectedWorkshops}
+                                />
+                            </div>
+                            
+                            {selectedWorkshops.length > 0 && (
+                                <div className="px-3 py-2 bg-slate-50 flex flex-col sm:flex-row gap-2">
+                                    <div className="flex-1">
+                                        <QuickSearch value={quickSearch} onChange={setQuickSearch} />
+                                    </div>
+                                    <div className="sm:w-64">
+                                        <RequesterFilter
+                                            options={requesterOptions}
+                                            value={selectedRequesters}
+                                            onChange={setSelectedRequesters}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
