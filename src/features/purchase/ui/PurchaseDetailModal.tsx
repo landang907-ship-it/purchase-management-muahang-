@@ -4,7 +4,7 @@ import type { PurchaseRow } from '@/features/purchase/services/excel';
 import type { MaterialImageMap } from '@/features/purchase/services/materialService';
 import { useEffect, useState, useRef } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { compressAndUploadImage, uploadUrgentImage } from '@/features/purchase/services/imageService';
+import { compressAndUploadImage, uploadUrgentImage, deleteUrgentImage } from '@/features/purchase/services/imageService';
 import { upsertMaterialImage } from '@/features/purchase/services/materialService';
 import { updateUrgentStatus } from '@/features/purchase/services/purchaseServiceV2';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -114,6 +114,43 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
         } catch (error) {
             console.error('Error submitting urgent request:', error);
             alert('Có lỗi xảy ra, vui lòng thử lại.');
+        } finally {
+            setIsSubmittingUrgent(false);
+        }
+    };
+
+    const handleCancelUrgent = async () => {
+        if (!user?.user) return;
+        if (!confirm('Bạn có chắc muốn hủy cảnh báo khẩn này?')) return;
+        if (!data) return;
+
+        try {
+            const uniqueKey = `${data['Yc.m.hàng']}_${data['Vật tư']}`;
+            setIsSubmittingUrgent(true);
+            
+            await updateUrgentStatus(user.user, uniqueKey, false, 'pending');
+            
+            // Delete image from storage if it exists
+            if (data.urgent_image_url) {
+                await deleteUrgentImage(data.urgent_image_url);
+            }
+            
+            // Mutate local data for immediate UI update
+            data.is_urgent = false;
+            data.urgent_status = 'pending';
+            data.urgent_reason = '';
+            data.urgent_image_url = null;
+
+            setUrgentStatus('pending');
+            setUrgentReason('');
+            setUrgentFile(null);
+
+            if (onDataUpdated) onDataUpdated();
+            
+            alert('Đã hủy trạng thái Cần gấp!');
+        } catch (error) {
+            console.error('Error canceling urgent request:', error);
+            alert('Có lỗi xảy ra khi hủy, vui lòng thử lại.');
         } finally {
             setIsSubmittingUrgent(false);
         }
@@ -314,15 +351,24 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                                     disabled={isSubmittingUrgent}
                                     className={cn(
                                         "flex-1 py-2 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm",
-                                        urgentStatus === 'pending' 
+                                        urgentStatus === 'pending' && data.is_urgent
                                             ? "bg-red-500 hover:bg-red-600 text-white" 
                                             : "bg-red-50 hover:bg-red-100 text-red-600 border border-red-200"
                                     )}
                                 >
                                     {isSubmittingUrgent && urgentStatus === 'pending' ? <Loader2 size={16} className="animate-spin" /> : null}
-                                    🔥 Cảnh báo khẩn
+                                    {data.is_urgent ? "Cập nhật cảnh báo" : "🔥 Cảnh báo khẩn"}
                                 </button>
 
+                                {data.is_urgent && (
+                                    <button
+                                        onClick={handleCancelUrgent}
+                                        disabled={isSubmittingUrgent}
+                                        className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
+                                    >
+                                        Hủy báo khẩn
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
