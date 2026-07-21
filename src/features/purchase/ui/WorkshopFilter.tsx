@@ -1,18 +1,14 @@
 import { Factory, Check } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
-
-import type { ReactNode } from 'react';
-
+import { cn } from '@/shared/lib/cn';
 interface WorkshopFilterProps {
     options: string[];
     value: string[];
     onChange: (next: string[]) => void;
     disabled?: boolean;
-    filterButton?: ReactNode;
 }
 
-export function WorkshopFilter({ options, value, onChange, disabled, filterButton }: WorkshopFilterProps) {
+export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopFilterProps) {
     const { t } = useTranslation();
     const isAllSelected = value.length === options.length && options.length > 0;
 
@@ -48,16 +44,9 @@ export function WorkshopFilter({ options, value, onChange, disabled, filterButto
                 </span>
             </div>
             
-            <div className="flex items-center w-full gap-2 px-1">
-                {filterButton && (
-                    <div className="shrink-0 relative z-50">
-                        {filterButton}
-                    </div>
-                )}
-                
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide flex-1">
-                    <button
-                        type="button"
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide px-1">
+                <button
+                    type="button"
                         disabled={disabled}
                         onClick={handleToggleAll}
                         className={cn(
@@ -93,7 +82,6 @@ export function WorkshopFilter({ options, value, onChange, disabled, filterButto
                         </button>
                     );
                 })}
-                </div>
             </div>
         </div>
     );

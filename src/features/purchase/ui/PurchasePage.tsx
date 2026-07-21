@@ -152,37 +152,43 @@ export function PurchasePage() {
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                 >
                     {/* Action Bar (Always visible) */}
-                    <div className="bg-white px-3 border-b border-gray-100 shrink-0 shadow-sm z-30 w-full relative">
+                    <div className="bg-white px-3 border-b border-gray-100 shrink-0 shadow-sm z-20 w-full overflow-hidden">
                         <WorkshopFilter
                             options={workshopOptions}
                             value={selectedWorkshops}
                             onChange={setSelectedWorkshops}
-                            filterButton={
-                                !showEmpty ? (
-                                    <FilterBar
-                                        quickSearch={quickSearch}
-                                        selectedRequesters={selectedRequesters}
-                                        selectedStatus={selectedStatus}
-                                        dateFrom={dateFrom}
-                                        dateTo={dateTo}
-                                        requesterOptions={requesterOptions}
-                                        statusOptions={statusOptions}
-                                        onQuickSearchChange={setQuickSearch}
-                                        onRequestersChange={setSelectedRequesters}
-                                        onStatusChange={setSelectedStatus}
-                                        onDateFromChange={setDateFrom}
-                                        onDateToChange={setDateTo}
-                                    />
-                                ) : undefined
-                            }
                         />
                     </div>
 
-                    {/* Urgent Notifications Panel */}
-                    {!showEmpty && selectedWorkshops.length > 0 && (
-                        <div className="bg-red-50 px-3 py-2 border-b border-red-100 shrink-0 flex items-center gap-2 overflow-x-auto scrollbar-hide">
-                            <span className="text-red-600 text-[11px] font-semibold shrink-0">🚨 Cần gấp:</span>
-                            <div className="flex items-center gap-2">
+                    {/* Filter and Urgent Panel Row */}
+                    {!showEmpty && (
+                        <div className={cn(
+                            "px-3 py-2 border-b shrink-0 flex items-center gap-2 w-full relative z-30",
+                            selectedWorkshops.length > 0 ? "bg-red-50 border-red-100" : "bg-white border-gray-100"
+                        )}>
+                            {/* Filter Button */}
+                            <div className="shrink-0 relative z-50">
+                                <FilterBar
+                                    quickSearch={quickSearch}
+                                    selectedRequesters={selectedRequesters}
+                                    selectedStatus={selectedStatus}
+                                    dateFrom={dateFrom}
+                                    dateTo={dateTo}
+                                    requesterOptions={requesterOptions}
+                                    statusOptions={statusOptions}
+                                    onQuickSearchChange={setQuickSearch}
+                                    onRequestersChange={setSelectedRequesters}
+                                    onStatusChange={setSelectedStatus}
+                                    onDateFromChange={setDateFrom}
+                                    onDateToChange={setDateTo}
+                                />
+                            </div>
+
+                            {/* Urgent Panel */}
+                            {selectedWorkshops.length > 0 && (
+                                <>
+                                    <span className="text-red-600 text-[11px] font-semibold shrink-0 ml-1">🚨 Cần gấp:</span>
+                                    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide flex-1">
                                 {selectedWorkshops.map((wsName) => {
                                     const count = urgentCountsPerWorkshop[wsName] || 0;
                                     return (
@@ -223,6 +229,8 @@ export function PurchasePage() {
                                     </button>
                                 )}
                             </div>
+                                </>
+                            )}
                         </div>
                     )}
 
