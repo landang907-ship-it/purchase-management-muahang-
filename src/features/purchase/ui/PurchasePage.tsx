@@ -152,11 +152,29 @@ export function PurchasePage() {
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                 >
                     {/* Action Bar (Always visible) */}
-                    <div className="bg-white px-3 border-b border-gray-100 shrink-0 shadow-sm z-20 w-full overflow-hidden">
+                    <div className="bg-white px-3 border-b border-gray-100 shrink-0 shadow-sm z-30 w-full relative">
                         <WorkshopFilter
                             options={workshopOptions}
                             value={selectedWorkshops}
                             onChange={setSelectedWorkshops}
+                            filterButton={
+                                !showEmpty ? (
+                                    <FilterBar
+                                        quickSearch={quickSearch}
+                                        selectedRequesters={selectedRequesters}
+                                        selectedStatus={selectedStatus}
+                                        dateFrom={dateFrom}
+                                        dateTo={dateTo}
+                                        requesterOptions={requesterOptions}
+                                        statusOptions={statusOptions}
+                                        onQuickSearchChange={setQuickSearch}
+                                        onRequestersChange={setSelectedRequesters}
+                                        onStatusChange={setSelectedStatus}
+                                        onDateFromChange={setDateFrom}
+                                        onDateToChange={setDateTo}
+                                    />
+                                ) : undefined
+                            }
                         />
                     </div>
 
@@ -209,26 +227,6 @@ export function PurchasePage() {
                     )}
 
 
-
-                    {/* Shared FilterBar */}
-                    {!showEmpty && (
-                        <div className="shrink-0 z-10 relative">
-                            <FilterBar
-                                quickSearch={quickSearch}
-                                selectedRequesters={selectedRequesters}
-                                selectedStatus={selectedStatus}
-                                dateFrom={dateFrom}
-                                dateTo={dateTo}
-                                requesterOptions={requesterOptions}
-                                statusOptions={statusOptions}
-                                onQuickSearchChange={setQuickSearch}
-                                onRequestersChange={setSelectedRequesters}
-                                onStatusChange={setSelectedStatus}
-                                onDateFromChange={setDateFrom}
-                                onDateToChange={setDateTo}
-                            />
-                        </div>
-                    )}
 
                     <div className="flex-1 flex flex-col overflow-hidden relative">
                         {showEmpty && <EmptyState onImport={openFilePicker} />}

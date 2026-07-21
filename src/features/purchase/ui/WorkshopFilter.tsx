@@ -2,14 +2,17 @@ import { Factory, Check } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
+import { ReactNode } from 'react';
+
 interface WorkshopFilterProps {
     options: string[];
     value: string[];
     onChange: (next: string[]) => void;
     disabled?: boolean;
+    filterButton?: ReactNode;
 }
 
-export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopFilterProps) {
+export function WorkshopFilter({ options, value, onChange, disabled, filterButton }: WorkshopFilterProps) {
     const { t } = useTranslation();
     const isAllSelected = value.length === options.length && options.length > 0;
 
@@ -45,22 +48,29 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
                 </span>
             </div>
             
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide px-1">
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={handleToggleAll}
-                    className={cn(
-                        "shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 border-2",
-                        isAllSelected
-                            ? "bg-blue-600 border-blue-600 text-white shadow-sm"
-                            : "bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50",
-                        disabled && "opacity-50 cursor-not-allowed"
-                    )}
-                >
-                    {isAllSelected && <Check size={14} strokeWidth={3} />}
-                    Tất cả
-                </button>
+            <div className="flex items-center w-full gap-2 px-1">
+                {filterButton && (
+                    <div className="shrink-0 relative z-50">
+                        {filterButton}
+                    </div>
+                )}
+                
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide flex-1">
+                    <button
+                        type="button"
+                        disabled={disabled}
+                        onClick={handleToggleAll}
+                        className={cn(
+                            "shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 border-2",
+                            isAllSelected
+                                ? "bg-blue-600 border-blue-600 text-white shadow-sm"
+                                : "bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:bg-blue-50",
+                            disabled && "opacity-50 cursor-not-allowed"
+                        )}
+                    >
+                        {isAllSelected && <Check size={14} strokeWidth={3} />}
+                        Tất cả
+                    </button>
 
                 {options.map((opt) => {
                     const isSelected = value.includes(opt);
@@ -83,6 +93,7 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
                         </button>
                     );
                 })}
+                </div>
             </div>
         </div>
     );

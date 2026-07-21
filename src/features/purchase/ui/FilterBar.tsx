@@ -72,21 +72,19 @@ export function FilterBar({
     }, [expanded]);
 
     return (
-        <div ref={containerRef} className="bg-white px-2 py-2 border-t border-gray-100">
-
-            <button
+        <div ref={containerRef} className="relative">            <button
                 type="button"
                 onClick={() => setExpanded(!expanded)}
                 className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded',
-                    'bg-blue-mid text-white text-[11px] font-semibold',
-                    'hover:brightness-110 transition-[filter]',
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2',
+                    expanded ? 'bg-blue-600 border-blue-600 text-white shadow-sm' : 'bg-white border-blue-600 text-blue-600 hover:bg-blue-50',
+                    'text-[13px] font-medium transition-all duration-200'
                 )}
             >
-                <Filter size={12} strokeWidth={2.5} />
+                <Filter size={14} strokeWidth={2.5} />
                 <span>{t('filter.use')}</span>
                 <ChevronDown
-                    size={12}
+                    size={14}
                     strokeWidth={2.5}
                     className={cn('transition-transform', expanded && 'rotate-180')}
                 />
@@ -95,13 +93,13 @@ export function FilterBar({
             <AnimatePresence initial={false}>
                 {expanded && (
                     <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="overflow-hidden"
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
+                        className="absolute left-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-[320px] max-w-[400px] bg-white shadow-xl border border-gray-200 rounded-xl p-3 z-50 origin-top"
                     >
-                        <div className="space-y-2 pt-2">
+                        <div className="space-y-3">
                             <QuickSearch value={quickSearch} onChange={onQuickSearchChange} />
                             <RequesterFilter
                                 options={requesterOptions}
