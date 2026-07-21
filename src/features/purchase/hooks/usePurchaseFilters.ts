@@ -3,7 +3,7 @@
  * + computed `requesterOptions`, `statusOptions`, `visibleRows`, `hasAnyFilter`.
  * Tách ra từ PurchasePage để giảm kích thước component.
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 // removed localStorage persistence for selectedWorkshops
 import { parseDateSafe } from '@/features/purchase/lib/date';
