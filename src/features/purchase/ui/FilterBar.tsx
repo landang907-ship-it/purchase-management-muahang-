@@ -4,6 +4,7 @@
  * Thu gọn thành nút "Sử dụng bộ lọc" và mở rộng khi cần.
  */
 import { useState, useRef, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Filter } from 'lucide-react';
 import { QuickSearch } from './QuickSearch';
 import { RequesterFilter } from './RequesterFilter';
@@ -71,7 +72,7 @@ export function FilterBar({
     }, [expanded]);
 
     return (
-        <div ref={containerRef} className="bg-white px-2 py-2 space-y-2 border-t border-gray-100">
+        <div ref={containerRef} className="bg-white px-2 py-2 border-t border-gray-100">
 
             <button
                 type="button"
@@ -91,27 +92,37 @@ export function FilterBar({
                 />
             </button>
 
-            {expanded && (
-                <>
-                    <QuickSearch value={quickSearch} onChange={onQuickSearchChange} />
-                    <RequesterFilter
-                        options={requesterOptions}
-                        value={selectedRequesters}
-                        onChange={onRequestersChange}
-                    />
-                    <StatusFilter
-                        options={statusOptions}
-                        value={selectedStatus}
-                        onChange={onStatusChange}
-                    />
-                    <DateRangeFilter
-                        dateFrom={dateFrom}
-                        dateTo={dateTo}
-                        onDateFromChange={onDateFromChange}
-                        onDateToChange={onDateToChange}
-                    />
-                </>
-            )}
+            <AnimatePresence initial={false}>
+                {expanded && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                    >
+                        <div className="space-y-2 pt-2">
+                            <QuickSearch value={quickSearch} onChange={onQuickSearchChange} />
+                            <RequesterFilter
+                                options={requesterOptions}
+                                value={selectedRequesters}
+                                onChange={onRequestersChange}
+                            />
+                            <StatusFilter
+                                options={statusOptions}
+                                value={selectedStatus}
+                                onChange={onStatusChange}
+                            />
+                            <DateRangeFilter
+                                dateFrom={dateFrom}
+                                dateTo={dateTo}
+                                onDateFromChange={onDateFromChange}
+                                onDateToChange={onDateToChange}
+                            />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
