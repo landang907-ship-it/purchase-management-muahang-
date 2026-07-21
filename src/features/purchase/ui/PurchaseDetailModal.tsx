@@ -30,7 +30,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
     const [urgentReason, setUrgentReason] = useState('');
     const [urgentFile, setUrgentFile] = useState<File | null>(null);
     const [isSubmittingUrgent, setIsSubmittingUrgent] = useState(false);
-    const [urgentStatus, setUrgentStatus] = useState<'pending'|'processing'|'completed'>('pending');
+    const [urgentStatus, setUrgentStatus] = useState<'pending'|'approved'|'processing'|'completed'>('pending');
 
     useEffect(() => {
         if (isOpen && data) {
@@ -81,7 +81,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
         }
     };
 
-    const handleUrgentSubmit = async (newStatus?: 'pending' | 'processing' | 'completed') => {
+    const handleUrgentSubmit = async (newStatus?: 'pending' | 'approved' | 'processing' | 'completed') => {
         if (!user?.user) return;
         if (!urgentReason.trim()) {
             alert('Vui lòng nhập lý do cần gấp!');
@@ -147,6 +147,11 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                         {data.is_urgent && data.urgent_status === 'processing' && (
                             <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-orange-100 text-orange-600 text-xs font-bold uppercase tracking-wide">
                                 🚚 Đang mua gấp
+                            </span>
+                        )}
+                        {data.is_urgent && data.urgent_status === 'approved' && (
+                            <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-green-100 text-green-600 text-xs font-bold uppercase tracking-wide">
+                                ✅ Đã duyệt mua gấp
                             </span>
                         )}
                     </h3>

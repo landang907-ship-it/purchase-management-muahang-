@@ -7,6 +7,7 @@ import { PurchasePage } from '@/features/purchase/ui/PurchasePage';
 import { HomePage } from '@/features/purchase/ui/HomePage';
 import { ProcessedOrdersPage } from '@/features/purchase/ui/ProcessedOrdersPage';
 import { MaterialCodePage } from '@/features/purchase/ui/MaterialCodePage';
+import { NotificationsPage } from '@/features/notifications/ui/NotificationsPage';
 import { ProfilePage } from '@/features/auth/ui/ProfilePage';
 import { AdminUserManagement } from '@/features/auth/ui/AdminUserManagement';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute';
@@ -30,6 +31,7 @@ export default function App() {
                     <Route path="/system-orders" element={<PurchasePage />} />
                     <Route path="/processed-orders" element={<ProcessedOrdersPage />} />
                     <Route path="/materials" element={<MaterialCodePage />} />
+                    <Route path="/notifications" element={<NotificationsPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Route>

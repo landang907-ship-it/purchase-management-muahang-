@@ -23,7 +23,7 @@ export interface PurchaseOrder {
     tag_name: string;
     unique_order_key: string;
     is_urgent?: boolean;
-    urgent_status?: 'pending' | 'processing' | 'completed';
+    urgent_status?: 'pending' | 'approved' | 'processing' | 'completed';
     urgent_reason?: string | null;
     urgent_image_url?: string | null;
     request_date?: string;
@@ -199,7 +199,7 @@ export async function listImportBatches(userId: string): Promise<ImportBatch[]> 
     return data as ImportBatch[];
 }
 
-export async function updateUrgentStatus(userId: string, uniqueOrderKey: string, isUrgent: boolean, urgentStatus: 'pending' | 'processing' | 'completed' = 'pending', urgentReason?: string, urgentImageUrl?: string) {
+export async function updateUrgentStatus(userId: string, uniqueOrderKey: string, isUrgent: boolean, urgentStatus: 'pending' | 'approved' | 'processing' | 'completed' = 'pending', urgentReason?: string, urgentImageUrl?: string) {
     if (!userId || !uniqueOrderKey) return;
 
     // Use upsert to handle cases where the row might not exist in purchase_orders yet
@@ -229,3 +229,24 @@ export async function updateUrgentStatus(userId: string, uniqueOrderKey: string,
         throw error;
     }
 }
+
+
+/**
+ * Fetch all pending urgent requests for notifications page
+ */
+export async function getPendingUrgentRequests(userId: string): Promise<PurchaseOrder[]> {
+    const { data, error } = await supabase
+        .from('purchase_orders')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_urgent', true)
+        .eq('urgent_status', 'pending')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('[getPendingUrgentRequests] Error:', error);
+        throw error;
+    }
+    return data as PurchaseOrder[];
+}
+

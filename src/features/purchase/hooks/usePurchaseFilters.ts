@@ -160,7 +160,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
             const tags = new Set(w.tagValues);
             let urgentCount = 0;
             for (const r of rows) {
-                if (r.is_urgent && (!r.urgent_status || r.urgent_status === 'pending') && tags.has((r['TAG-NAME'] ?? '').trim())) {
+                if (r.is_urgent && r.urgent_status === 'approved' && tags.has((r['TAG-NAME'] ?? '').trim())) {
                     urgentCount++;
                 }
             }
@@ -195,7 +195,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
         result = result.filter((r) => r.urgent_status !== 'processing');
 
         if (urgentOnly) {
-            result = result.filter((r) => r.is_urgent && (!r.urgent_status || r.urgent_status === 'pending'));
+            result = result.filter((r) => r.is_urgent && r.urgent_status === 'approved');
         }
 
         if (selectedRequesters.length > 0) {
