@@ -3,7 +3,7 @@
  * Tách ra từ PurchasePage để giảm kích thước component.
  * Thu gọn thành nút "Sử dụng bộ lọc" và mở rộng khi cần.
  */
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Filter } from 'lucide-react';
 import { QuickSearch } from './QuickSearch';
 import { RequesterFilter } from './RequesterFilter';
@@ -47,10 +47,31 @@ export function FilterBar({
     onDateToChange,
 }: FilterBarProps) {
     const [expanded, setExpanded] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
 
+    useEffect(() => {
+        if (!expanded) return;
+        const onDown = (e: MouseEvent | TouchEvent) => {
+            const target = e.target as HTMLElement;
+            // Ignore clicks inside dropdown portals or backdrops
+            if (target.closest('[role="listbox"]') || target.closest('.fixed.inset-0')) {
+                return;
+            }
+            if (containerRef.current && !containerRef.current.contains(target)) {
+                setExpanded(false);
+            }
+        };
+        document.addEventListener('mousedown', onDown);
+        document.addEventListener('touchstart', onDown);
+        return () => {
+            document.removeEventListener('mousedown', onDown);
+            document.removeEventListener('touchstart', onDown);
+        };
+    }, [expanded]);
+
     return (
-        <div className="bg-white px-2 py-2 space-y-2 border-t border-gray-100">
+        <div ref={containerRef} className="bg-white px-2 py-2 space-y-2 border-t border-gray-100">
 
             <button
                 type="button"
