@@ -8,6 +8,7 @@ import { compressAndUploadImage, uploadUrgentImage, deleteUrgentImage } from '@/
 import { upsertMaterialImage } from '@/features/purchase/services/materialService';
 import { updateUrgentStatus } from '@/features/purchase/services/purchaseServiceV2';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { formatStatusText, getStatusColorClass } from '../lib/status';
 
 interface PurchaseDetailModalProps {
     isOpen: boolean;
@@ -269,14 +270,11 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                                     <span
                                         className={cn(
                                         "px-2 py-1 rounded-full text-[10px] font-bold tracking-wider text-white inline-flex items-center gap-1 shadow-sm shrink-0",
-                                        (status.trim() === '3' || status.trim() === '03') ? "bg-yellow-500" :
-                                        (status.trim() === '5' || status.trim() === '05') ? "bg-green-500" :
-                                        (status.trim() === '8' || status.trim() === '08') ? "bg-red-500" :
-                                        isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
+                                        getStatusColorClass(status, isApproved)
                                     )}
                                     >
                                         {isApproved && <Check size={12} strokeWidth={3} />}
-                                        {status.toUpperCase()}
+                                        {formatStatusText(status)}
                                     </span>
                                 )}
                             </div>

@@ -8,6 +8,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
+import { formatStatusText } from '@/features/purchase/lib/status';
 
 interface StatusFilterProps {
     options: string[];
@@ -81,7 +82,7 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
 
     const clearFilter = () => onChange('');
 
-    const triggerLabel = isActive ? value : t('filter.allCount') + ` (${options.length})`;
+    const triggerLabel = isActive ? formatStatusText(value) : t('filter.allCount') + ` (${options.length})`;
 
     const dropdownContent = (
         <motion.div
@@ -178,7 +179,7 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
                                     >
                                         {isSelected ? '✓' : ''}
                                     </span>
-                                    <span className="truncate flex-1">{opt}</span>
+                                    <span className="truncate flex-1">{formatStatusText(opt)}</span>
                                 </button>
                             );
                         })}

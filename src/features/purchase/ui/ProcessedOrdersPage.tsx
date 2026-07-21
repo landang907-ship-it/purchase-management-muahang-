@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { WorkshopFilter } from '@/features/purchase/ui/WorkshopFilter';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { formatStatusText } from '@/features/purchase/lib/status';
 
 export function ProcessedOrdersPage() {
     const { t } = useTranslation();
@@ -202,7 +203,7 @@ export function ProcessedOrdersPage() {
                                                 </td>
                                                 <td className="px-4 py-3">
                                                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                                        {order.status || '05'}
+                                                        {formatStatusText(order.status || '05')}
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-right text-slate-500 whitespace-nowrap">

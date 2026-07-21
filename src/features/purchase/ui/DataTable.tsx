@@ -4,6 +4,7 @@
 import { cn } from '@/shared/lib/cn';
 import { COL_MAP, type PurchaseRow } from '@/features/purchase/services/excel';
 import { BADGE_CLASSES, statusVariant } from '@/features/purchase/services/status';
+import { formatStatusText } from '@/features/purchase/lib/status';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface DataTableProps {
@@ -83,11 +84,11 @@ export function DataTable({ rows }: DataTableProps) {
                                                 <span
                                                     className={cn(
                                                         'inline-block rounded-[10px] px-2 py-0.5',
-                                                        'text-[10px] font-bold whitespace-nowrap',
-                                                        BADGE_CLASSES[variant],
+                                                        'text-[10px] font-bold whitespace-nowrap text-white shadow-sm',
+                                                        statusVariant(raw)
                                                     )}
                                                 >
-                                                    {raw}
+                                                    {formatStatusText(raw)}
                                                 </span>
                                             ) : (
                                                 <span className="text-neutral-400">–</span>

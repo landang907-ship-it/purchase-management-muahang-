@@ -5,6 +5,7 @@ import type { MaterialImageMap } from '@/features/purchase/services/materialServ
 import { useState } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { PurchaseDetailModal } from './PurchaseDetailModal';
+import { formatStatusText, getStatusColorClass } from '../lib/status';
 
 interface MobilePurchaseListProps {
     rows: PurchaseRow[];
@@ -89,13 +90,10 @@ export function MobilePurchaseList({
                                             <span
                                                 className={cn(
                                                     "px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider text-white shrink-0 shadow-sm",
-                                                    (status.trim() === '3' || status.trim() === '03') ? "bg-yellow-500" :
-                                                    (status.trim() === '5' || status.trim() === '05') ? "bg-green-500" :
-                                                    (status.trim() === '8' || status.trim() === '08') ? "bg-red-500" :
-                                                    isApproved ? "bg-[#529b55]" : "bg-[#4a89dc]"
+                                                    getStatusColorClass(status, isApproved)
                                                 )}
                                             >
-                                                {status.toUpperCase()}
+                                                {formatStatusText(status)}
                                             </span>
                                         )}
                                     </div>
