@@ -13,17 +13,9 @@ import {
     BarChart3
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useDashboardData } from '@/features/purchase/hooks/useDashboardData';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
-
-const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#64748b'];
 export function HomePage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
-    const { user } = useAuth();
-    const { data: stats } = useDashboardData(user?.user);
-
     // Animation variants
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
@@ -81,122 +73,7 @@ export function HomePage() {
                             </motion.button>
                         </motion.div>
 
-                        {/* Analytics Dashboard Section */}
-                        {stats && (
-                            <motion.div 
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="show"
-                                className="mb-12"
-                            >
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
-                                            <Clock size={28} />
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500 font-medium">Đang xử lý</p>
-                                            <h3 className="text-3xl font-bold text-slate-800">{stats.activeCount}</h3>
-                                        </div>
-                                    </motion.div>
-                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                                            <CheckCircle2 size={28} />
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500 font-medium">Đã hoàn thành</p>
-                                            <h3 className="text-3xl font-bold text-slate-800">{stats.processedCount}</h3>
-                                        </div>
-                                    </motion.div>
-                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600">
-                                            <Network size={28} />
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500 font-medium">Người yêu cầu</p>
-                                            <h3 className="text-3xl font-bold text-slate-800">{stats.topRequesters.length}</h3>
-                                        </div>
-                                    </motion.div>
-                                </div>
 
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    {/* Pie Chart: Status */}
-                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                                        <h3 className="text-lg font-bold text-slate-800 mb-6">Trạng thái đơn hàng (Đang chờ)</h3>
-                                        <div className="h-64 w-full">
-                                            {stats.statusDistribution.length > 0 ? (
-                                                <ResponsiveContainer width="100%" height="100%">
-                                                    <PieChart>
-                                                        <Pie
-                                                            data={stats.statusDistribution}
-                                                            cx="50%"
-                                                            cy="50%"
-                                                            innerRadius={60}
-                                                            outerRadius={80}
-                                                            paddingAngle={5}
-                                                            dataKey="value"
-                                                        >
-                                                            {stats.statusDistribution.map((entry, index) => {
-                                                                const name = entry.name.toLowerCase();
-                                                                let fill = COLORS[index % COLORS.length];
-                                                                if (name.includes('chờ duyệt') || name.includes('đang')) fill = '#f59e0b';
-                                                                else if (name.includes('đã duyệt') || name.includes('hoàn')) fill = '#10b981';
-                                                                else if (name.includes('từ chối') || name.includes('hủy') || name.includes('quá hạn')) fill = '#ef4444';
-                                                                else if (name.includes('khác')) fill = '#94a3b8';
-                                                                
-                                                                return <Cell key={`cell-${index}`} fill={fill} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />;
-                                                            })}
-                                                        </Pie>
-                                                        <Tooltip />
-                                                    </PieChart>
-                                                </ResponsiveContainer>
-                                            ) : (
-                                                <div className="h-full flex items-center justify-center text-slate-400">Không có dữ liệu</div>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-wrap justify-center gap-4 mt-4">
-                                            {stats.statusDistribution.map((entry, index) => {
-                                                const name = entry.name.toLowerCase();
-                                                let fill = COLORS[index % COLORS.length];
-                                                if (name.includes('chờ duyệt') || name.includes('đang')) fill = '#f59e0b';
-                                                else if (name.includes('đã duyệt') || name.includes('hoàn')) fill = '#10b981';
-                                                else if (name.includes('từ chối') || name.includes('hủy') || name.includes('quá hạn')) fill = '#ef4444';
-                                                else if (name.includes('khác')) fill = '#94a3b8';
-                                                
-                                                return (
-                                                    <div key={entry.name} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                                                        <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: fill }} />
-                                                        <span className="text-xs font-semibold text-slate-700">{entry.name} <span className="text-slate-400 font-normal ml-1">({entry.value})</span></span>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </motion.div>
-
-                                    {/* Bar Chart: Trend */}
-                                    <motion.div variants={itemVariants} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                                        <h3 className="text-lg font-bold text-slate-800 mb-6">Tiến độ hoàn thành (7 ngày qua)</h3>
-                                        <div className="h-64 w-full">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <BarChart data={stats.completionTrend}>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-                                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-                                                    <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }} />
-                                                    <defs>
-                                                        <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <Bar dataKey="count" fill="url(#colorCount)" radius={[6, 6, 0, 0]} />
-                                                </BarChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            </motion.div>
-                        )}
 
                         {/* Bento Grid */}
                         <motion.div 
