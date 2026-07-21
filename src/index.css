@@ -132,10 +132,18 @@
         animation: var(--animate-fade-up-300);
     }
 
-    /* Purchase thin scrollbar (desktop) */
     .scrollbar-thin {
         scrollbar-width: thin;
         scrollbar-color: var(--color-blue-mid) var(--color-row-even);
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
     }
 
     .scrollbar-thin::-webkit-scrollbar {
