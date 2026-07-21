@@ -5,30 +5,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-const SELECTED_WORKSHOPS_KEY = 'purchase_selected_workshops';
-
-function loadSelectedWorkshops(): string[] {
-    try {
-        const raw = localStorage.getItem(SELECTED_WORKSHOPS_KEY);
-        if (raw) {
-            const parsed = JSON.parse(raw) as string[];
-            if (Array.isArray(parsed)) {
-                return parsed;
-            }
-        }
-    } catch {
-        // ignore
-    }
-    return [];
-}
-
-function saveSelectedWorkshops(workshops: string[]) {
-    try {
-        localStorage.setItem(SELECTED_WORKSHOPS_KEY, JSON.stringify(workshops));
-    } catch {
-        // ignore
-    }
-}
+// removed localStorage persistence for selectedWorkshops
 import { parseDateSafe } from '@/features/purchase/lib/date';
 import type { PurchaseRow } from '@/features/purchase/services/excel';
 
@@ -75,12 +52,7 @@ export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersO
     const [dateTo, setDateTo] = useState<string>('');
     const [quickSearch, setQuickSearch] = useState<string>('');
     const [urgentOnly, setUrgentOnly] = useState<boolean>(false);
-    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(loadSelectedWorkshops);
-
-    // Lưu selectedWorkshops vào localStorage khi thay đổi
-    useEffect(() => {
-        saveSelectedWorkshops(selectedWorkshops);
-    }, [selectedWorkshops]);
+    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>([]);
 
     // Workshop options: Workshop NAMES (not TAG-NAME values)
     const workshopOptions = useMemo(() => {

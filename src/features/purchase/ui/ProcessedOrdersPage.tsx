@@ -36,22 +36,7 @@ export function ProcessedOrdersPage() {
 
     const { workshops } = useWorkshopConfig(userId);
 
-    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(() => {
-        try {
-            const raw = localStorage.getItem('purchase_selected_workshops');
-            if (raw) {
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed)) return parsed;
-            }
-        } catch {}
-        return [];
-    });
-
-    useEffect(() => {
-        try {
-            localStorage.setItem('purchase_selected_workshops', JSON.stringify(selectedWorkshops));
-        } catch {}
-    }, [selectedWorkshops]);
+    const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>([]);
 
     const workshopOptions = useMemo(() => workshops.map((w) => w.name), [workshops]);
 
