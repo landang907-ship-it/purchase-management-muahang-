@@ -3,7 +3,7 @@
  */
 import { cn } from '@/shared/lib/cn';
 import { COL_MAP, type PurchaseRow } from '@/features/purchase/services/excel';
-import { BADGE_CLASSES, statusVariant } from '@/features/purchase/services/status';
+import { statusVariant } from '@/features/purchase/services/status';
 import { formatStatusText } from '@/features/purchase/lib/status';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -69,7 +69,6 @@ export function DataTable({ rows }: DataTableProps) {
                             {COL_MAP.map((col, i) => {
                                 const raw = (row as unknown as Record<string, string>)[col.label] ?? '';
                                 if (col.label === 'T.trg xử lý') {
-                                    const variant = statusVariant(raw);
                                     return (
                                         <td
                                             key={col.label}
