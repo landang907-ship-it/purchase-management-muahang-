@@ -115,7 +115,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
 
             if (onDataUpdated) onDataUpdated();
             
-            alert('Đã cập nhật trạng thái Cần gấp!');
+            alert('Đã gửi yêu cầu Cần gấp! Vui lòng chờ quản lý phân xưởng phê duyệt.');
         } catch (error) {
             console.error('Error submitting urgent request:', error);
             alert('Có lỗi xảy ra, vui lòng thử lại.');
@@ -183,7 +183,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                         {t('detail.title')} 
                         {data.is_urgent && (!data.urgent_status || data.urgent_status === 'pending') && (
                             <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-100 text-red-600 text-xs font-bold uppercase tracking-wide">
-                                🔥 Cần gấp
+                                ⏳ Chờ duyệt khẩn
                             </span>
                         )}
                         {data.is_urgent && data.urgent_status === 'processing' && (

@@ -121,7 +121,7 @@ export function NotificationsPage() {
                                                 <h3 className="font-bold text-slate-800 text-base">{order.item_no}</h3>
                                             </div>
                                             <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold uppercase">
-                                                Cần gấp
+                                                Chờ duyệt khẩn
                                             </span>
                                         </div>
                                         
