@@ -105,3 +105,22 @@ export async function uploadUrgentImage(file: File, uniqueOrderKey: string): Pro
         throw error;
     }
 }
+
+/**
+ * Xóa ảnh khẩn cấp khỏi Supabase Storage
+ */
+export async function deleteUrgentImage(publicUrl: string): Promise<void> {
+    if (!publicUrl) return;
+    try {
+        const urlParts = publicUrl.split(`${BUCKET_NAME}/`);
+        if (urlParts.length === 2) {
+            const filePath = urlParts[1];
+            const { error } = await supabase.storage.from(BUCKET_NAME).remove([filePath]);
+            if (error) {
+                console.error('[deleteUrgentImage] Error:', error);
+            }
+        }
+    } catch (error) {
+        console.error('[deleteUrgentImage] Unexpected error:', error);
+    }
+}

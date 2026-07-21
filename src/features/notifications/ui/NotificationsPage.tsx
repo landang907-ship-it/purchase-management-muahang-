@@ -6,6 +6,7 @@ import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Bell, ArrowLeft, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { deleteUrgentImage } from '@/features/purchase/services/imageService';
 
 export function NotificationsPage() {
     const { t } = useTranslation();
@@ -63,6 +64,12 @@ export function NotificationsPage() {
                 false, 
                 'pending'
             );
+            
+            // Delete image from storage if it exists
+            if (order.urgent_image_url) {
+                await deleteUrgentImage(order.urgent_image_url);
+            }
+            
             setOrders(prev => prev.filter(o => o.unique_order_key !== order.unique_order_key));
             alert('Đã từ chối yêu cầu cần gấp!');
         } catch (err) {
