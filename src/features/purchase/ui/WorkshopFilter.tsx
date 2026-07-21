@@ -2,7 +2,7 @@ import { Factory, Check } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { useTranslation } from '@/i18n/useTranslation';
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface WorkshopFilterProps {
     options: string[];
