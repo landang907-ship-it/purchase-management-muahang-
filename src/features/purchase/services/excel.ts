@@ -207,7 +207,7 @@ export interface PurchaseRow {
     _rawDate?: string;
     _rawStatus?: string;
     is_urgent?: boolean;
-    urgent_status?: 'pending' | 'processing' | 'completed';
+    urgent_status?: 'pending' | 'approved' | 'processing' | 'completed';
     urgent_reason?: string | null;
     urgent_image_url?: string | null;
 }
