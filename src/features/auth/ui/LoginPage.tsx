@@ -189,7 +189,7 @@ export function LoginPage() {
 
     return (
         <main
-            className="h-[100dvh] w-full flex flex-col items-center justify-center px-4 overflow-hidden relative"
+            className="min-h-[100dvh] w-full flex flex-col items-center justify-center px-4 py-8 overflow-x-hidden relative"
             style={{
                 paddingTop: 'env(safe-area-inset-top, 0px)',
                 paddingBottom: 'env(safe-area-inset-bottom, 0px)',
@@ -207,7 +207,7 @@ export function LoginPage() {
             />
 
             {/* Apple-style Central Glass Card */}
-            <div className="w-full max-w-[420px] max-h-full flex flex-col items-center relative z-10 overflow-y-auto scrollbar-hide py-4 anim-fade-up-100">
+            <div className="w-full max-w-[420px] flex flex-col items-center relative z-10 py-4 anim-fade-up-100 mb-8">
                 
                 {/* Header inside the card area to keep it grouped */}
                 <div className="flex flex-col items-center text-white drop-shadow-lg mb-4 md:mb-6 text-center shrink-0">
