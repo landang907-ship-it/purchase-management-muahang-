@@ -22,7 +22,7 @@ export function NotificationsPage() {
         if (!user?.user) return;
         setLoading(true);
         try {
-            const data = await getPendingUrgentRequests(user.user, user.role);
+            const data = await getPendingUrgentRequests();
             setOrders(data);
             const profile = await getProfile(user.user);
             setUserDepartment(profile?.department || null);

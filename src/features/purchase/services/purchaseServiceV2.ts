@@ -234,7 +234,7 @@ export async function updateUrgentStatus(userId: string, uniqueOrderKey: string,
 /**
  * Fetch all pending urgent requests for notifications page
  */
-export async function getPendingUrgentRequests(userId: string, role?: string): Promise<PurchaseOrder[]> {
+export async function getPendingUrgentRequests(): Promise<PurchaseOrder[]> {
     let query = supabase
         .from('purchase_orders')
         .select('*')
