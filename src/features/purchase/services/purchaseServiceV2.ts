@@ -234,14 +234,19 @@ export async function updateUrgentStatus(userId: string, uniqueOrderKey: string,
 /**
  * Fetch all pending urgent requests for notifications page
  */
-export async function getPendingUrgentRequests(userId: string): Promise<PurchaseOrder[]> {
-    const { data, error } = await supabase
+export async function getPendingUrgentRequests(userId: string, role?: string): Promise<PurchaseOrder[]> {
+    let query = supabase
         .from('purchase_orders')
         .select('*')
-        .eq('user_id', userId)
         .eq('is_urgent', true)
         .eq('urgent_status', 'pending')
         .order('created_at', { ascending: false });
+
+    if (role !== 'admin') {
+        query = query.eq('tag_name', userId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
         console.error('[getPendingUrgentRequests] Error:', error);

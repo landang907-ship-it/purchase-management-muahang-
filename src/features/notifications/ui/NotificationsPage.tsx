@@ -20,7 +20,7 @@ export function NotificationsPage() {
         if (!user?.user) return;
         setLoading(true);
         try {
-            const data = await getPendingUrgentRequests(user.user);
+            const data = await getPendingUrgentRequests(user.user, user.role);
             setOrders(data);
         } catch (err) {
             console.error(err);
@@ -37,7 +37,7 @@ export function NotificationsPage() {
         if (!user?.user) return;
         try {
             await updateUrgentStatus(
-                user.user, 
+                order.user_id, 
                 order.unique_order_key, 
                 true, 
                 'approved', 
@@ -59,7 +59,7 @@ export function NotificationsPage() {
         try {
             // Revert back to non-urgent
             await updateUrgentStatus(
-                user.user, 
+                order.user_id, 
                 order.unique_order_key, 
                 false, 
                 'pending'
