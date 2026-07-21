@@ -170,9 +170,9 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                     <div className="flex flex-col sm:flex-row gap-4">
                         {/* Image Area (Left/Top Half) */}
                         <div className="w-full sm:w-1/2 h-[200px] sm:h-[250px] bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 shrink-0 relative overflow-hidden group">
-                            {materialImage?.orig_url ? (
+                            {materialImage?.thumb_url ? (
                                 <img 
-                                    src={materialImage.orig_url} 
+                                    src={materialImage.thumb_url} 
                                     alt={name}
                                     className="w-full h-full object-contain bg-white"
                                 />
