@@ -322,20 +322,7 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
                                     {isSubmittingUrgent && urgentStatus === 'pending' ? <Loader2 size={16} className="animate-spin" /> : null}
                                     🔥 Cảnh báo khẩn
                                 </button>
-                                
-                                <button 
-                                    onClick={() => handleUrgentSubmit('processing')}
-                                    disabled={isSubmittingUrgent}
-                                    className={cn(
-                                        "flex-1 py-2 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm",
-                                        urgentStatus === 'processing' 
-                                            ? "bg-orange-500 hover:bg-orange-600 text-white" 
-                                            : "bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200"
-                                    )}
-                                >
-                                    {isSubmittingUrgent && urgentStatus === 'processing' ? <Loader2 size={16} className="animate-spin" /> : null}
-                                    🚚 Đang xử lý mua
-                                </button>
+
                             </div>
                         </div>
                     </div>
