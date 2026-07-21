@@ -76,7 +76,7 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
                     });
 
                     setRows(merged);
-                    onMessage?.(t('import.success', { count: merged.length }), 'success');
+                    // onMessage?.(t('import.success', { count: merged.length }), 'success');
                 }
             } catch (err) {
                 // eslint-disable-next-line no-console

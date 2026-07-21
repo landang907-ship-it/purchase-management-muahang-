@@ -61,10 +61,10 @@ export function useExcelUpload({
                 } else if (result.allRows.length === 0) {
                     onMessage(t('import.noRows'), 'warning', 4000);
                 } else {
-                    onMessage(
-                        t('import.success', { count: result.allRows.length }),
-                        'success',
-                    );
+                    // onMessage(
+                    //     t('import.success', { count: result.allRows.length }),
+                    //     'success',
+                    // );
                 }
 
                 // Pass all data to parent
