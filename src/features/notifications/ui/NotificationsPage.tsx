@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { getPendingUrgentRequests, updateUrgentStatus, type PurchaseOrder } from '@/features/purchase/services/purchaseServiceV2';
+import { getProfile } from '@/features/auth/services/profile.service';
 import { Header } from '@/features/purchase/ui/Header';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { Bell, ArrowLeft, Check, X } from 'lucide-react';
@@ -15,6 +16,7 @@ export function NotificationsPage() {
     
     const [orders, setOrders] = useState<PurchaseOrder[]>([]);
     const [loading, setLoading] = useState(true);
+    const [userDepartment, setUserDepartment] = useState<string | null>(null);
 
     const loadData = async () => {
         if (!user?.user) return;
@@ -22,6 +24,8 @@ export function NotificationsPage() {
         try {
             const data = await getPendingUrgentRequests(user.user, user.role);
             setOrders(data);
+            const profile = await getProfile(user.user);
+            setUserDepartment(profile?.department || null);
         } catch (err) {
             console.error(err);
         } finally {
@@ -138,20 +142,34 @@ export function NotificationsPage() {
                                             )}
                                         </div>
 
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => handleReject(order)}
-                                                className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
-                                            >
-                                                <X size={16} /> Từ chối
-                                            </button>
-                                            <button 
-                                                onClick={() => handleApprove(order)}
-                                                className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
-                                            >
-                                                <Check size={16} /> Phê duyệt
-                                            </button>
-                                        </div>
+                                        {(() => {
+                                            const isAuthorized = user?.role === 'admin' || user?.user === order.tag_name || userDepartment === order.tag_name;
+                                            
+                                            if (isAuthorized) {
+                                                return (
+                                                    <div className="flex gap-2">
+                                                        <button 
+                                                            onClick={() => handleReject(order)}
+                                                            className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm"
+                                                        >
+                                                            <X size={16} /> Từ chối
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleApprove(order)}
+                                                            className="flex-1 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
+                                                        >
+                                                            <Check size={16} /> Phê duyệt
+                                                        </button>
+                                                    </div>
+                                                );
+                                            }
+                                            
+                                            return (
+                                                <div className="text-center p-2 bg-slate-100 rounded-lg text-sm text-slate-500 font-medium">
+                                                    Đang chờ {order.tag_name || 'Quản lý'} phê duyệt
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                 ))}
                             </div>

@@ -242,10 +242,8 @@ export async function getPendingUrgentRequests(userId: string, role?: string): P
         .eq('urgent_status', 'pending')
         .order('created_at', { ascending: false });
 
-    if (role !== 'admin') {
-        query = query.eq('tag_name', userId);
-    }
-
+    // Removed filtering by tag_name so everyone can see all pending requests
+    // (Approval logic is handled in the UI instead)
     const { data, error } = await query;
 
     if (error) {
