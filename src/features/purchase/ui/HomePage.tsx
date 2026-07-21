@@ -136,9 +136,16 @@ export function HomePage() {
                                                             paddingAngle={5}
                                                             dataKey="value"
                                                         >
-                                                            {stats.statusDistribution.map((_entry, index) => (
-                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                            ))}
+                                                            {stats.statusDistribution.map((entry, index) => {
+                                                                const name = entry.name.toLowerCase();
+                                                                let fill = COLORS[index % COLORS.length];
+                                                                if (name.includes('chờ duyệt') || name.includes('đang')) fill = '#f59e0b';
+                                                                else if (name.includes('đã duyệt') || name.includes('hoàn')) fill = '#10b981';
+                                                                else if (name.includes('từ chối') || name.includes('hủy') || name.includes('quá hạn')) fill = '#ef4444';
+                                                                else if (name.includes('khác')) fill = '#94a3b8';
+                                                                
+                                                                return <Cell key={`cell-${index}`} fill={fill} stroke="rgba(255,255,255,0.5)" strokeWidth={2} />;
+                                                            })}
                                                         </Pie>
                                                         <Tooltip />
                                                     </PieChart>
@@ -148,12 +155,21 @@ export function HomePage() {
                                             )}
                                         </div>
                                         <div className="flex flex-wrap justify-center gap-4 mt-4">
-                                            {stats.statusDistribution.map((entry, index) => (
-                                                <div key={entry.name} className="flex items-center gap-2">
-                                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                                                    <span className="text-sm text-slate-600">{entry.name} ({entry.value})</span>
-                                                </div>
-                                            ))}
+                                            {stats.statusDistribution.map((entry, index) => {
+                                                const name = entry.name.toLowerCase();
+                                                let fill = COLORS[index % COLORS.length];
+                                                if (name.includes('chờ duyệt') || name.includes('đang')) fill = '#f59e0b';
+                                                else if (name.includes('đã duyệt') || name.includes('hoàn')) fill = '#10b981';
+                                                else if (name.includes('từ chối') || name.includes('hủy') || name.includes('quá hạn')) fill = '#ef4444';
+                                                else if (name.includes('khác')) fill = '#94a3b8';
+                                                
+                                                return (
+                                                    <div key={entry.name} className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                                                        <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: fill }} />
+                                                        <span className="text-xs font-semibold text-slate-700">{entry.name} <span className="text-slate-400 font-normal ml-1">({entry.value})</span></span>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </motion.div>
 
@@ -166,8 +182,14 @@ export function HomePage() {
                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                                                     <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
                                                     <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} />
-                                                    <Tooltip cursor={{ fill: '#f1f5f9' }} />
-                                                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                                                    <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }} />
+                                                    <defs>
+                                                        <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.2}/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <Bar dataKey="count" fill="url(#colorCount)" radius={[6, 6, 0, 0]} />
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         </div>

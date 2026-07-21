@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../services/supabaseClient';
+import { formatStatusText } from '../lib/status';
 
 export interface DashboardStats {
     activeCount: number;
@@ -52,7 +53,7 @@ export function useDashboardData(userId: string | undefined) {
 
             (activeOrders || []).forEach(order => {
                 // Status
-                const st = order.status || 'Khác';
+                const st = formatStatusText(order.status || 'Khác');
                 statusMap.set(st, (statusMap.get(st) || 0) + 1);
                 
                 // Requester
