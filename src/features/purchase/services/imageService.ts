@@ -15,57 +15,35 @@ export interface UploadResult {
  * @returns Đường dẫn công khai của ảnh thumbnail và ảnh gốc
  */
 export async function compressAndUploadImage(file: File, materialCode: string): Promise<UploadResult> {
-    // 1. Cấu hình nén cho Thumbnail (nhỏ, nhẹ, để hiện danh sách)
+    // Cấu hình nén duy nhất (nhỏ, nhẹ, khoảng 50KB)
     const thumbOptions = {
         maxSizeMB: 0.05, // ~50KB max
-        maxWidthOrHeight: 200,
+        maxWidthOrHeight: 400, // Tăng kích thước chiều ngang lên một chút (từ 200 lên 400) để đảm bảo nhìn rõ chi tiết khi chỉ có 1 ảnh
         useWebWorker: true,
         fileType: 'image/webp',
-        initialQuality: 0.6,
-    };
-
-    // 2. Cấu hình nén cho Original (chất lượng cao, xem chi tiết)
-    const origOptions = {
-        maxSizeMB: 1, // ~1MB max
-        maxWidthOrHeight: 1200,
-        useWebWorker: true,
-        fileType: 'image/webp',
-        initialQuality: 0.8,
+        initialQuality: 0.7,
     };
 
     try {
-        // Nén song song 2 phiên bản
-        const [thumbFile, origFile] = await Promise.all([
-            imageCompression(file, thumbOptions),
-            imageCompression(file, origOptions),
-        ]);
+        const thumbFile = await imageCompression(file, thumbOptions);
 
         const safeCode = materialCode.replace(/[^a-zA-Z0-9_-]/g, '_');
         const thumbPath = `thumbnails/${safeCode}.webp`;
-        const origPath = `originals/${safeCode}.webp`;
 
-        // Upload song song lên Supabase Storage
-        const [thumbUpload, origUpload] = await Promise.all([
-            supabase.storage.from(BUCKET_NAME).upload(thumbPath, thumbFile, {
-                contentType: 'image/webp',
-                upsert: true, // Ghi đè nếu đã có ảnh cũ
-            }),
-            supabase.storage.from(BUCKET_NAME).upload(origPath, origFile, {
-                contentType: 'image/webp',
-                upsert: true,
-            })
-        ]);
+        // Upload lên Supabase Storage
+        const thumbUpload = await supabase.storage.from(BUCKET_NAME).upload(thumbPath, thumbFile, {
+            contentType: 'image/webp',
+            upsert: true, // Ghi đè nếu đã có ảnh cũ
+        });
 
         if (thumbUpload.error) throw thumbUpload.error;
-        if (origUpload.error) throw origUpload.error;
 
         // Lấy URL công khai
         const { data: thumbData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(thumbPath);
-        const { data: origData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(origPath);
 
         return {
             thumbUrl: thumbData.publicUrl,
-            origUrl: origData.publicUrl,
+            origUrl: thumbData.publicUrl, // Dùng chung link thumbnail cho cả 2 trường để tương thích DB
         };
     } catch (error) {
         console.error('Error during image compression or upload:', error);
