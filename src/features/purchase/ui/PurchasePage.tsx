@@ -152,14 +152,12 @@ export function PurchasePage() {
                     style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
                 >
                     {/* Action Bar (Always visible) */}
-                    <div className="bg-white px-3 py-2 flex items-center justify-between gap-4 border-b border-gray-100 shrink-0 shadow-sm z-20 overflow-x-auto scrollbar-hide">
-                        <div className="shrink-0 min-w-[120px]">
-                            <WorkshopFilter
-                                options={workshopOptions}
-                                value={selectedWorkshops}
-                                onChange={setSelectedWorkshops}
-                            />
-                        </div>
+                    <div className="bg-white px-3 border-b border-gray-100 shrink-0 shadow-sm z-20 w-full overflow-hidden">
+                        <WorkshopFilter
+                            options={workshopOptions}
+                            value={selectedWorkshops}
+                            onChange={setSelectedWorkshops}
+                        />
                     </div>
 
                     {/* Urgent Notifications Panel */}

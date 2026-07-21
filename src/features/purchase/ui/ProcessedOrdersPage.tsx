@@ -127,14 +127,12 @@ export function ProcessedOrdersPage() {
                         </div>
 
                         {/* Action Bar */}
-                        <div className="bg-white px-3 py-2 flex items-center justify-between gap-4 border border-slate-200 rounded-xl shadow-sm z-20 overflow-x-auto scrollbar-hide">
-                            <div className="shrink-0 min-w-[200px]">
-                                <WorkshopFilter
-                                    options={workshopOptions}
-                                    value={selectedWorkshops}
-                                    onChange={setSelectedWorkshops}
-                                />
-                            </div>
+                        <div className="bg-white px-3 border border-slate-200 rounded-xl shadow-sm z-20 w-full overflow-hidden mb-4">
+                            <WorkshopFilter
+                                options={workshopOptions}
+                                value={selectedWorkshops}
+                                onChange={setSelectedWorkshops}
+                            />
                         </div>
 
                     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
