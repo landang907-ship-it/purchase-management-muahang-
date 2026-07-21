@@ -87,6 +87,10 @@ export function PurchaseDetailModal({ isOpen, onClose, data, materialImage, onIm
             alert('Vui lòng nhập lý do cần gấp!');
             return;
         }
+        if (!urgentFile && !data?.urgent_image_url) {
+            alert('Vui lòng đính kèm hình ảnh minh họa cho yêu cầu cần gấp!');
+            return;
+        }
 
         try {
             const targetStatus = newStatus || urgentStatus;
