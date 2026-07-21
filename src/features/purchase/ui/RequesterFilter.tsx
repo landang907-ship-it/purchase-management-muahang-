@@ -340,7 +340,17 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
                 </div>
             </div>
 
-            {open && createPortal(dropdownContent, document.body)}
+            {open && createPortal(
+                <>
+                    <div 
+                        className="fixed inset-0 z-[9998]" 
+                        onClick={(e) => { e.stopPropagation(); setOpen(false); }} 
+                        onTouchStart={(e) => { e.stopPropagation(); setOpen(false); }}
+                    />
+                    {dropdownContent}
+                </>, 
+                document.body
+            )}
         </>
     );
 }
