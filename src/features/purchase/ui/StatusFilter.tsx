@@ -20,7 +20,7 @@ interface StatusFilterProps {
 export function StatusFilter({ options, value, onChange, disabled }: StatusFilterProps) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
-    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0, maxHeight: 300 });
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,10 +31,12 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
     const updatePosition = () => {
         if (triggerRef.current) {
             const rect = triggerRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom - 10;
             setDropdownPos({
-                top: rect.bottom + window.scrollY,
-                left: rect.left + window.scrollX,
+                top: rect.bottom, // Fixed position, no scrollY
+                left: rect.left,
                 width: rect.width,
+                maxHeight: Math.max(spaceBelow, 150),
             });
         }
     };
@@ -98,12 +100,13 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
                 top: dropdownPos.top,
                 left: dropdownPos.left,
                 width: dropdownPos.width,
+                maxHeight: dropdownPos.maxHeight,
             }}
             className={cn(
                 'z-[9999]',
                 'bg-white border border-border rounded-lg shadow-xl',
                 'overflow-hidden',
-                'max-h-[50vh]',
+                'flex flex-col',
             )}
         >
             <div className="flex-1 overflow-y-auto overscroll-contain">

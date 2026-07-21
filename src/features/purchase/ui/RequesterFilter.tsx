@@ -20,7 +20,7 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
-    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0, maxHeight: 300 });
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -40,10 +40,12 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
     const updatePosition = () => {
         if (triggerRef.current) {
             const rect = triggerRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom - 10;
             setDropdownPos({
-                top: rect.bottom + window.scrollY,
-                left: rect.left + window.scrollX,
+                top: rect.bottom, // Since position is fixed, no need to add window.scrollY
+                left: rect.left,
                 width: rect.width,
+                maxHeight: Math.max(spaceBelow, 150),
             });
         }
     };
@@ -133,12 +135,13 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
                 top: dropdownPos.top,
                 left: dropdownPos.left,
                 width: dropdownPos.width,
+                maxHeight: dropdownPos.maxHeight,
             }}
             className={cn(
                 'z-[9999]',
                 'bg-white border border-border rounded-lg shadow-xl',
                 'overflow-hidden',
-                'flex flex-col max-h-[60vh]',
+                'flex flex-col',
             )}
         >
             <div className="flex items-center gap-1.5 px-2 py-2 border-b border-border bg-white shrink-0">
