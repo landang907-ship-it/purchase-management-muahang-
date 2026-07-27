@@ -6,7 +6,7 @@
     "description": "SAP Truy Suất + Quản lý mua hàng – Xưởng Bánh Gạo (Want Want VN) – React 19 + Vite 6 + TS + Tailwind v4",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build": "npx vite build",
         "vercel-build": "npm run build",
         "preview": "vite preview",
         "lint": "eslint .",
