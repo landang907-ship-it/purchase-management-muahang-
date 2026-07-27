@@ -85,4 +85,12 @@
 
 ---
 
+## 6. Luật Tránh Trắng Màn Hình Khi Update (Anti-White-Screen Safeguard Rule)
+- **Bắt buộc** bọc component gốc và các module tính năng trong `<ErrorBoundary>`.
+- **Tuyệt đối không** trả về `null` hoặc bỏ trống render làm crash toàn bộ giao diện thành trang trắng (blank screen).
+- Khi fetch/update dữ liệu ngầm, giữ lại state hiện tại hoặc dùng skeleton/loading overlay nhẹ nhàng.
+- Luôn kiểm tra build thành công (`npm run build`) trước khi thực hiện deploy.
+
+---
+
 *Áp dụng cho mọi dự án React / Vite / NextJS / Node.js trong workspace này.*
