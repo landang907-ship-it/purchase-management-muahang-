@@ -1,0 +1,11 @@
+{
+    "framework": "vite",
+    "buildCommand": "cd purchase-management && npm install && npm run build",
+    "outputDirectory": "purchase-management/dist",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}
