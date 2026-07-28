@@ -7,16 +7,22 @@ import { AuthContext, type AuthContextValue, type AuthUser } from './authContext
 
 const STORAGE_KEY = 'sap_auth_user';
 
+const DEFAULT_USER: AuthUser = {
+    user: 'admin123',
+    language: 'VI',
+    loggedInAt: Date.now(),
+};
+
 function readUser(): AuthUser | null {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === 'undefined') return DEFAULT_USER;
     try {
         const raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
+        if (!raw) return DEFAULT_USER;
         const parsed = JSON.parse(raw) as AuthUser;
-        if (!parsed || typeof parsed.user !== 'string') return null;
+        if (!parsed || typeof parsed.user !== 'string') return DEFAULT_USER;
         return parsed;
     } catch {
-        return null;
+        return DEFAULT_USER;
     }
 }
 

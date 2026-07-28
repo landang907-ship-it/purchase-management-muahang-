@@ -1,0 +1,7 @@
+node_modules
+purchase-management/node_modules
+.git
+.vite
+dist
+tmp
+*.log
