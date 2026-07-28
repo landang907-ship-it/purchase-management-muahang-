@@ -14,7 +14,7 @@ export default {
 
   // Header
   'header.title': '采购管理',
-  'header.subtitle': '米果厂',
+  'header.subtitle': '米果厂 · v3.0',
   'header.import': '导入文件',
   'header.logout': '登出',
 

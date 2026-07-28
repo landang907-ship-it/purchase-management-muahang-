@@ -7,6 +7,7 @@ NOT: https://purchase-mgmt.vercel.app (this is wrong/old)
 
 ## Project Info
 - **Project Name:** purchase-mgmt
+- **Version:** 3.0.0 (Version 3)
 - **GitHub Repo:** https://github.com/landang907-ship-it/purchase-management-muahang-.git
 - **Vercel Team:** landang907-1570s-projects
 

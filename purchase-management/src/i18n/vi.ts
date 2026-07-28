@@ -14,7 +14,7 @@ export default {
 
   // Header
   'header.title': 'Quản lý mua hàng',
-  'header.subtitle': 'Want-Want Việt Nam',
+  'header.subtitle': 'Want-Want Việt Nam · v3.0',
   'header.import': 'NHẬP FILE',
   'header.logout': 'Đăng xuất',
 
