@@ -1,4 +1,4 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, Zap, ArrowRight } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -31,13 +31,13 @@ export function HomePage() {
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                             <div className="max-w-2xl space-y-3">
                                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">
-                                    Quß║ún l├╜ Mua h├áng{' '}
+                                    Quản lý Mua hàng{' '}
                                     <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                                        Thß║┐ hß╗ç mß╗¢i
+                                        Thế hệ mới
                                     </span>
                                 </h1>
                                 <p className="text-base md:text-lg text-slate-600 font-medium leading-relaxed">
-                                    Tß╗▒ ─æß╗Öng h├│a ─æß╗æi so├ít, ph├ón bß╗ò th├┤ng minh v├á loß║íi bß╗Å thao t├íc thß╗º c├┤ng. Bß╗⌐c tranh to├án cß║únh vß╗ü quy tr├¼nh cung ß╗⌐ng cß╗ºa bß║ín.
+                                    Tự động hóa đối soát, phân bổ thông minh và loại bỏ thao tác thủ công. Bức tranh toàn cảnh về quy trình cung ứng của bạn.
                                 </p>
                             </div>
 
@@ -46,14 +46,14 @@ export function HomePage() {
                                 onClick={() => navigate('/system-orders')}
                                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-3.5 text-base font-bold text-white shadow-xl shadow-slate-900/20 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer shrink-0"
                             >
-                                Bß║»t ─æß║ºu l├ám viß╗çc
+                                Bắt đầu làm việc
                                 <ArrowRight size={18} strokeWidth={2.5} />
                             </button>
                         </div>
 
                         {/* Feature Cards Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                            {/* Card 1: Tß╗▒ ─æß╗Öng ─æß╗æi so├ít ─æ╞ín h├áng */}
+                            {/* Card 1: Tự động đối soát đơn hàng */}
                             <div className="flex flex-col justify-between rounded-3xl bg-white p-8 border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="space-y-4">
                                     <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-100 text-sky-600">
@@ -61,11 +61,11 @@ export function HomePage() {
                                     </div>
 
                                     <h3 className="text-xl font-bold text-slate-900">
-                                        Tß╗▒ ─æß╗Öng ─æß╗æi so├ít ─æ╞ín h├áng
+                                        Tự động đối soát đơn hàng
                                     </h3>
 
                                     <p className="text-sm text-slate-600 leading-relaxed">
-                                        Thuß║¡t to├ín th├┤ng minh tß╗▒ ─æß╗Öng d├▓ t├¼m c├íc ─æ╞ín h├áng ─æ├ú ─æ╞░ß╗úc xß╗¡ l├╜ xong v├á biß║┐n mß║Ñt khß╗Åi b├ío c├ío gß╗æc. Quß║ún l├╜ t├¼nh trß║íng ─æ╞ín h├áng m├á kh├┤ng cß║ºn r├á so├ít thß╗º c├┤ng.
+                                        Thuật toán thông minh tự động dò tìm các đơn hàng đã được xử lý xong và biến mất khỏi báo cáo gốc. Quản lý tình trạng đơn hàng mà không cần rà soát thủ công.
                                     </p>
                                 </div>
 
@@ -74,12 +74,12 @@ export function HomePage() {
                                     onClick={() => navigate('/processed-orders')}
                                     className="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer"
                                 >
-                                    Xem danh s├ích ─æ╞ín ─æ├ú xß╗¡ l├╜
+                                    Xem danh sách đơn đã xử lý
                                     <ArrowRight size={15} strokeWidth={2.5} />
                                 </button>
                             </div>
 
-                            {/* Card 2: Nhß║¡p liß╗çu si├¬u tß╗æc */}
+                            {/* Card 2: Nhập liệu siêu tốc */}
                             <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-purple-700 p-8 text-white shadow-xl shadow-purple-600/20">
                                 <div className="space-y-4">
                                     <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-white backdrop-blur-md">
@@ -87,11 +87,11 @@ export function HomePage() {
                                     </div>
 
                                     <h3 className="text-xl font-bold text-white">
-                                        Nhß║¡p liß╗çu si├¬u tß╗æc
+                                        Nhập liệu siêu tốc
                                     </h3>
 
                                     <p className="text-sm text-purple-100/90 leading-relaxed">
-                                        K├⌐o thß║ú file Excel xuß║Ñt trß╗▒c tiß║┐p tß╗½ hß╗ç thß╗æng SAP. ß╗¿ng dß╗Ñng tß╗▒ ─æß╗Öng b├│c t├ích, l├¬n m├áu v├á cß║Ñu tr├║c lß║íi dß╗» liß╗çu trong chß╗¢p mß║»t.
+                                        Kéo thả file Excel xuất trực tiếp từ hệ thống SAP. Ứng dụng tự động bóc tách, lên màu và cấu trúc lại dữ liệu trong chớp mắt.
                                     </p>
                                 </div>
 
@@ -100,7 +100,7 @@ export function HomePage() {
                                     onClick={() => navigate('/system-orders')}
                                     className="mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-white/90 hover:text-white hover:underline cursor-pointer"
                                 >
-                                    ─Éß║┐n trang Hß╗ç Thß╗æng Mua H├áng
+                                    Đến trang Hệ Thống Mua Hàng
                                     <ArrowRight size={15} strokeWidth={2.5} />
                                 </button>
                             </div>
