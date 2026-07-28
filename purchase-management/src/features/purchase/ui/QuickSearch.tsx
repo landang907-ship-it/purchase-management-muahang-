@@ -1,5 +1,5 @@
-/**
- * QuickSearch – search input to filter rows by text in the "Văn bản ngắn" column.
+﻿/**
+ * QuickSearch ΓÇô search input to filter rows by text in the "V─ân bß║ún ngß║»n" column.
  */
 import { Search, X } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';

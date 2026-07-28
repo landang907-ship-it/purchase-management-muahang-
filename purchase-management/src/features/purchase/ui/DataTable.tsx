@@ -1,5 +1,5 @@
-/**
- * DataTable – scrollable table of purchase rows with status badge column.
+﻿/**
+ * DataTable ΓÇô scrollable table of purchase rows with status badge column.
  */
 import { cn } from '@/shared/lib/cn';
 import { COL_MAP, type PurchaseRow } from '@/features/purchase/services/excel';
@@ -10,13 +10,13 @@ interface DataTableProps {
 }
 
 const COL_WIDTHS = [
-    'min-w-[80px] text-center', // Yc.m.hàng
-    'min-w-[70px] text-center', // Vật tư
-    'min-w-[140px]', // Văn bản ngắn
-    'min-w-[80px] text-center', // Ng.yêu cầu
-    'min-w-[60px] text-right', // Số lượng
-    'min-w-[80px] text-center', // Ngày YC
-    'min-w-[90px] text-center', // T.trg xử lý
+    'min-w-[80px] text-center', // Yc.m.h├áng
+    'min-w-[70px] text-center', // Vß║¡t t╞░
+    'min-w-[140px]', // V─ân bß║ún ngß║»n
+    'min-w-[80px] text-center', // Ng.y├¬u cß║ºu
+    'min-w-[60px] text-right', // Sß╗æ l╞░ß╗úng
+    'min-w-[80px] text-center', // Ng├áy YC
+    'min-w-[90px] text-center', // T.trg xß╗¡ l├╜
 ];
 
 export function DataTable({ rows }: DataTableProps) {
@@ -48,7 +48,7 @@ export function DataTable({ rows }: DataTableProps) {
                 <tbody>
                     {rows.map((row, idx) => (
                         <tr
-                            key={`${row['Yc.m.hàng']}-${idx}`}
+                            key={`${row['Yc.m.h├áng']}-${idx}`}
                             className={cn(
                                 'active:bg-[#c5d5f0] transition-colors',
                                 idx % 2 === 0 ? 'bg-white' : 'bg-row-even',
@@ -56,7 +56,7 @@ export function DataTable({ rows }: DataTableProps) {
                         >
                             {COL_MAP.map((col, i) => {
                                 const raw = (row as unknown as Record<string, string>)[col.label] ?? '';
-                                if (col.label === 'T.trg xử lý') {
+                                if (col.label === 'T.trg xß╗¡ l├╜') {
                                     const variant = statusVariant(raw);
                                     return (
                                         <td
@@ -79,7 +79,7 @@ export function DataTable({ rows }: DataTableProps) {
                                                     {raw}
                                                 </span>
                                             ) : (
-                                                <span className="text-neutral-400">–</span>
+                                                <span className="text-neutral-400">ΓÇô</span>
                                             )}
                                         </td>
                                     );
@@ -94,7 +94,7 @@ export function DataTable({ rows }: DataTableProps) {
                                             COL_WIDTHS[i],
                                         )}
                                     >
-                                        {raw || <span className="text-neutral-400">–</span>}
+                                        {raw || <span className="text-neutral-400">ΓÇô</span>}
                                     </td>
                                 );
                             })}

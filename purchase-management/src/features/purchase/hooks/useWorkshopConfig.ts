@@ -1,20 +1,20 @@
-/**
- * useWorkshopConfig – quản lý cấu hình Phân Xưởng & TAG-NAME
- * Lưu vào localStorage để nhớ khi reload trang.
+﻿/**
+ * useWorkshopConfig ΓÇô quß║ún l├╜ cß║Ñu h├¼nh Ph├ón X╞░ß╗ƒng & TAG-NAME
+ * L╞░u v├áo localStorage ─æß╗â nhß╗¢ khi reload trang.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export interface Workshop {
     id: string;
     name: string;
-    tagValues: string[]; // Các TAG-NAME thuộc phân xưởng này
+    tagValues: string[]; // C├íc TAG-NAME thuß╗Öc ph├ón x╞░ß╗ƒng n├áy
 }
 
 const STORAGE_KEY = 'purchase_workshop_config';
 
 const DEFAULT_WORKSHOP: Workshop = {
     id: 'default',
-    name: 'Want-Want Việt Nam',
+    name: 'Want-Want Viß╗çt Nam',
     tagValues: ['VN005922'],
 };
 
@@ -44,9 +44,9 @@ function saveToStorage(workshops: Workshop[]) {
 export interface UseWorkshopConfigResult {
     workshops: Workshop[];
     selectedWorkshopIds: string[];
-    tagOptions: string[]; // Tất cả TAG-NAME từ tất cả phân xưởng
-    orphanedTags: string[]; // TAG-NAME chưa được gán vào phân xưởng nào
-    workshopOptions: string[]; // Tên các phân xưởng để hiển thị trong filter
+    tagOptions: string[]; // Tß║Ñt cß║ú TAG-NAME tß╗½ tß║Ñt cß║ú ph├ón x╞░ß╗ƒng
+    orphanedTags: string[]; // TAG-NAME ch╞░a ─æ╞░ß╗úc g├ín v├áo ph├ón x╞░ß╗ƒng n├áo
+    workshopOptions: string[]; // T├¬n c├íc ph├ón x╞░ß╗ƒng ─æß╗â hiß╗ân thß╗ï trong filter
 
     // Filter
     setSelectedWorkshopIds: (ids: string[]) => void;
@@ -67,12 +67,12 @@ export function useWorkshopConfig(): UseWorkshopConfigResult {
     const [selectedWorkshopIds, setSelectedWorkshopIds] = useState<string[]>([]);
     const [orphanedTags, setOrphanedTagsState] = useState<string[]>([]);
 
-    // Lưu vào storage khi thay đổi
+    // L╞░u v├áo storage khi thay ─æß╗òi
     useEffect(() => {
         saveToStorage(workshops);
     }, [workshops]);
 
-    // Tất cả TAG-NAME từ tất cả phân xưởng
+    // Tß║Ñt cß║ú TAG-NAME tß╗½ tß║Ñt cß║ú ph├ón x╞░ß╗ƒng
     const tagOptions = useMemo(() => {
         const set = new Set<string>();
         for (const w of workshops) {
@@ -83,31 +83,31 @@ export function useWorkshopConfig(): UseWorkshopConfigResult {
         return Array.from(set).sort();
     }, [workshops]);
 
-    // Workshop options cho filter (tên phân xưởng)
+    // Workshop options cho filter (t├¬n ph├ón x╞░ß╗ƒng)
     const workshopOptions = useMemo(() => {
         return workshops.map((w) => w.name);
     }, [workshops]);
 
-    // Thêm phân xưởng mới
+    // Th├¬m ph├ón x╞░ß╗ƒng mß╗¢i
     const addWorkshop = useCallback((name: string, tagValues: string[] = []) => {
         const id = `ws_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
         setWorkshops((prev) => [...prev, { id, name, tagValues }]);
     }, []);
 
-    // Cập nhật phân xưởng
+    // Cß║¡p nhß║¡t ph├ón x╞░ß╗ƒng
     const updateWorkshop = useCallback((id: string, name: string, tagValues: string[]) => {
         setWorkshops((prev) =>
             prev.map((w) => (w.id === id ? { ...w, name, tagValues } : w))
         );
     }, []);
 
-    // Xóa phân xưởng
+    // X├│a ph├ón x╞░ß╗ƒng
     const deleteWorkshop = useCallback((id: string) => {
         setWorkshops((prev) => prev.filter((w) => w.id !== id));
         setSelectedWorkshopIds((prev) => prev.filter((wid) => wid !== id));
     }, []);
 
-    // Gán TAG-NAME vào phân xưởng
+    // G├ín TAG-NAME v├áo ph├ón x╞░ß╗ƒng
     const assignTagsToWorkshop = useCallback((tagValues: string[], workshopId: string) => {
         setWorkshops((prev) =>
             prev.map((w) => {
@@ -119,16 +119,16 @@ export function useWorkshopConfig(): UseWorkshopConfigResult {
                 return { ...w, tagValues: Array.from(existingTags) };
             })
         );
-        // Xóa khỏi orphaned
+        // X├│a khß╗Åi orphaned
         setOrphanedTagsState((prev) => prev.filter((t) => !tagValues.includes(t)));
     }, []);
 
-    // Cập nhật orphaned tags (từ import file)
+    // Cß║¡p nhß║¡t orphaned tags (tß╗½ import file)
     const setOrphanedTags = useCallback((tags: string[]) => {
         setOrphanedTagsState(tags);
     }, []);
 
-    // Đăng ký tags mới từ file import (loại bỏ tags đã có trong config)
+    // ─É─âng k├╜ tags mß╗¢i tß╗½ file import (loß║íi bß╗Å tags ─æ├ú c├│ trong config)
     const registerNewTags = useCallback((tags: string[]) => {
         const existingTags = new Set(tagOptions);
         const newTags = tags.filter((t) => !existingTags.has(t));

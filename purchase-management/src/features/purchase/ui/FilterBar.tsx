@@ -1,7 +1,7 @@
-/**
- * FilterBar – gom các filter (QuickSearch, Requester, Status, DateRange, Workshop)
- * Tách ra từ PurchasePage để giảm kích thước component.
- * Thu gọn thành nút "Sử dụng bộ lọc" và mở rộng khi cần.
+﻿/**
+ * FilterBar ΓÇô gom c├íc filter (QuickSearch, Requester, Status, DateRange, Workshop)
+ * T├ích ra tß╗½ PurchasePage ─æß╗â giß║úm k├¡ch th╞░ß╗¢c component.
+ * Thu gß╗ìn th├ánh n├║t "Sß╗¡ dß╗Ñng bß╗Ö lß╗ìc" v├á mß╗ƒ rß╗Öng khi cß║ºn.
  */
 import { useState } from 'react';
 import { ChevronDown, Filter } from 'lucide-react';
@@ -33,7 +33,7 @@ interface FilterBarProps {
 /**
  * Horizontal stack of filter components.
  * Rendered above DataTable when there is data.
- * Collapsible - shows "Sử dụng bộ lọc" button by default.
+ * Collapsible - shows "Sß╗¡ dß╗Ñng bß╗Ö lß╗ìc" button by default.
  */
 export function FilterBar({
     quickSearch,
@@ -72,7 +72,7 @@ export function FilterBar({
                 )}
             >
                 <Filter size={12} strokeWidth={2.5} />
-                <span>Sử dụng bộ lọc</span>
+                <span>Sß╗¡ dß╗Ñng bß╗Ö lß╗ìc</span>
                 <ChevronDown
                     size={12}
                     strokeWidth={2.5}

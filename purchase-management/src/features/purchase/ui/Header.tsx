@@ -1,5 +1,5 @@
-/**
- * Header – fixed top bar with title, import button, and logout.
+﻿/**
+ * Header ΓÇô fixed top bar with title, import button, and logout.
  */
 import { LogOut, Upload, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -31,7 +31,7 @@ export function Header({ onImport, onLogout, onSettings, userLabel }: HeaderProp
                     <p className="text-[10px] sm:text-[11px] font-semibold opacity-90 truncate">
                         {t('header.subtitle')}
                         {userLabel ? (
-                            <span className="ml-1 opacity-75">· {userLabel}</span>
+                            <span className="ml-1 opacity-75">┬╖ {userLabel}</span>
                         ) : null}
                     </p>
                 </div>

@@ -1,6 +1,6 @@
-/**
- * WorkshopFilter – multi-select dropdown để lọc theo Phân Xưởng.
- * Tương tự RequesterFilter nhưng dùng cho Phân Xưởng.
+﻿/**
+ * WorkshopFilter ΓÇô multi-select dropdown ─æß╗â lß╗ìc theo Ph├ón X╞░ß╗ƒng.
+ * T╞░╞íng tß╗▒ RequesterFilter nh╞░ng d├╣ng cho Ph├ón X╞░ß╗ƒng.
  */
 import { ChevronDown, Home, Search, X } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -27,12 +27,9 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
     const searchInputRef = useRef<HTMLInputElement>(null);
     const labelId = useId();
 
-    const safeOptions = useMemo(() => (Array.isArray(options) ? options : []), [options]);
-    const safeValue = useMemo(() => (Array.isArray(value) ? value : []), [value]);
-
-    const selected = useMemo(() => new Set(safeValue), [safeValue]);
-    const isActive = safeValue.length > 0;
-    const isAllSelected = safeValue.length === safeOptions.length && safeOptions.length > 0;
+    const selected = useMemo(() => new Set(value), [value]);
+    const isActive = value.length > 0;
+    const isAllSelected = value.length === options.length && options.length > 0;
 
     const filteredOptions = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -238,7 +235,7 @@ export function WorkshopFilter({ options, value, onChange, disabled }: WorkshopF
                                     )}
                                     aria-hidden
                                 >
-                                    {isSelected ? '✓' : ''}
+                                    {isSelected ? 'Γ£ô' : ''}
                                 </span>
                                 <span className="truncate flex-1">{opt}</span>
                             </button>

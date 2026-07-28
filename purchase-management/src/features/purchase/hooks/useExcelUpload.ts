@@ -1,6 +1,6 @@
-/**
- * useExcelUpload – quản lý file input ref + drag-drop + handleFile logic.
- * Tách ra từ PurchasePage để giảm kích thước component.
+﻿/**
+ * useExcelUpload ΓÇô quß║ún l├╜ file input ref + drag-drop + handleFile logic.
+ * T├ích ra tß╗½ PurchasePage ─æß╗â giß║úm k├¡ch th╞░ß╗¢c component.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { parseExcel, type PurchaseRow } from '@/features/purchase/services/excel';
@@ -54,7 +54,7 @@ export function useExcelUpload({
                 if (result.tagColIdx === -1) {
                     const headerList = result.headers.filter(Boolean).slice(0, 15).join(' | ');
                     onMessage(
-                        `${t('import.tagMissing')}. Các cột: ${headerList}`,
+                        `${t('import.tagMissing')}. C├íc cß╗Öt: ${headerList}`,
                         'warning',
                         6000,
                     );
@@ -82,7 +82,7 @@ export function useExcelUpload({
                     tagRowCounts: result.tagRowCounts,
                 };
             } catch (err) {
-                const msg = err instanceof Error ? err.message : 'Lỗi không xác định';
+                const msg = err instanceof Error ? err.message : 'Lß╗ùi kh├┤ng x├íc ─æß╗ïnh';
                 onMessage(t('import.error', { msg }), 'error', 5000);
                 // eslint-disable-next-line no-console
                 console.error('[ParseExcel]', err);

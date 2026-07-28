@@ -1,5 +1,5 @@
-/**
- * RequesterFilter – multi-select dropdown to filter rows by the "Ng.yêu cầu" column.
+﻿/**
+ * RequesterFilter ΓÇô multi-select dropdown to filter rows by the "Ng.y├¬u cß║ºu" column.
  * Uses Portal to render dropdown outside DOM hierarchy, ensuring it floats above all content.
  */
 import { ChevronDown, Filter, Search, X } from 'lucide-react';
@@ -27,12 +27,9 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
     const searchInputRef = useRef<HTMLInputElement>(null);
     const labelId = useId();
 
-    const safeOptions = useMemo(() => (Array.isArray(options) ? options : []), [options]);
-    const safeValue = useMemo(() => (Array.isArray(value) ? value : []), [value]);
-
-    const selected = useMemo(() => new Set(safeValue), [safeValue]);
-    const isActive = safeValue.length > 0;
-    const isAllSelected = safeValue.length === safeOptions.length && safeOptions.length > 0;
+    const selected = useMemo(() => new Set(value), [value]);
+    const isActive = value.length > 0;
+    const isAllSelected = value.length === options.length && options.length > 0;
 
     const filteredOptions = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -238,7 +235,7 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
                                     )}
                                     aria-hidden
                                 >
-                                    {isSelected ? '✓' : ''}
+                                    {isSelected ? 'Γ£ô' : ''}
                                 </span>
                                 <span className="truncate flex-1">{opt}</span>
                             </button>

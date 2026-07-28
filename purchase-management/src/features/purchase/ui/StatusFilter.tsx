@@ -1,5 +1,5 @@
-/**
- * StatusFilter – single-select dropdown to filter rows by the "T.trg xử lý" column.
+﻿/**
+ * StatusFilter ΓÇô single-select dropdown to filter rows by the "T.trg xß╗¡ l├╜" column.
  * Uses Portal to render dropdown outside DOM hierarchy, ensuring it floats above all content.
  */
 import { ChevronDown, Filter, X } from 'lucide-react';
@@ -136,7 +136,7 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
                                         : 'border-neutral-400 bg-white',
                                 )}
                             >
-                                {value === '' ? '✓' : ''}
+                                {value === '' ? 'Γ£ô' : ''}
                             </span>
                             <span>{t('filter.allCount')} ({options.length})</span>
                         </button>
@@ -172,7 +172,7 @@ export function StatusFilter({ options, value, onChange, disabled }: StatusFilte
                                                 : 'border-neutral-400 bg-white',
                                         )}
                                     >
-                                        {isSelected ? '✓' : ''}
+                                        {isSelected ? 'Γ£ô' : ''}
                                     </span>
                                     <span className="truncate flex-1">{opt}</span>
                                 </button>

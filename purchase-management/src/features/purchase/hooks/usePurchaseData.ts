@@ -1,6 +1,6 @@
-/**
- * usePurchaseData – quản lý rows state + load từ Supabase khi mount.
- * Tách ra từ PurchasePage để giảm kích thước component.
+﻿/**
+ * usePurchaseData ΓÇô quß║ún l├╜ rows state + load tß╗½ Supabase khi mount.
+ * T├ích ra tß╗½ PurchasePage ─æß╗â giß║úm k├¡ch th╞░ß╗¢c component.
  */
 import { useCallback, useEffect, useState } from 'react';
 import { loadPurchaseData, savePurchaseData } from '@/features/purchase/services/purchaseService';
@@ -46,7 +46,7 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
             } catch (err) {
                 // eslint-disable-next-line no-console
                 console.error('[Supabase Load]', err);
-                onMessage?.('Không thể tải dữ liệu đã lưu từ Supabase', 'error', 4000);
+                onMessage?.('Kh├┤ng thß╗â tß║úi dß╗» liß╗çu ─æ├ú l╞░u tß╗½ Supabase', 'error', 4000);
             } finally {
                 if (isMounted) setIsLoading(false);
             }
@@ -64,8 +64,8 @@ export function usePurchaseData({ userId, onMessage, t }: UsePurchaseDataOptions
             try {
                 await savePurchaseData(uid, rowsToSave, name);
             } catch (saveErr) {
-                const msg = saveErr instanceof Error ? saveErr.message : 'Lỗi kết nối';
-                onMessage?.(`Không thể tự động lưu lên Supabase: ${msg}`, 'warning', 5000);
+                const msg = saveErr instanceof Error ? saveErr.message : 'Lß╗ùi kß║┐t nß╗æi';
+                onMessage?.(`Kh├┤ng thß╗â tß╗▒ ─æß╗Öng l╞░u l├¬n Supabase: ${msg}`, 'warning', 5000);
                 // eslint-disable-next-line no-console
                 console.error('[Supabase Save]', saveErr);
             }

@@ -1,7 +1,7 @@
-/**
- * usePurchaseFilters – quản lý 4 filter state (requester, status, date, search, workshop)
+﻿/**
+ * usePurchaseFilters ΓÇô quß║ún l├╜ 4 filter state (requester, status, date, search, workshop)
  * + computed `requesterOptions`, `statusOptions`, `visibleRows`, `hasAnyFilter`.
- * Tách ra từ PurchasePage để giảm kích thước component.
+ * T├ích ra tß╗½ PurchasePage ─æß╗â giß║úm k├¡ch th╞░ß╗¢c component.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -63,12 +63,9 @@ interface UsePurchaseFiltersOptions {
 
 /**
  * Manages filter state + computes filtered rows.
- * Pure logic – no side effects, no Supabase, no DOM.
+ * Pure logic ΓÇô no side effects, no Supabase, no DOM.
  */
-export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
-    const rows = Array.isArray(optionsObj?.rows) ? optionsObj.rows : [];
-    const workshops = Array.isArray(optionsObj?.workshops) ? optionsObj.workshops : [];
-
+export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
     const [selectedRequesters, setSelectedRequesters] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
     const [dateFrom, setDateFrom] = useState<string>('');
@@ -76,7 +73,7 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
     const [quickSearch, setQuickSearch] = useState<string>('');
     const [selectedWorkshops, setSelectedWorkshops] = useState<string[]>(loadSelectedWorkshops);
 
-    // Lưu selectedWorkshops vào localStorage khi thay đổi
+    // L╞░u selectedWorkshops v├áo localStorage khi thay ─æß╗òi
     useEffect(() => {
         saveSelectedWorkshops(selectedWorkshops);
     }, [selectedWorkshops]);
@@ -86,7 +83,7 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
         return workshops.map((w) => w.name);
     }, [workshops]);
 
-    // Build mapping: workshop name → TAG-NAME values
+    // Build mapping: workshop name ΓåÆ TAG-NAME values
     const workshopToTagsMap = useMemo(() => {
         const map: Record<string, string[]> = {};
         for (const w of workshops) {
@@ -116,7 +113,7 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
         for (const r of rows) {
             const tag = (r['TAG-NAME'] ?? '').trim();
             if (tagSet.has(tag)) {
-                const v = (r['Ng.yêu cầu'] ?? '').trim();
+                const v = (r['Ng.y├¬u cß║ºu'] ?? '').trim();
                 if (v) set.add(v);
             }
         }
@@ -126,7 +123,7 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
     const statusOptions = useMemo(() => {
         const set = new Set<string>();
         for (const r of rows) {
-            const v = (r['T.trg xử lý'] ?? '').trim();
+            const v = (r['T.trg xß╗¡ l├╜'] ?? '').trim();
             if (v) set.add(v);
         }
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'vi', { sensitivity: 'base' }));
@@ -153,12 +150,12 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
     }, [rows]);
 
     const visibleRows = useMemo(() => {
-        // Nếu chưa chọn workshop nào thì không hiển thị gì
+        // Nß║┐u ch╞░a chß╗ìn workshop n├áo th├¼ kh├┤ng hiß╗ân thß╗ï g├¼
         if (selectedWorkshops.length === 0) {
             return [];
         }
 
-        // Translate workshop names → TAG-NAME values
+        // Translate workshop names ΓåÆ TAG-NAME values
         const tagSet = new Set<string>();
         for (const wsName of selectedWorkshops) {
             const tags = workshopToTagsMap[wsName] || [];
@@ -174,18 +171,18 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
 
         if (selectedRequesters.length > 0) {
             const selectedSet = new Set(selectedRequesters);
-            result = result.filter((r) => selectedSet.has((r['Ng.yêu cầu'] ?? '').trim()));
+            result = result.filter((r) => selectedSet.has((r['Ng.y├¬u cß║ºu'] ?? '').trim()));
         }
 
         if (selectedStatus) {
-            result = result.filter((r) => ((r['T.trg xử lý'] ?? '').trim()) === selectedStatus);
+            result = result.filter((r) => ((r['T.trg xß╗¡ l├╜'] ?? '').trim()) === selectedStatus);
         }
 
         if (dateFrom || dateTo) {
             const fromDate = dateFrom ? new Date(dateFrom) : null;
             const toDate = dateTo ? new Date(dateTo) : null;
             result = result.filter((r) => {
-                const dateVal = parseDateSafe(r['Ngày YC'] ?? '');
+                const dateVal = parseDateSafe(r['Ng├áy YC'] ?? '');
                 if (!dateVal) return false;
                 if (fromDate && dateVal < fromDate) return false;
                 if (toDate && dateVal > toDate) return false;
@@ -196,7 +193,7 @@ export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UseP
         if (quickSearch.trim()) {
             const searchLower = quickSearch.toLowerCase().trim();
             result = result.filter((r) => {
-                const text = (r['Văn bản ngắn'] ?? '').toLowerCase();
+                const text = (r['V─ân bß║ún ngß║»n'] ?? '').toLowerCase();
                 return text.includes(searchLower);
             });
         }

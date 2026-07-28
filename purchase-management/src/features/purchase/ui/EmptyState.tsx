@@ -1,5 +1,5 @@
-/**
- * EmptyState – shown when no file has been imported yet.
+﻿/**
+ * EmptyState ΓÇô shown when no file has been imported yet.
  */
 import { motion } from 'motion/react';
 import { FileSpreadsheet, Upload } from 'lucide-react';

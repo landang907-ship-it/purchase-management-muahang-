@@ -1,5 +1,5 @@
-/**
- * DateRangeFilter – inline date range inputs for the "Ngày YC" column.
+﻿/**
+ * DateRangeFilter ΓÇô inline date range inputs for the "Ng├áy YC" column.
  * Styled to match RequesterFilter v1 design: white background, border-bottom, single row.
  */
 import { X } from 'lucide-react';
@@ -33,7 +33,7 @@ export function DateRangeFilter({
         <div className={cn('relative shrink-0', 'bg-white border-b border-border')}>
             <div className="flex items-center gap-1 px-1.5 py-0.5 min-h-[26px]">
                 <span className="flex items-center gap-0.5 shrink-0 text-[9px] sm:text-[10px] font-semibold text-text-dark whitespace-nowrap">
-                    <span className="w-3 h-3 flex items-center justify-center text-blue-mid font-bold">📅</span>
+                    <span className="w-3 h-3 flex items-center justify-center text-blue-mid font-bold">≡ƒôà</span>
                     {t('date.label')}
                 </span>
 

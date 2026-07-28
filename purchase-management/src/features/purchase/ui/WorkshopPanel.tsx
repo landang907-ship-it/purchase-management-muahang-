@@ -1,5 +1,5 @@
-/**
- * WorkshopPanel – Slide-over panel để quản lý Phân Xưởng & TAG-NAME
+﻿/**
+ * WorkshopPanel ΓÇô Slide-over panel ─æß╗â quß║ún l├╜ Ph├ón X╞░ß╗ƒng & TAG-NAME
  */
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Plus, Pencil, Trash2, ChevronDown, ChevronRight } from 'lucide-react';
@@ -11,8 +11,8 @@ import type { Workshop } from '@/features/purchase/hooks/useWorkshopConfig';
 interface WorkshopPanelProps {
     open: boolean;
     onClose: () => void;
-    allTagsFromFile?: string[]; // TAG-NAME từ file import
-    tagRowCounts?: Record<string, number>; // Số rows cho mỗi TAG-NAME
+    allTagsFromFile?: string[]; // TAG-NAME tß╗½ file import
+    tagRowCounts?: Record<string, number>; // Sß╗æ rows cho mß╗ùi TAG-NAME
     workshops?: Workshop[];
     orphanedTags?: string[];
     onAddWorkshop?: (name: string, tagValues?: string[]) => void;
@@ -47,7 +47,7 @@ export function WorkshopPanel({
     const [addingNew, setAddingNew] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
 
-    // Đăng ký tags mới từ file
+    // ─É─âng k├╜ tags mß╗¢i tß╗½ file
     useEffect(() => {
         if (allTagsFromFile.length > 0 && onRegisterTags) {
             onRegisterTags(allTagsFromFile);
@@ -64,14 +64,14 @@ export function WorkshopPanel({
         });
     };
 
-    // Bắt đầu sửa
+    // Bß║»t ─æß║ºu sß╗¡a
     const startEdit = (ws: Workshop) => {
         setEditingId(ws.id);
         setEditName(ws.name);
         setEditTags(ws.tagValues.join(', '));
     };
 
-    // Lưu sửa
+    // L╞░u sß╗¡a
     const saveEdit = () => {
         if (editingId && editName.trim() && onUpdateWorkshop) {
             const tags = editTags.split(',').map((t) => t.trim()).filter(Boolean);
@@ -82,14 +82,14 @@ export function WorkshopPanel({
         setEditTags('');
     };
 
-    // Hủy sửa
+    // Hß╗ºy sß╗¡a
     const cancelEdit = () => {
         setEditingId(null);
         setEditName('');
         setEditTags('');
     };
 
-    // Thêm phân xưởng mới
+    // Th├¬m ph├ón x╞░ß╗ƒng mß╗¢i
     const handleAddWorkshop = () => {
         if (newWorkshopName.trim() && onAddWorkshop) {
             onAddWorkshop(newWorkshopName.trim());
@@ -98,7 +98,7 @@ export function WorkshopPanel({
         }
     };
 
-    // Toggle chọn orphaned tag
+    // Toggle chß╗ìn orphaned tag
     const toggleOrphanedTag = (tag: string) => {
         setSelectedOrphanedTags((prev) => {
             const next = new Set(prev);
@@ -108,7 +108,7 @@ export function WorkshopPanel({
         });
     };
 
-    // Gán tags đã chọn vào phân xưởng
+    // G├ín tags ─æ├ú chß╗ìn v├áo ph├ón x╞░ß╗ƒng
     const handleAssign = () => {
         if (selectedOrphanedTags.size > 0 && assignToWorkshop && onAssignTags) {
             onAssignTags(Array.from(selectedOrphanedTags), assignToWorkshop);
@@ -116,7 +116,7 @@ export function WorkshopPanel({
         }
     };
 
-    // Đếm rows cho mỗi phân xưởng
+    // ─Éß║┐m rows cho mß╗ùi ph├ón x╞░ß╗ƒng
     const workshopRowCounts = useMemo(() => {
         const counts: Record<string, number> = {};
         for (const ws of workshops) {
@@ -171,7 +171,7 @@ export function WorkshopPanel({
                             {/* Workshop List */}
                             <div className="space-y-2">
                                 <h3 className="text-xs font-semibold text-text-dark uppercase tracking-wide flex items-center gap-1">
-                                    <span>🔧</span> {t('workshop.listTitle')}
+                                    <span>≡ƒöº</span> {t('workshop.listTitle')}
                                 </h3>
 
                                 {workshops.map((ws) => {
@@ -327,7 +327,7 @@ export function WorkshopPanel({
                             {orphanedTags.length > 0 && (
                                 <div className="space-y-2">
                                     <h3 className="text-xs font-semibold text-text-dark uppercase tracking-wide flex items-center gap-1">
-                                        <span>🏷️</span> {t('workshop.orphanedTitle')} ({orphanedTags.length})
+                                        <span>≡ƒÅ╖∩╕Å</span> {t('workshop.orphanedTitle')} ({orphanedTags.length})
                                     </h3>
 
                                     <div className="border border-border rounded-lg p-3 space-y-2 bg-gray-50">
@@ -347,7 +347,7 @@ export function WorkshopPanel({
                                                                 : 'bg-white text-text-dark border-border hover:border-blue-mid',
                                                         )}
                                                     >
-                                                        <span>{isSelected ? '✓' : ''}</span>
+                                                        <span>{isSelected ? 'Γ£ô' : ''}</span>
                                                         <span>{tag}</span>
                                                         <span className="text-[10px] opacity-70">({rowCount})</span>
                                                     </button>
