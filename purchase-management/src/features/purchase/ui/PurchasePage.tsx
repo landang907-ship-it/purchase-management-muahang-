@@ -19,6 +19,7 @@ import { usePurchaseData } from '@/features/purchase/hooks/usePurchaseData';
 import { usePurchaseFilters } from '@/features/purchase/hooks/usePurchaseFilters';
 import { useExcelUpload } from '@/features/purchase/hooks/useExcelUpload';
 import { useWorkshopConfig } from '@/features/purchase/hooks/useWorkshopConfig';
+import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
 
 export function PurchasePage() {
     const { user, logout } = useAuth();
@@ -110,13 +111,15 @@ export function PurchasePage() {
     const [showWorkshopPanel, setShowWorkshopPanel] = useState(false);
 
     return (
-        <div className="relative h-full w-full overflow-hidden bg-blue-dark">
-            <Header
-                onImport={openFilePicker}
-                onLogout={handleLogout}
-                onSettings={() => setShowWorkshopPanel(true)}
-                userLabel={userId}
-            />
+        <div className="flex h-screen w-screen overflow-hidden bg-blue-dark">
+            <RightTaskBar />
+            <div className="flex flex-1 flex-col overflow-hidden relative">
+                <Header
+                    onImport={openFilePicker}
+                    onLogout={handleLogout}
+                    onSettings={() => setShowWorkshopPanel(true)}
+                    userLabel={userId}
+                />
 
             {/* Layout: Main content (TaskBar from layout/ overlays the left side) */}
             <div
@@ -184,6 +187,7 @@ export function PurchasePage() {
                 onAssignTags={assignTagsToWorkshop}
                 onRegisterTags={registerNewTags}
             />
+            </div>
         </div>
     );
 }
