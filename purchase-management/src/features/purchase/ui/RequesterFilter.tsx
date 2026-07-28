@@ -27,9 +27,12 @@ export function RequesterFilter({ options, value, onChange, disabled }: Requeste
     const searchInputRef = useRef<HTMLInputElement>(null);
     const labelId = useId();
 
-    const selected = useMemo(() => new Set(value), [value]);
-    const isActive = value.length > 0;
-    const isAllSelected = value.length === options.length && options.length > 0;
+    const safeOptions = useMemo(() => (Array.isArray(options) ? options : []), [options]);
+    const safeValue = useMemo(() => (Array.isArray(value) ? value : []), [value]);
+
+    const selected = useMemo(() => new Set(safeValue), [safeValue]);
+    const isActive = safeValue.length > 0;
+    const isAllSelected = safeValue.length === safeOptions.length && safeOptions.length > 0;
 
     const filteredOptions = useMemo(() => {
         const q = search.trim().toLowerCase();

@@ -40,18 +40,16 @@ export function PurchasePage() {
     // Workshop configuration & filtering
     const {
         workshops,
-        selectedWorkshops,
         workshopOptions,
         uniqueTags,
         tagRowCounts,
         orphanedTags,
-        setSelectedWorkshops,
         addWorkshop,
         updateWorkshop,
         deleteWorkshop,
         assignTagsToWorkshop,
         registerNewTags,
-    } = useWorkshopConfig(rows);
+    } = useWorkshopConfig();
 
     // Filters: filter state + computed visible rows
     const {
@@ -60,6 +58,7 @@ export function PurchasePage() {
         dateFrom,
         dateTo,
         quickSearch,
+        selectedWorkshops,
         requesterOptions,
         statusOptions,
         visibleRows,
@@ -69,8 +68,9 @@ export function PurchasePage() {
         setDateFrom,
         setDateTo,
         setQuickSearch,
+        setSelectedWorkshops,
         clearAll,
-    } = usePurchaseFilters(rows, selectedWorkshops, workshops);
+    } = usePurchaseFilters({ rows, workshops });
 
     // Excel upload handler
     const { fileInputRef, openFilePicker, handleFileChange, isLoading: uploadLoading } =
@@ -93,8 +93,8 @@ export function PurchasePage() {
         showToast(t('toast.logoutSuccess'), 'info');
     }, [logout, showToast, t]);
 
-    const showEmpty = rows.length === 0;
-    const showNoResults = !showEmpty && visibleRows.length === 0;
+    const showEmpty = (rows || []).length === 0;
+    const showNoResults = !showEmpty && (visibleRows || []).length === 0;
 
     // Workshop panel state
     const [showWorkshopPanel, setShowWorkshopPanel] = useState(false);
@@ -124,15 +124,15 @@ export function PurchasePage() {
                 >
                     {/* FilterBar always visible at top of main area */}
                     <FilterBar
-                        quickSearch={quickSearch}
-                        selectedRequesters={selectedRequesters}
-                        selectedStatus={selectedStatus}
-                        dateFrom={dateFrom}
-                        dateTo={dateTo}
-                        requesterOptions={requesterOptions}
-                        statusOptions={statusOptions}
-                        selectedWorkshops={selectedWorkshops}
-                        workshopOptions={workshopOptions}
+                        quickSearch={quickSearch || ''}
+                        selectedRequesters={selectedRequesters || []}
+                        selectedStatus={selectedStatus || ''}
+                        dateFrom={dateFrom || ''}
+                        dateTo={dateTo || ''}
+                        requesterOptions={requesterOptions || []}
+                        statusOptions={statusOptions || []}
+                        selectedWorkshops={selectedWorkshops || []}
+                        workshopOptions={workshopOptions || []}
                         onQuickSearchChange={setQuickSearch}
                         onRequestersChange={setSelectedRequesters}
                         onStatusChange={setSelectedStatus}
@@ -147,14 +147,14 @@ export function PurchasePage() {
                     {showNoResults && (
                         <NoResults
                             message={
-                                selectedRequesters.length > 0
-                                    ? t('noresults.filtered', { count: selectedRequesters.length })
+                                (selectedRequesters || []).length > 0
+                                    ? t('noresults.filtered', { count: (selectedRequesters || []).length })
                                     : t('noresults.tab')
                             }
                         />
                     )}
 
-                    {!showEmpty && !showNoResults && <DataTable rows={visibleRows} />}
+                    {!showEmpty && !showNoResults && <DataTable rows={visibleRows || []} />}
 
                     {isLoading && <LoadingOverlay />}
                 </main>
@@ -175,10 +175,10 @@ export function PurchasePage() {
             <WorkshopPanel
                 isOpen={showWorkshopPanel}
                 onClose={() => setShowWorkshopPanel(false)}
-                allTagsFromFile={uniqueTags}
-                tagRowCounts={tagRowCounts}
-                workshops={workshops}
-                orphanedTags={orphanedTags}
+                allTagsFromFile={uniqueTags || []}
+                tagRowCounts={tagRowCounts || {}}
+                workshops={workshops || []}
+                orphanedTags={orphanedTags || []}
                 onAddWorkshop={addWorkshop}
                 onUpdateWorkshop={updateWorkshop}
                 onDeleteWorkshop={deleteWorkshop}

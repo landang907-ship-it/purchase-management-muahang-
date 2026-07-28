@@ -65,7 +65,10 @@ interface UsePurchaseFiltersOptions {
  * Manages filter state + computes filtered rows.
  * Pure logic – no side effects, no Supabase, no DOM.
  */
-export function usePurchaseFilters({ rows, workshops = [] }: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
+export function usePurchaseFilters(optionsObj?: UsePurchaseFiltersOptions): UsePurchaseFiltersResult {
+    const rows = Array.isArray(optionsObj?.rows) ? optionsObj.rows : [];
+    const workshops = Array.isArray(optionsObj?.workshops) ? optionsObj.workshops : [];
+
     const [selectedRequesters, setSelectedRequesters] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('');
     const [dateFrom, setDateFrom] = useState<string>('');
