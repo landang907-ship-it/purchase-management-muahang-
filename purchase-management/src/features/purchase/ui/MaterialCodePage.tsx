@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Search } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
@@ -34,12 +34,12 @@ export function MaterialCodePage() {
                                     <FileText size={20} strokeWidth={2.2} />
                                 </div>
                                 <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                                    Quản lý mã vật tư
+                                    Quß║ún l├╜ m├ú vß║¡t t╞░
                                 </h1>
                             </div>
 
                             <div className="rounded-full bg-blue-50 border border-blue-200 px-4 py-1.5 text-xs font-bold text-blue-600">
-                                Tổng số: <span className="font-black text-blue-700">13507</span>
+                                Tß╗òng sß╗æ: <span className="font-black text-blue-700">13507</span>
                             </div>
                         </div>
 
@@ -55,7 +55,7 @@ export function MaterialCodePage() {
                                     type="text"
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
-                                    placeholder="Tìm kiếm mã hoặc tên vật tư..."
+                                    placeholder="T├¼m kiß║┐m m├ú hoß║╖c t├¬n vß║¡t t╞░..."
                                     className="w-full rounded-2xl bg-slate-50 py-3 pl-11 pr-4 text-sm font-semibold text-slate-800 placeholder-slate-400 border border-slate-200 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
                                 />
                             </div>
@@ -66,10 +66,10 @@ export function MaterialCodePage() {
                                     <Search size={44} strokeWidth={1.8} />
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-800 mb-2">
-                                    Sẵn sàng tìm kiếm
+                                    Sß║╡n s├áng t├¼m kiß║┐m
                                 </h3>
                                 <p className="max-w-md text-sm font-medium text-slate-500 leading-relaxed">
-                                    Vui lòng gõ mã hoặc tên vào ô tìm kiếm phía trên để hiển thị danh sách vật tư.
+                                    Vui l├▓ng g├╡ m├ú hoß║╖c t├¬n v├áo ├┤ t├¼m kiß║┐m ph├¡a tr├¬n ─æß╗â hiß╗ân thß╗ï danh s├ích vß║¡t t╞░.
                                 </p>
                             </div>
                         </div>

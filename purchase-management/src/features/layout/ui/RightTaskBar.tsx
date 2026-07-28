@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PanelLeftClose, PanelLeft, FileText, Tags, Menu, Home, Shield, User, LogOut, Bell, Sparkles } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -121,7 +121,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                 type="button"
                 className="md:hidden fixed top-2 left-2.5 z-[60] p-2 rounded-xl text-white/90 hover:text-white hover:bg-white/15 focus:outline-none transition-all active:scale-95 shadow-xs"
                 onClick={() => setIsMobileOpen(prev => !prev)}
-                aria-label={isMobileOpen ? 'Đóng menu' : 'Mở menu'}
+                aria-label={isMobileOpen ? '─É├│ng menu' : 'Mß╗ƒ menu'}
             >
                 <Menu size={22} strokeWidth={2.2} />
             </button>
@@ -162,7 +162,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                         {(isExpanded || isMobile) ? (
                             <div className="flex items-center gap-2 text-slate-500 font-extrabold text-[11px] tracking-wider uppercase px-1">
                                 <Sparkles size={14} className="text-blue-500" />
-                                <span>DANH MỤC HỆ THỐNG</span>
+                                <span>DANH Mß╗ñC Hß╗å THß╗ÉNG</span>
                             </div>
                         ) : (
                             <div className="w-full flex justify-center">
@@ -174,8 +174,8 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                         <button
                             type="button"
                             onClick={toggleExpanded}
-                            aria-label={isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
-                            title={isExpanded ? 'Thu nhỏ' : 'Mở rộng'}
+                            aria-label={isExpanded ? 'Thu nhß╗Å' : 'Mß╗ƒ rß╗Öng'}
+                            title={isExpanded ? 'Thu nhß╗Å' : 'Mß╗ƒ rß╗Öng'}
                             className={cn(
                                 'hidden md:flex items-center justify-center',
                                 'w-7 h-7 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100',
@@ -189,7 +189,7 @@ export function RightTaskBar({ mobileActions }: RightTaskBarProps = {}) {
                     {/* Navigation Menu Links */}
                     <nav className="flex-1 flex flex-col gap-1.5 p-2.5 overflow-y-auto scrollbar-thin">
                         <div className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-2 pt-1 pb-0.5 hidden sm:block">
-                            {(isExpanded || isMobile) ? 'Menu Chính' : '•••'}
+                            {(isExpanded || isMobile) ? 'Menu Ch├¡nh' : 'ΓÇóΓÇóΓÇó'}
                         </div>
 
                         {RIGHT_TASK_ITEMS.map((item) => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileCheck, ArrowLeft, Sparkles, Home, Filter } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
@@ -6,10 +6,10 @@ import { Header } from '@/features/purchase/ui/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const WORKSHOPS = [
-    { id: 'all', label: 'Tất cả' },
-    { id: 'rice', label: 'Xưởng Bánh Gạo - 米果厂' },
-    { id: 'candy', label: 'Xưởng Kẹo 糖果厂' },
-    { id: 'public', label: 'Công Vụ 公务' },
+    { id: 'all', label: 'Tß║Ñt cß║ú' },
+    { id: 'rice', label: 'X╞░ß╗ƒng B├ính Gß║ío - τ▒│µ₧£σÄé' },
+    { id: 'candy', label: 'X╞░ß╗ƒng Kß║╣o τ│ûµ₧£σÄé' },
+    { id: 'public', label: 'C├┤ng Vß╗Ñ σà¼σèí' },
 ];
 
 export function ProcessedOrdersPage() {
@@ -42,10 +42,10 @@ export function ProcessedOrdersPage() {
                                 </div>
                                 <div>
                                     <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                                        Đơn thu mua đang xử lý
+                                        ─É╞ín thu mua ─æang xß╗¡ l├╜
                                     </h1>
                                     <p className="text-xs font-semibold text-slate-500">
-                                        Danh sách các đơn hàng đã biến mất khỏi file hệ thống (Đã xử lý xong).
+                                        Danh s├ích c├íc ─æ╞ín h├áng ─æ├ú biß║┐n mß║Ñt khß╗Åi file hß╗ç thß╗æng (─É├ú xß╗¡ l├╜ xong).
                                     </p>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@ export function ProcessedOrdersPage() {
                                 className="inline-flex items-center gap-2 rounded-2xl bg-white border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
                             >
                                 <ArrowLeft size={16} />
-                                Quay lại trang chủ
+                                Quay lß║íi trang chß╗º
                             </button>
                         </div>
 
@@ -65,7 +65,7 @@ export function ProcessedOrdersPage() {
                             <div className="flex flex-wrap items-center gap-3">
                                 <div className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-600 border border-blue-100">
                                     <Home size={14} />
-                                    Phân Xưởng <span className="opacity-75">0/3</span>
+                                    Ph├ón X╞░ß╗ƒng <span className="opacity-75">0/3</span>
                                 </div>
 
                                 {WORKSHOPS.map((ws) => (
@@ -93,16 +93,16 @@ export function ProcessedOrdersPage() {
 
                             <div className="max-w-2xl space-y-3">
                                 <h3 className="text-xl font-bold text-slate-900">
-                                    Theo dõi tiến độ tự động
+                                    Theo d├╡i tiß║┐n ─æß╗Ö tß╗▒ ─æß╗Öng
                                 </h3>
                                 <p className="text-sm font-medium text-slate-600 leading-relaxed">
-                                    Thuật toán thông minh sẽ tự động so sánh dữ liệu giữa 2 lần bạn nhập file Excel liên tiếp. Nếu một đơn hàng từng tồn tại ở file cũ nhưng không còn xuất hiện trong file mới, VÀ có trạng thái cuối cùng là &apos;05&apos;, hệ thống sẽ kết luận đơn hàng đó đã được giải quyết trên SAP và lưu trữ tại đây (các đơn có trạng thái khác như 03, 08 sẽ bị loại bỏ).
+                                    Thuß║¡t to├ín th├┤ng minh sß║╜ tß╗▒ ─æß╗Öng so s├ính dß╗» liß╗çu giß╗»a 2 lß║ºn bß║ín nhß║¡p file Excel li├¬n tiß║┐p. Nß║┐u mß╗Öt ─æ╞ín h├áng tß╗½ng tß╗ôn tß║íi ß╗ƒ file c┼⌐ nh╞░ng kh├┤ng c├▓n xuß║Ñt hiß╗çn trong file mß╗¢i, V├Ç c├│ trß║íng th├íi cuß╗æi c├╣ng l├á &apos;05&apos;, hß╗ç thß╗æng sß║╜ kß║┐t luß║¡n ─æ╞ín h├áng ─æ├│ ─æ├ú ─æ╞░ß╗úc giß║úi quyß║┐t tr├¬n SAP v├á l╞░u trß╗» tß║íi ─æ├óy (c├íc ─æ╞ín c├│ trß║íng th├íi kh├íc nh╞░ 03, 08 sß║╜ bß╗ï loß║íi bß╗Å).
                                 </p>
                             </div>
 
                             <div className="inline-flex items-center gap-2 rounded-2xl bg-sky-50 border border-sky-200/60 px-5 py-3 text-xs font-bold text-sky-700">
                                 <Filter size={15} />
-                                Vui lòng chọn một hoặc nhiều phân xưởng ở bộ lọc phía trên để xem
+                                Vui l├▓ng chß╗ìn mß╗Öt hoß║╖c nhiß╗üu ph├ón x╞░ß╗ƒng ß╗ƒ bß╗Ö lß╗ìc ph├¡a tr├¬n ─æß╗â xem
                             </div>
                         </div>
                     </div>

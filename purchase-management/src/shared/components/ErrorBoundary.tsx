@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+﻿import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface Props {
@@ -12,7 +12,7 @@ interface State {
 }
 
 /**
- * ErrorBoundary - Safeguard against blank/white screen crashes (Chống trắng màn hình khi update)
+ * ErrorBoundary - Safeguard against blank/white screen crashes (Chß╗æng trß║»ng m├án h├¼nh khi update)
  * Catches JavaScript errors anywhere in child component tree, logs them, and displays a fallback UI.
  */
 export class ErrorBoundary extends Component<Props, State> {
@@ -48,10 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
                             <AlertTriangle size={28} />
                         </div>
                         <h2 className="text-lg font-bold text-slate-100">
-                            Đã xảy ra sự cố hiển thị / App Notice
+                            ─É├ú xß║úy ra sß╗▒ cß╗æ hiß╗ân thß╗ï / App Notice
                         </h2>
                         <p className="text-xs text-slate-400 leading-relaxed">
-                            Hệ thống đã kích hoạt chế độ bảo vệ chống trắng màn hình. Bạn có thể nhấn tải lại để làm mới phiên làm việc.
+                            Hß╗ç thß╗æng ─æ├ú k├¡ch hoß║ít chß║┐ ─æß╗Ö bß║úo vß╗ç chß╗æng trß║»ng m├án h├¼nh. Bß║ín c├│ thß╗â nhß║Ñn tß║úi lß║íi ─æß╗â l├ám mß╗¢i phi├¬n l├ám viß╗çc.
                         </p>
                         {this.state.error && (
                             <div className="bg-slate-950 p-2.5 rounded-lg text-left text-[11px] font-mono text-red-400 overflow-x-auto max-h-32 border border-slate-800">
@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
                             className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 active:scale-98 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 cursor-pointer"
                         >
                             <RefreshCw size={14} className="animate-spin-slow" />
-                            Tải lại trang / Reload Page
+                            Tß║úi lß║íi trang / Reload Page
                         </button>
                     </div>
                 </div>

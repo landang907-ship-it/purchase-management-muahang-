@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Flame, Clock, Image as ImageIcon, Lightbulb } from 'lucide-react';
 import { RightTaskBar } from '@/features/layout/ui/RightTaskBar';
@@ -6,10 +6,10 @@ import { Header } from '@/features/purchase/ui/Header';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 
 const WORKSHOPS = [
-    { id: 'all', label: 'Tất cả phân xưởng' },
-    { id: 'rice', label: 'Xưởng Bánh Gạo - 米果厂' },
-    { id: 'candy', label: 'Xưởng Kẹo 糖果厂' },
-    { id: 'public', label: 'Công Vụ 公务' },
+    { id: 'all', label: 'Tß║Ñt cß║ú ph├ón x╞░ß╗ƒng' },
+    { id: 'rice', label: 'X╞░ß╗ƒng B├ính Gß║ío - τ▒│µ₧£σÄé' },
+    { id: 'candy', label: 'X╞░ß╗ƒng Kß║╣o τ│ûµ₧£σÄé' },
+    { id: 'public', label: 'C├┤ng Vß╗Ñ σà¼σèí' },
 ];
 
 export function NotificationsPage() {
@@ -42,10 +42,10 @@ export function NotificationsPage() {
                             </div>
                             <div>
                                 <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                                    Thông báo
+                                    Th├┤ng b├ío
                                 </h1>
                                 <p className="text-sm font-semibold text-slate-500">
-                                    Duyệt các yêu cầu mua hàng cần gấp
+                                    Duyß╗çt c├íc y├¬u cß║ºu mua h├áng cß║ºn gß║Ñp
                                 </p>
                             </div>
                         </div>
@@ -55,7 +55,7 @@ export function NotificationsPage() {
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600 mr-2">
                                     <Lightbulb size={16} className="text-amber-500" />
-                                    Lọc phân xưởng:
+                                    Lß╗ìc ph├ón x╞░ß╗ƒng:
                                 </span>
                                 {WORKSHOPS.map((ws) => (
                                     <button
@@ -86,7 +86,7 @@ export function NotificationsPage() {
                                 }`}
                             >
                                 <Flame size={18} className="text-red-500" />
-                                Yêu cầu cần gấp
+                                Y├¬u cß║ºu cß║ºn gß║Ñp
                             </button>
 
                             <button
@@ -99,7 +99,7 @@ export function NotificationsPage() {
                                 }`}
                             >
                                 <Clock size={18} className="text-amber-500" />
-                                Chờ duyệt &gt; 10 ngày &amp; Từ chối
+                                Chß╗¥ duyß╗çt &gt; 10 ng├áy &amp; Tß╗½ chß╗æi
                                 <span className="ml-1 inline-flex items-center justify-center rounded-full bg-amber-500 px-2 py-0.5 text-xs font-extrabold text-white">
                                     43
                                 </span>
@@ -115,7 +115,7 @@ export function NotificationsPage() {
                                 }`}
                             >
                                 <ImageIcon size={18} className="text-emerald-500" />
-                                Xác nhận hình ảnh linh kiện
+                                X├íc nhß║¡n h├¼nh ß║únh linh kiß╗çn
                             </button>
                         </div>
 
@@ -125,7 +125,7 @@ export function NotificationsPage() {
                                 <Bell size={36} strokeWidth={1.5} />
                             </div>
                             <p className="text-base font-bold text-slate-600">
-                                Không có thông báo mới
+                                Kh├┤ng c├│ th├┤ng b├ío mß╗¢i
                             </p>
                         </div>
                     </div>
